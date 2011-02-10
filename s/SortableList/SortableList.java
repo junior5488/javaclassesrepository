@@ -9,9 +9,9 @@ import java.util.ArrayList;
  * @date Jan 12, 2011 11:29:18 AM
  * @param <E> Tipo para realizar la comparacion
  */
-public final class SortableList<E> extends ArrayList<E> {
-	private Object[]	newData;
-	private Object[]	originalData;
+public final class SortableList<E extends Comparable<? super E>> extends ArrayList<E> {
+	private ArrayList<E>	newData;
+	private ArrayList<E>	originalData;
 
 	/**
 	 * Ordena la lista de forma ascendente
@@ -36,46 +36,47 @@ public final class SortableList<E> extends ArrayList<E> {
 		this.clean();
 		// obtenemos los valores originales
 		this.getAll();
-		// creamos una variable temporal
-		int del = 0;
+		// diferencia en la comparacion
+		int diff;
+		// indices ya utilizados
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
 		// recorremos las posiciones nuevas
-		for (int n = 0; n < this.size(); n++) {
-			// recorremos la lista local
-			for (int i = 0; i < this.size(); i++)
-				// verificamos que no sea nulo
-				if (this.originalData[i] != null) {
-					// armacenamos la primera posicion
-					this.newData[n] = this.originalData[i];
-					// finalizamos el bucle
-					break;
-				}
-			// recorremos la lista local
-			for (int i = 0; i < this.size(); i++) {
-				// verificamos si es nulo
-				if (this.originalData[i] == null)
-					// saltamos
+		for (int n = 0; n <= this.size(); n++)
+			// recorremos la lista de valores originales
+			for (int i = 0; i <= this.originalData.size(); i++) {
+				// verificamos si el indice ya se utilizo
+				if (indexes.contains(i))
+					// saltamos el indice
 					continue;
-				// obtenemos la diferencia
-				int diff = ((Comparable<E>) this.originalData[i]).compareTo((E) this.newData[n]);
+				// seteamos la diferencia por defecto
+				diff = 0;
+				// verificamos si existe el nuevo dato
+				if (n < this.newData.size() && i < this.originalData.size())
+					// obtenemos la diferencia
+					diff = this.originalData.get(i).compareTo(this.newData.get(n));
 				// verificamos si es menor o mayor
-				if (asc && diff <= 0 || !asc && diff >= 0) {
-					// almacenamos la position
-					del = i;
-					// guardamos el objeto
-					this.newData[n] = this.originalData[i];
+				if (i < this.originalData.size() && (asc && diff <= 0 || !asc && diff >= 0)) {
+					// verificamos si tenemos elementos
+					if (n < indexes.size())
+						// agregamos el indice a los utilizados
+						indexes.set(n, i);
+					else
+						indexes.add(i);
+					// verificamos si tenemos elementos
+					if (n < this.newData.size())
+						// reemplazamos el objeto por el nuevo
+						this.newData.set(n, this.originalData.get(i));
+					else
+						// agregamos el elemento
+						this.newData.add(this.originalData.get(i));
 				}
 			}
-			// eliminamos el elemento de la lista local
-			this.originalData[del] = null;
-		}
-		// obtenemos el total
-		del = this.size();
-		// vaciamos la lista
+		// vaciamos la lista local
 		this.clear();
 		// recorremos la lista ordenada
-		for (Object object : this.newData)
-			// agregamos el objeto nuevo
-			this.add((E) object);
+		for (E element : this.newData)
+			// agregamos el elemento a la lista local
+			this.add(element);
 	}
 
 	/**
@@ -86,8 +87,8 @@ public final class SortableList<E> extends ArrayList<E> {
 	 */
 	private void clean() {
 		// vaciamos los arrays
-		this.originalData = new Object[this.size()];
-		this.newData = new Object[this.size()];
+		this.originalData = new ArrayList<E>();
+		this.newData = new ArrayList<E>();
 	}
 
 	/**
@@ -100,6 +101,6 @@ public final class SortableList<E> extends ArrayList<E> {
 		// recorremos la lista
 		for (int i = 0; i < this.size(); i++)
 			// agregamos el objeto a la lista local
-			this.originalData[i] = this.get(i);
+			this.originalData.add(i, this.get(i));
 	}
 }
