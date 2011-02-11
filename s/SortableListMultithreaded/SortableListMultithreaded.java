@@ -101,45 +101,6 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	}
 
 	/**
-	 * Genera cada thread con su parte a ordenar
-	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:23:37 PM
-	 * @param list Lista a ordenar
-	 * @param subThreads Cantidad maxima de subThreads
-	 */
-	public void generateThreads(SortableList<Type> list, int subThreads) {
-		// recorremos la cantidad de threads disponibles
-		for (int thread = 1; thread <= subThreads; thread++)
-			// dividimos y recorremos las listas
-			for (SortableList<Type> subList : (SortableList<Type>[]) this.divideList(list))
-				// verificamos si estamos en la cantidad maxima de threads
-				if (subThreads == 1)
-					// generamos el thread con la lista
-					this.addThread(new SortThread(subList, "Thread" + this.THREADNO++));
-				else
-					// redividimos la lista
-					this.generateThreads(subList, subThreads / 2);
-	}
-
-	/**
-	 * Une las listas obtenidas
-	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 9:22:24 PM
-	 */
-	public void joinLists() {
-		// limpiamos la lista local
-		this.clear();
-		// recorremos los threads
-		for (SortThread thread : this.getThreads())
-			// recorremos los elementos ordenados por el thread
-			for (Type element : thread.getList())
-				// agregamos el elemento localmente
-				this.add(element);
-	}
-
-	/**
 	 * Ordena la lista de forma ascendente
 	 * 
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
@@ -245,6 +206,28 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	}
 
 	/**
+	 * Genera cada thread con su parte a ordenar
+	 * 
+	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
+	 * @date Feb 10, 2011 2:23:37 PM
+	 * @param list Lista a ordenar
+	 * @param subThreads Cantidad maxima de subThreads
+	 */
+	private void generateThreads(SortableList<Type> list, int subThreads) {
+		// recorremos la cantidad de threads disponibles
+		for (int thread = 1; thread <= subThreads; thread++)
+			// dividimos y recorremos las listas
+			for (SortableList<Type> subList : (SortableList<Type>[]) this.divideList(list))
+				// verificamos si estamos en la cantidad maxima de threads
+				if (subThreads == 1)
+					// generamos el thread con la lista
+					this.addThread(new SortThread(subList, "Thread" + this.THREADNO++));
+				else
+					// redividimos la lista
+					this.generateThreads(subList, subThreads / 2);
+	}
+
+	/**
 	 * Retorna la lista de threads
 	 * 
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
@@ -254,6 +237,23 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	private ArrayList<SortThread> getThreads() {
 		// retornamos el listado de threads
 		return this.threads;
+	}
+
+	/**
+	 * Une las listas obtenidas
+	 * 
+	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
+	 * @date Feb 10, 2011 9:22:24 PM
+	 */
+	private void joinLists() {
+		// limpiamos la lista local
+		this.clear();
+		// recorremos los threads
+		for (SortThread thread : this.getThreads())
+			// recorremos los elementos ordenados por el thread
+			for (Type element : thread.getList())
+				// agregamos el elemento localmente
+				this.add(element);
 	}
 
 	/**
