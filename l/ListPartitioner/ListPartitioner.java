@@ -5,6 +5,7 @@
 package l.ListPartitioner;
 
 import s.SortableList.SortableList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -67,9 +68,15 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @date Feb 10, 2011 10:31:35 AM
 	 * @return Listas de elementos separados, indice 0 el inicio, indice 1 el final
 	 */
-	public Object[] getPartitionedList() {
-		// retornamos un array con las listas
-		return new Object[] { this.getListStart(), this.getListEnd() };
+	public ArrayList<SortableList<Type>> getPartitionedList() {
+		// generamos la lista
+		ArrayList<SortableList<Type>> result = new ArrayList<SortableList<Type>>();
+		// agregamos la lista inicial
+		result.add(this.getListStart());
+		// agregamos la lista final
+		result.add(this.getListEnd());
+		// retornamos las dos listas
+		return result;
 	}
 
 	/**

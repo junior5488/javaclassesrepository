@@ -183,13 +183,13 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @date Feb 10, 2011 10:34:55 PM
 	 * @param listToDivide Lista a dividir
 	 */
-	private SortableList<?>[] divideList(SortableList<Type> listToDivide) {
+	private ArrayList<SortableList<Type>> divideList(SortableList<Type> listToDivide) {
 		// particionador de la lista
 		ListPartitioner<Type> partitioner = new ListPartitioner<Type>(listToDivide);
 		// dividimos la lista
 		partitioner.partition();
 		// retornamos las dos listas nuevas
-		return new SortableList<?>[] { (SortableList<?>) partitioner.getPartitionedList()[0], (SortableList<?>) partitioner.getPartitionedList()[1] };
+		return partitioner.getPartitionedList();
 	}
 
 	/**
@@ -200,7 +200,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 */
 	private void generateThreads() {
 		// dividimos y recorremos las sublistas
-		for (SortableList<Type> list : (SortableList<Type>[]) this.divideList(this.arrayData))
+		for (SortableList<Type> list : this.divideList(this.arrayData))
 			// generamos los threads
 			this.generateThreads(list, MAX_THREADS / 2);
 	}
@@ -217,7 +217,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 		// recorremos la cantidad de threads disponibles
 		for (int thread = 1; thread <= subThreads; thread++)
 			// dividimos y recorremos las listas
-			for (SortableList<Type> subList : (SortableList<Type>[]) this.divideList(list))
+			for (SortableList<Type> subList : this.divideList(list))
 				// verificamos si estamos en la cantidad maxima de threads
 				if (subThreads == 1)
 					// generamos el thread con la lista
