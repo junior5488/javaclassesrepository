@@ -4,7 +4,7 @@
  */
 package l.ListPartitioner;
 
-import java.util.ArrayList;
+import s.SortableList.SortableList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -22,7 +22,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 10:32:13 AM
 	 */
-	private Type[]				list;
+	private SortableList<Type>	list;
 
 	/**
 	 * Parte final de la lista de valores
@@ -30,7 +30,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 10:32:13 AM
 	 */
-	private ArrayList<Type>	listEnd		= new ArrayList<Type>();
+	private SortableList<Type>	listEnd		= new SortableList<Type>();
 
 	/**
 	 * Parte inicial de la lista de valores
@@ -38,7 +38,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 10:32:13 AM
 	 */
-	private ArrayList<Type>	listStart	= new ArrayList<Type>();
+	private SortableList<Type>	listStart	= new SortableList<Type>();
 
 	/**
 	 * Elemento central que divide la lista
@@ -46,7 +46,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 10:40:43 AM
 	 */
-	private Type				pivot;
+	private Type					pivot;
 
 	/**
 	 * Crea una instancia del Particionador
@@ -55,7 +55,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @date Feb 10, 2011 10:31:02 AM
 	 * @param list Listado de objetos a
 	 */
-	public ListPartitioner(Type[] list) {
+	public ListPartitioner(SortableList<Type> list) {
 		// almacenamos la lista a particionar
 		this.setList(list);
 	}
@@ -139,7 +139,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 		// listado de posiciones y prioridades
 		HashMap<Integer, Integer> prioridades = new HashMap<Integer, Integer>();
 		// almacenamos el elemento central por defecto
-		Type pivot = this.getList()[this.getList().length / 2];
+		Type pivot = this.getList().get(this.getList().size() / 2);
 		// diferencia entre elementos
 		Integer diff = 0;
 		// promedio para obtener el pivot
@@ -161,6 +161,10 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 			// pasamos a la siguiente posicion
 			pos++;
 		}
+		// verificamos si la posicion es cero
+		if (pos == 0)
+			// la modificamos a uno
+			pos = 1;
 		// calculamos el promedio
 		prom /= pos;
 		// valor del elemento mas cercano al pivot
@@ -172,7 +176,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 			// verificamos si es mas cercano que el anterior
 			if (diff.compareTo(near) <= 0) {
 				// almacenamos el elemento de la posicion actual como pivot
-				pivot = this.getList()[prioridad.getValue()];
+				pivot = this.getList().get(prioridad.getValue());
 				// reemplazamos la nueva posicion mas cercana
 				near = diff;
 			}
@@ -188,7 +192,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @date Feb 10, 2011 10:54:29 AM
 	 * @return Lista de valores
 	 */
-	private Type[] getList() {
+	private SortableList<Type> getList() {
 		// retornamos la lista de valores
 		return this.list;
 	}
@@ -200,7 +204,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @date Feb 10, 2011 10:51:43 AM
 	 * @return Lista final
 	 */
-	private ArrayList<Type> getListEnd() {
+	private SortableList<Type> getListEnd() {
 		// retornamos el final de la lista
 		return this.listEnd;
 	}
@@ -212,7 +216,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @date Feb 10, 2011 10:51:43 AM
 	 * @return Lista inicial
 	 */
-	private ArrayList<Type> getListStart() {
+	private SortableList<Type> getListStart() {
 		// retornamos el inicio de la lista
 		return this.listStart;
 	}
@@ -240,7 +244,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @date Feb 10, 2011 10:54:29 AM
 	 * @param Lista de valores
 	 */
-	private void setList(Type[] list) {
+	private void setList(SortableList<Type> list) {
 		// almacenamos la lista de valores
 		this.list = list;
 	}
