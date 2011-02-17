@@ -34,6 +34,14 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	private boolean					asc			= true;
 
 	/**
+	 * Numero de thread para el nombre del thread creado
+	 * 
+	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
+	 * @date Feb 10, 2011 10:50:02 PM
+	 */
+	private int							THREADNO		= 0;
+
+	/**
 	 * Listado de Threads utilizados para la ordenacion de los elementos
 	 * 
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
@@ -49,14 +57,6 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @date Feb 10, 2011 2:26:02 PM
 	 */
 	private static final int		MAX_THREADS	= Runtime.getRuntime().availableProcessors();
-
-	/**
-	 * Numero de thread para el nombre del thread creado
-	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:50:02 PM
-	 */
-	private int							THREADNO		= 0;
 
 	/**
 	 * Thread utilizado para ordenar la lista de elementos
@@ -94,6 +94,13 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 			this.dataToSort.sort(SortableListMultithreaded.this.isAscending());
 		}
 
+		/**
+		 * Retorna la lista de los elementos
+		 * 
+		 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
+		 * @date Feb 10, 2011 10:38:58 AM
+		 * @return Lista de elementos
+		 */
 		protected SortableList<Type> getList() {
 			// retornamos la lista
 			return this.dataToSort;
@@ -202,7 +209,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 		// dividimos y recorremos las sublistas
 		for (SortableList<Type> list : this.divideList(this.arrayData))
 			// generamos los threads
-			this.generateThreads(list, MAX_THREADS / 2);
+			this.generateThreads(list, SortableListMultithreaded.MAX_THREADS / 2);
 	}
 
 	/**

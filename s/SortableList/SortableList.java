@@ -52,7 +52,7 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Ordena la lista de forma ascendente
 	 * 
-	 * @autor hschimpf
+	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Jan 12, 2011 12:50:58 PM
 	 */
 	public void sort() {
@@ -63,7 +63,7 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Ordena la lista
 	 * 
-	 * @autor hschimpf
+	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Jan 12, 2011 11:44:29 AM
 	 * @param asc True para ordenar de forma ascendente
 	 */
@@ -79,7 +79,7 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Limpia las listas y obtiene los valores actuales a ordenar
 	 * 
-	 * @autor hschimpf
+	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Jan 12, 2011 11:56:26 AM
 	 */
 	private void cleanAndGetAll() {
