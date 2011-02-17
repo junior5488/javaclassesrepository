@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Lista de objetos ordenable por medio de la comparacion de los objetos mediante el metodo compareTo() de los objetos
  * 
- * @author hschimpf
+ * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
  * @date Jan 12, 2011 11:29:18 AM
  * @param <Type> Tipo para realizar la comparacion
  */
