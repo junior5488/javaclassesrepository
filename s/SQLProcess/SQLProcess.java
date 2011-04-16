@@ -48,9 +48,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 16, 2011 1:53:38 AM
 	 * @param driver SQL Driver
-	 * @param <DType> Class Type of Driver
 	 */
-	protected <DType extends Driver> SQLProcess(final DType driver) {
+	protected SQLProcess(final Class<? extends Driver> driver) {
 		// enviamos el constructor con el driver
 		super(driver);
 	}

@@ -63,11 +63,10 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 4:44:54 PM
 	 * @param driver SQL Driver
-	 * @param <DType> Class Type of Driver
 	 */
-	protected <DType extends Driver> SQLLink(final DType driver) {
+	protected SQLLink(final Class<? extends Driver> driver) {
 		// registramos el driver
-		super(driver.getClass());
+		super(driver);
 	}
 
 	@Override
