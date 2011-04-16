@@ -1,14 +1,15 @@
 /**
- * m.MySQLProcess
+ * m.SQLProcess
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 16, 2011 12:33:09 AM
  */
-package m.MySQLProcess;
+package s.SQLProcess;
 
-import m.MySQLLink.MySQLLink;
 import s.SQLBasics.SQLBasics;
+import s.SQLLink.SQLLink;
+import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ import java.sql.SQLException;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 16, 2011 12:33:09 AM
  */
-public class MySQLProcess extends MySQLLink implements SQLBasics {
+public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	/**
 	 * Sentencia SQL
 	 * 
@@ -42,8 +43,24 @@ public class MySQLProcess extends MySQLLink implements SQLBasics {
 	 */
 	private PreparedStatement	statement;
 
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 16, 2011 1:53:38 AM
+	 * @param driver SQL Driver
+	 * @param <DType> Class Type of Driver
+	 */
+	protected <DType extends Driver> SQLProcess(final DType driver) {
+		// enviamos el constructor con el driver
+		super(driver);
+	}
+
 	public boolean executeSQL() {
 		try {
+			// verificamos si hay una conexion abierta
+			if (this.getConnection() == null)
+				// salimos con una excepcion
+				throw new SQLException("No existe una conexion abierta");
 			// creamos la consulta SQL
 			this.setStatement(this.getConnection().prepareStatement(this.getQuery()));
 			// ejecutamos la consulta
@@ -91,6 +108,10 @@ public class MySQLProcess extends MySQLLink implements SQLBasics {
 	@Override
 	public boolean hasNext() {
 		try {
+			// verificamos si hay un resultset
+			if (this.getResultSet() == null)
+				// salimos con una excepcion
+				throw new SQLException("No se ejecuto ninguna consulta");
 			// retornamos si hay mas registros
 			return this.getResultSet().next();
 		} catch (final SQLException e) {

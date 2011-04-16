@@ -1,5 +1,5 @@
 /**
- * s.SQLConnection
+ * d.DBConnection
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion

@@ -1,27 +1,28 @@
 /**
- * m.MySQLLink
+ * m.SQLLink
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 4:44:10 PM
  */
-package m.MySQLLink;
+package s.SQLLink;
 
 import m.MissingConnectionDataException.MissingConnectionDataException;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import d.DBConnection.DBConnection;
 import d.DriverLoader.DriverLoader;
 
 /**
- * Conexion a servidores MySQL
+ * Conexion a servidores SQL
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 4:44:10 PM
  */
-public abstract class MySQLLink extends DriverLoader implements DBConnection {
+public abstract class SQLLink extends DriverLoader implements DBConnection {
 	/**
 	 * Conexion abierta con el servidor
 	 * 
@@ -61,10 +62,12 @@ public abstract class MySQLLink extends DriverLoader implements DBConnection {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 4:44:54 PM
+	 * @param driver SQL Driver
+	 * @param <DType> Class Type of Driver
 	 */
-	public MySQLLink() {
+	protected <DType extends Driver> SQLLink(final DType driver) {
 		// registramos el driver
-		super(com.mysql.jdbc.Driver.class);
+		super(driver.getClass());
 	}
 
 	@Override
