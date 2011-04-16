@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="a/|b/|c/|e/|f/|g/|h/|i/|j/|k/|n/|o/|p/|q/|r/|t/|u/|v/|w/|x/|y/|z/" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
