@@ -11,6 +11,7 @@ import m.MissingConnectionDataException.MissingConnectionDataException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import d.DBConnection.DBConnection;
 import d.DriverLoader.DriverLoader;
 
 /**
@@ -20,7 +21,7 @@ import d.DriverLoader.DriverLoader;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 4:44:10 PM
  */
-public abstract class MySQLLink extends DriverLoader {
+public abstract class MySQLLink extends DriverLoader implements DBConnection {
 	/**
 	 * Conexion abierta con el servidor
 	 * 
@@ -66,15 +67,7 @@ public abstract class MySQLLink extends DriverLoader {
 		super(com.mysql.jdbc.Driver.class);
 	}
 
-	/**
-	 * Conecta al servidor de Bases de Datos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:12:39 PM
-	 * @return True si se pudo conectar
-	 * @throws MissingConnectionDataException Excepcion si faltan datos de conexion
-	 */
+	@Override
 	public boolean connect() throws MissingConnectionDataException {
 		// verificamos si estan todos los datos de conexion
 		if (!this.validateConnectionData())
@@ -88,14 +81,7 @@ public abstract class MySQLLink extends DriverLoader {
 		return true;
 	}
 
-	/**
-	 * Desconecta el servidor de Bases de Datos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:35:29 PM
-	 * @return True si se desconecto del servidor
-	 */
+	@Override
 	public boolean disconnect() {
 		try {
 			// verificamos si esta deshabilitado el autocommit
@@ -118,17 +104,7 @@ public abstract class MySQLLink extends DriverLoader {
 		return true;
 	}
 
-	/**
-	 * Almacena los datos para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:10:59 PM
-	 * @param host Direccion del Servidor
-	 * @param user Usuario de conexion
-	 * @param pass Contraseña del usuario
-	 * @param db Nombre de la Base de Datos
-	 */
+	@Override
 	public void setConnectionData(final String host, final String user, final String pass, final String db) {
 		// almacenamos los datos de conexion
 		this.setHost(host);
@@ -137,14 +113,7 @@ public abstract class MySQLLink extends DriverLoader {
 		this.setDB(db);
 	}
 
-	/**
-	 * Almacena el nombre de la base de datos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:09:44 PM
-	 * @param db Nombre de la Base de Datos
-	 */
+	@Override
 	public void setDB(final String db) {
 		// verificamos si es null
 		this.throwIfNull(db, "El nombre de la Base de Datos no puede ser nula");
@@ -152,14 +121,7 @@ public abstract class MySQLLink extends DriverLoader {
 		this.db = db;
 	}
 
-	/**
-	 * Almacena la direccion del servidor a conectar
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:08:49 PM
-	 * @param host Servidor a conectar
-	 */
+	@Override
 	public void setHost(final String host) {
 		// verificamos si es null
 		this.throwIfNull(host, "La direccion del servidor no puede ser nula");
@@ -167,14 +129,7 @@ public abstract class MySQLLink extends DriverLoader {
 		this.host = host;
 	}
 
-	/**
-	 * Almacena la contraseña para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:07:57 PM
-	 * @param pass Contraseña de la conexion
-	 */
+	@Override
 	public void setPass(final String pass) {
 		// verificamos si es null
 		this.throwIfNull(pass, "La contraseña no puede ser nula");
@@ -182,14 +137,7 @@ public abstract class MySQLLink extends DriverLoader {
 		this.pass = pass;
 	}
 
-	/**
-	 * Almacena el usuario para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:04:18 PM
-	 * @param user Usuario de Conexion
-	 */
+	@Override
 	public void setUser(final String user) {
 		// verificamos si es null
 		this.throwIfNull(user, "El usuario no puede ser nulo");
@@ -208,6 +156,21 @@ public abstract class MySQLLink extends DriverLoader {
 	protected Connection getConnection() {
 		// retornamos la conexion
 		return this.connection;
+	}
+
+	/**
+	 * Muestra en consola el detalle de la excepcion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:44:47 PM
+	 * @param e SQL Exception
+	 */
+	protected void SQLException(final SQLException e) {
+		// mostramos la descripcion del error
+		System.err.println(e.getMessage() + ", SQLState " + e.getSQLState() + ", Error " + e.getErrorCode());
+		// print the StackTrace
+		e.printStackTrace();
 	}
 
 	/**
@@ -307,21 +270,6 @@ public abstract class MySQLLink extends DriverLoader {
 	private void setConnection(final Connection conn) {
 		// almacenamos la conexion
 		this.connection = conn;
-	}
-
-	/**
-	 * Muestra en consola el detalle de la excepcion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:44:47 PM
-	 * @param e SQL Exception
-	 */
-	private void SQLException(final SQLException e) {
-		// mostramos la descripcion del error
-		System.err.println(e.getMessage() + ", SQLState " + e.getSQLState() + ", Error " + e.getErrorCode());
-		// print the StackTrace
-		e.printStackTrace();
 	}
 
 	/**
