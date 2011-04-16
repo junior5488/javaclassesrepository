@@ -22,7 +22,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 2:25:13 PM
 	 */
-	private SortableList<Type>		arrayData;
+	private SortableList<Type>				arrayData;
 
 	/**
 	 * Bandera para ordenar la lista
@@ -31,7 +31,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 2:32:32 PM
 	 */
-	private boolean					asc			= true;
+	private boolean							asc			= true;
 
 	/**
 	 * Numero de thread para el nombre del thread creado
@@ -39,7 +39,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 10:50:02 PM
 	 */
-	private int							THREADNO		= 0;
+	private int									THREADNO		= 0;
 
 	/**
 	 * Listado de Threads utilizados para la ordenacion de los elementos
@@ -47,7 +47,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 2:25:31 PM
 	 */
-	private ArrayList<SortThread>	threads		= new ArrayList<SortThread>();
+	private final ArrayList<SortThread>	threads		= new ArrayList<SortThread>();
 
 	/**
 	 * Cantidad maxima de threads a crear
@@ -56,7 +56,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
 	 * @date Feb 10, 2011 2:26:02 PM
 	 */
-	private static final int		MAX_THREADS	= Runtime.getRuntime().availableProcessors();
+	private static final int				MAX_THREADS	= Runtime.getRuntime().availableProcessors();
 
 	/**
 	 * Thread utilizado para ordenar la lista de elementos
@@ -81,7 +81,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 		 * @param toSort Listado de elementos a ordenar
 		 * @param name Nombre del Thread
 		 */
-		protected SortThread(SortableList<Type> toSort, String name) {
+		protected SortThread(final SortableList<Type> toSort, final String name) {
 			// seteamos el nombre del thread
 			super(name);
 			// almacenamos el listado a ordenar
@@ -125,7 +125,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @date Jan 12, 2011 11:44:29 AM
 	 * @param asc True para ordenar de forma ascendente
 	 */
-	public void sort(boolean asc) {
+	public void sort(final boolean asc) {
 		// almacenamos la bandera
 		this.setAsc(asc);
 		// iniciamos el proceso
@@ -151,7 +151,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @date Feb 10, 2011 2:33:24 PM
 	 * @param asc True para ordenar ascendentemente
 	 */
-	protected void setAsc(boolean asc) {
+	protected void setAsc(final boolean asc) {
 		// almacenamos la bandera
 		this.asc = asc;
 	}
@@ -163,7 +163,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @date Feb 10, 2011 2:13:18 PM
 	 * @param thread Thread a agregar
 	 */
-	private void addThread(SortThread thread) {
+	private void addThread(final SortThread thread) {
 		// agregamos el thread al listado
 		this.threads.add(thread);
 	}
@@ -190,9 +190,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @date Feb 10, 2011 10:34:55 PM
 	 * @param listToDivide Lista a dividir
 	 */
-	private ArrayList<SortableList<Type>> divideList(SortableList<Type> listToDivide) {
+	private ArrayList<SortableList<Type>> divideList(final SortableList<Type> listToDivide) {
 		// particionador de la lista
-		ListPartitioner<Type> partitioner = new ListPartitioner<Type>(listToDivide);
+		final ListPartitioner<Type> partitioner = new ListPartitioner<Type>(listToDivide);
 		// dividimos la lista
 		partitioner.partition();
 		// retornamos las dos listas nuevas
@@ -207,7 +207,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 */
 	private void generateThreads() {
 		// dividimos y recorremos las sublistas
-		for (SortableList<Type> list : this.divideList(this.arrayData))
+		for (final SortableList<Type> list: this.divideList(this.arrayData))
 			// generamos los threads
 			this.generateThreads(list, SortableListMultithreaded.MAX_THREADS / 2);
 	}
@@ -220,11 +220,11 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @param list Lista a ordenar
 	 * @param subThreads Cantidad maxima de subThreads
 	 */
-	private void generateThreads(SortableList<Type> list, int subThreads) {
+	private void generateThreads(final SortableList<Type> list, final int subThreads) {
 		// recorremos la cantidad de threads disponibles
 		for (int thread = 1; thread <= subThreads; thread++)
 			// dividimos y recorremos las listas
-			for (SortableList<Type> subList : this.divideList(list))
+			for (final SortableList<Type> subList: this.divideList(list))
 				// verificamos si estamos en la cantidad maxima de threads
 				if (subThreads == 1)
 					// generamos el thread con la lista
@@ -256,9 +256,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 		// limpiamos la lista local
 		this.clear();
 		// recorremos los threads
-		for (SortThread thread : this.getThreads())
+		for (final SortThread thread: this.getThreads())
 			// recorremos los elementos ordenados por el thread
-			for (Type element : thread.getList())
+			for (final Type element: thread.getList())
 				// agregamos el elemento localmente
 				this.add(element);
 	}
@@ -277,7 +277,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 			// por defecto nada corre
 			running = false;
 			// recorremos los threads
-			for (SortThread thread : this.getThreads())
+			for (final SortThread thread: this.getThreads())
 				// verificamos si esta corriendo
 				if (thread != null && thread.isAlive())
 					// modificamos la bandera
@@ -312,7 +312,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 */
 	private void startThreads() {
 		// recorremos cada thread
-		for (SortThread thread : this.getThreads())
+		for (final SortThread thread: this.getThreads())
 			// iniciamos el thread
 			thread.start();
 	}
