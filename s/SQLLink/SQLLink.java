@@ -161,6 +161,17 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	/**
+	 * Retorna el tipo de conexion para el driver.<br>
+	 * Ej: <code>jdbc:mysql</code>
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 23, 2011 9:32:22 PM
+	 * @return Typo de conexion del driver
+	 */
+	protected abstract String getDriverType();
+
+	/**
 	 * Muestra en consola el detalle de la excepcion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -185,7 +196,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 */
 	private String getConnectionUrl() {
 		// retornamos el URL de conexion
-		return "jdbc:mysql://" + this.getHost() + "/" + this.getDB();
+		return this.getDriverType() + "://" + this.getHost() + "/" + this.getDB();
 	}
 
 	/**

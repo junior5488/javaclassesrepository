@@ -26,4 +26,10 @@ public class MySQLProcess extends SQLProcess {
 		// registramos el Driver MySQL
 		super(com.mysql.jdbc.Driver.class);
 	}
+
+	@Override
+	protected String getDriverType() {
+		// retornamos una conexion MySQL
+		return "jdbc:mysql";
+	}
 }
