@@ -7,7 +7,9 @@
  */
 package u.UserData;
 
+import sun.security.util.Password;
 import com.jcraft.jsch.UserInfo;
+import java.io.IOException;
 
 /**
  * Datos de Usuario para conexiones
@@ -30,6 +32,17 @@ public final class UserData implements UserInfo {
 	 * @version Jun 6, 2011 1:47:01 PM
 	 */
 	private String	username;
+
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 6, 2011 1:52:02 PM
+	 * @param username Nombre de usuario
+	 */
+	public UserData(final String username) {
+		// almacenamos el nombre de usuario
+		this.setUsername(username);
+	}
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -84,6 +97,25 @@ public final class UserData implements UserInfo {
 
 	public boolean promptYesNo(final String data) {
 		return true;
+	}
+
+	/**
+	 * Lee y almacena el password desde la linea de comandos
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 6, 2011 1:54:59 PM
+	 * @throws IOException Input Exception
+	 */
+	public void readPassword() throws IOException {
+		// vaciamos el password
+		this.password = "";
+		// solicitamos el pass
+		System.out.print("Input password: ");
+		// recorremos las letras
+		for (final char c: Password.readPassword(System.in))
+			// agregamos la letra al pass
+			this.password += c;
 	}
 
 	/**
