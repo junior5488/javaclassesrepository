@@ -8,8 +8,8 @@
 package u.UserData;
 
 import sun.security.util.Password;
-import com.jcraft.jsch.UserInfo;
 import java.io.IOException;
+import com.jcraft.jsch.UserInfo;
 
 /**
  * Datos de Usuario para conexiones
