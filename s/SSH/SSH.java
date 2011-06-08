@@ -7,19 +7,18 @@
  */
 package s.SSH;
 
-import u.UserData.UserData;
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.ConnectionInfo;
+import com.trilead.ssh2.Session;
+import com.trilead.ssh2.StreamGobbler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.regex.Pattern;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.security.auth.login.LoginException;
 
 /**
  * Clase para conexiones por medio de SSH
@@ -29,29 +28,23 @@ import com.jcraft.jsch.Session;
  * @version Jun 6, 2011 11:53:26 AM
  */
 public final class SSH {
-	private final Pattern			alphaNumeric	= Pattern.compile("([^a-zA-z0-9])");
+	private Connection		connection;
 
-	private Channel					channel;
+	private InetAddress		host;
 
-	private PipedInputStream		fromServer;
+	private StreamGobbler	inputStream;
 
-	private InetAddress				host;
+	private String				lastCommand	= "";
 
-	private String						lastCommand		= "";
+	private BufferedReader	outputStream;
 
-	private String						password;
+	private String				password;
 
-	private Integer					port				= 22;
+	private Integer			port			= 22;
 
-	private Session					session;
+	private Session			session;
 
-	private PipedOutputStream		toServer;
-
-	private String						username;
-
-	private String						welcome;
-
-	private static final String	TERMINATOR		= "zDonez";
+	private String				username;
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -136,17 +129,18 @@ public final class SSH {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 6, 2011 4:32:43 PM
-	 * @throws JSchException Error si ya esta actualmente conectado
-	 * @throws IOException Error de escritura o lectura
-	 * @throws InterruptedException Error si se corta la conexion
+	 * @throws IOException Excepcion al conectar al servidor
+	 * @throws LoginException Datos de acceso incorrectos
 	 */
-	public void connect() throws JSchException, IOException, InterruptedException {
-		// creamos la session de conexion
+	public void connect() throws IOException, LoginException {
+		// creamos la conexion
+		this.createConnection();
+		// autenticamos
+		this.autenticate();
+		// creamos la session
 		this.createSession();
-		// creamos el canal
-		this.createChannel();
-		// obtenemos el mensaje de bienvenida
-		this.saveWelcome();
+		// seteamos los Streams de entrada y salida
+		this.connectStreams();
 	}
 
 	/**
@@ -155,12 +149,17 @@ public final class SSH {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 6, 2011 4:32:33 PM
+	 * @return Exit Status
 	 */
-	public void disconnect() {
-		if (this.isConnected()) {
-			this.getChannel().disconnect();
-			this.getSession().disconnect();
-		}
+	public Integer disconnect() {
+		// mostramos un log
+		this.log("Disconnecting");
+		// cerramos la session
+		this.getSession().close();
+		// cerramos la conexion
+		this.getConnection().close();
+		// retornamos el resultado de la desconexion
+		return this.getSession().getExitStatus();
 	}
 
 	/**
@@ -183,49 +182,23 @@ public final class SSH {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 6, 2011 4:31:45 PM
 	 * @return Respuesta del servidor
-	 * @throws IOException Error de lectura
-	 * @throws InterruptedException Error si se corta la conexion
+	 * @throws IOException Excepcion al leer los datos del server
 	 */
-	public String getServerResponse() throws IOException, InterruptedException {
-		final StringBuffer builder = new StringBuffer();
-		String line = "";
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(this.getFromServer()));
+	public String getServerResponse() throws IOException {
+		// creamos un buffer para la respuesta
+		final StringBuffer response = new StringBuffer();
 		while (true) {
-			line = reader.readLine();
-			builder.append(line).append("\n");
-			if (line.length() == 0 || line.endsWith(SSH.TERMINATOR))
+			// leemos la linea del server
+			final String line = this.getOutputStream().readLine();
+			// verificamos si es el final
+			if (line == null)
+				// finalizamos
 				break;
+			// agregamos la linea
+			response.append(line + "\n");
 		}
-		String result = builder.toString();
-		final int beginIndex = result.indexOf(SSH.TERMINATOR + "\"") + (SSH.TERMINATOR + "\"").length();
-		result = result.substring(beginIndex);
-		return result.replaceAll(this.escape(SSH.TERMINATOR), "").trim();
-	}
-
-	/**
-	 * Retorna el usuario para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 12:39:57 AM
-	 * @return The username
-	 */
-	public String getUsername() {
-		// return the value of username
-		return this.username;
-	}
-
-	/**
-	 * Retorna el mensaje de bienvenida recibido por el server
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 12:57:52 AM
-	 * @return Mensaje de bienvenida
-	 */
-	public String getWelcome() {
-		// retornamos el mensaje de bienvenida
-		return this.welcome;
+		// retornamos la respuesta
+		return response.toString();
 	}
 
 	/**
@@ -237,8 +210,15 @@ public final class SSH {
 	 * @return True si esta conectado
 	 */
 	public boolean isConnected() {
-		// retornamos si existe un canal y esta conectado
-		return this.getChannel() != null && this.getChannel().isConnected();
+		try {
+			// intentamos hacer un ping al server
+			this.getConnection().ping();
+		} catch (final IOException e) {
+			// retornamos false
+			return false;
+		}
+		// retornamos true
+		return true;
 	}
 
 	/**
@@ -248,14 +228,15 @@ public final class SSH {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 6, 2011 4:30:20 PM
 	 * @param command Comando a ejecutar
-	 * @throws IOException Error de escritura
-	 * @throws InterruptedException Error si se corta la conexion
+	 * @throws IOException Excepcion al enviar el comando al servidor
 	 */
-	public void send(final String command) throws IOException, InterruptedException {
-		final String sendCommand = command + "; echo \"" + SSH.TERMINATOR + "\" \n";
-		this.getToServer().write(sendCommand.getBytes());
-		Thread.sleep(100);
-		this.setLastCommand(new String(sendCommand));
+	public void send(final String command) throws IOException {
+		// mostramos un log
+		this.log("Executing " + command);
+		// ejecutamos el comando
+		this.getSession().execCommand(command);
+		// almacenamos el ultimo comando
+		this.setLastCommand(command);
 	}
 
 	/**
@@ -311,83 +292,82 @@ public final class SSH {
 	}
 
 	/**
-	 * Crea el canal para la conexion
+	 * Autentica el usuario y contraseña al servidor
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 12:48:19 AM
-	 * @throws JSchException Excepcion al conectar o abrir el canal
-	 * @throws IOException Excepcion al crear los streams de entrada y salida
+	 * @version Jun 8, 2011 6:00:58 AM
+	 * @throws IOException Excepcion al enviar los datos al servidor
+	 * @throws LoginException Datos de acceso incorrectos
 	 */
-	private void createChannel() throws JSchException, IOException {
-		// abrimos un canal con tipo de conexion (shell: Consola)
-		this.setChannel(this.getSession().openChannel("shell"));
-		// creamos el stream de salida
-		final PipedOutputStream po = new PipedOutputStream();
-		// seteamos el stream de entrada
-		this.setFromServer(new PipedInputStream(po));
-		// seteamos el stream en el canal
-		this.getChannel().setOutputStream(po);
-		// creamos el stream de salida
-		this.setToServer(new PipedOutputStream());
-		// creamos el stream de entrada
-		final PipedInputStream pi = new PipedInputStream(this.getToServer());
-		// seteamos el stream de entrada
-		this.getChannel().setInputStream(pi);
-		// conectamos el canal
-		this.getChannel().connect();
-	}
-
-	private void createSession() throws JSchException {
-		// creamos la session para conectar al server
-		this.setSession(new JSch().getSession(this.getUsername(), this.getHost().getHostAddress(), this.getPort()));
-		// seteamos los parametros de conexion
-		this.getSession().setUserInfo(new UserData(this.getUsername(), this.getPassword()));
-		// conectamos al server
-		this.getSession().connect();
-	}
-
-	private String escape(final String subjectString) {
-		return this.getAlphaNumeric().matcher(subjectString).replaceAll("\\\\$1");
+	private void autenticate() throws LoginException, IOException {
+		// mostramos un log
+		this.log("Authenticating with username " + this.getUsername());
+		// intentamos autenticar el usuario
+		if (!this.getConnection().authenticateWithPassword(this.getUsername(), this.getPassword()))
+			// salimos con una excepcion
+			throw new LoginException("Authentication failed");
 	}
 
 	/**
-	 * Retorna la cadena de caracteres alfanumericos
+	 * Crea y conecta los streams de entrada y salida
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:24:01 PM
-	 * @return The alphaNumeric
+	 * @version Jun 8, 2011 6:10:40 AM
 	 */
-	private Pattern getAlphaNumeric() {
-		// return the value of alphaNumeric
-		return this.alphaNumeric;
+	private void connectStreams() {
+		// mostramos un log
+		this.log("Connecting input and output");
+		// creamos la entreda
+		this.setInputStream(new StreamGobbler(this.getSession().getStdout()));
+		// creamos la salida
+		this.setOuputStream(new BufferedReader(new InputStreamReader(this.getInputStream())));
 	}
 
 	/**
-	 * Retorna el canal de conexion al servidor
+	 * Crea la conexion al servidor
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:33 PM
-	 * @return The channel
+	 * @version Jun 8, 2011 5:57:12 AM
+	 * @throws IOException Excepcion al conectar al servidor
+	 * @return Resultado de la conexion
 	 */
-	private Channel getChannel() {
-		// return the value of channel
-		return this.channel;
+	private ConnectionInfo createConnection() throws IOException {
+		// mostramos un log
+		this.log("Creating connection to " + this.getHost().getHostName() + ":" + this.getPort());
+		// creamos la conexion
+		this.setConnection(new Connection(this.getHost().getHostAddress(), this.getPort()));
+		// conectamos
+		return this.getConnection().connect();
 	}
 
 	/**
-	 * Retorna el InputStream del servidor
+	 * Crea la session con el servidor
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:38 PM
-	 * @return The fromServer
+	 * @version Jun 8, 2011 6:06:06 AM
+	 * @throws IOException Excepcion al enviar los datos al servidor
 	 */
-	private PipedInputStream getFromServer() {
-		// return the value of fromServer
-		return this.fromServer;
+	private void createSession() throws IOException {
+		// mostramos un los
+		this.log("Opening session");
+		// creamos la session
+		this.setSession(this.getConnection().openSession());
+	}
+
+	/**
+	 * Retorna la conexion al servidor
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 5:58:55 AM
+	 */
+	private Connection getConnection() {
+		// retornamos la conexion
+		return this.connection;
 	}
 
 	/**
@@ -401,6 +381,32 @@ public final class SSH {
 	private InetAddress getHost() {
 		// retornamos el host
 		return this.host;
+	}
+
+	/**
+	 * Retorna el stream de entrada
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:11:35 AM
+	 * @return Stream de entrada
+	 */
+	private StreamGobbler getInputStream() {
+		// retornamos el stream de entrada
+		return this.inputStream;
+	}
+
+	/**
+	 * Retorna el stream de salida
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:18:08 AM
+	 * @return Stream de salida
+	 */
+	private BufferedReader getOutputStream() {
+		// retornamos el stream de salida
+		return this.outputStream;
 	}
 
 	/**
@@ -443,56 +449,47 @@ public final class SSH {
 	}
 
 	/**
-	 * Retorna el OutputStream del servidor
+	 * Retorna el usuario para la conexion
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:52 PM
-	 * @return The toServer
+	 * @version Jun 8, 2011 12:39:57 AM
+	 * @return The username
 	 */
-	private PipedOutputStream getToServer() {
-		// return the value of toServer
-		return this.toServer;
+	private String getUsername() {
+		// return the value of username
+		return this.username;
+	}
+
+	private void log(final String msg) {
+		// mostramos el mensaje en consola
+		System.out.println("[" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + "] " + msg);
 	}
 
 	/**
-	 * Almacena el mensaje de bienvenida
+	 * Almacena la conexion al servidor
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 12:54:50 AM
-	 * @throws InterruptedException Error si se corta la conexion
-	 * @throws IOException Erro de entrada salida
+	 * @version Jun 8, 2011 5:58:06 AM
+	 * @param connection Conexion al servidor
 	 */
-	private void saveWelcome() throws IOException, InterruptedException {
-		// almacenamos el mensaje de bienvenida
-		this.welcome = this.getServerResponse();
+	private void setConnection(final Connection connection) {
+		// almacenamos la conexion
+		this.connection = connection;
 	}
 
 	/**
-	 * Almacena el canal de conexion
+	 * Almacena el stream de entrada
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:33 PM
-	 * @param channel the channel to set
+	 * @version Jun 8, 2011 6:11:35 AM
+	 * @param outputStream Stream de entrada
 	 */
-	private void setChannel(final Channel channel) {
-		// set the value of this.channel
-		this.channel = channel;
-	}
-
-	/**
-	 * Almacena el InputStream para el servidor
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:38 PM
-	 * @param fromServer the fromServer to set
-	 */
-	private void setFromServer(final PipedInputStream fromServer) {
-		// set the value of this.fromServer
-		this.fromServer = fromServer;
+	private void setInputStream(final StreamGobbler inputStream) {
+		// almacenamos el stream de entrada
+		this.inputStream = inputStream;
 	}
 
 	/**
@@ -509,6 +506,19 @@ public final class SSH {
 	}
 
 	/**
+	 * Almacena el stream de salida
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:18:08 AM
+	 * @param outputStream Stream de salida
+	 */
+	private void setOuputStream(final BufferedReader outputStream) {
+		// almacenamos el stream de salida
+		this.outputStream = outputStream;
+	}
+
+	/**
 	 * Almacena la sesion para utilizar en el server
 	 * 
 	 * @author Hermann D. Schimpf
@@ -519,18 +529,5 @@ public final class SSH {
 	private void setSession(final Session session) {
 		// set the value of this.session
 		this.session = session;
-	}
-
-	/**
-	 * Almacena el OutputStream del servidor
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:52 PM
-	 * @param toServer the toServer to set
-	 */
-	private void setToServer(final PipedOutputStream toServer) {
-		// set the value of this.toServer
-		this.toServer = toServer;
 	}
 }

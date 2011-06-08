@@ -9,7 +9,6 @@ package u.UserData;
 
 import sun.security.util.Password;
 import java.io.IOException;
-import com.jcraft.jsch.UserInfo;
 
 /**
  * Datos de Usuario para conexiones
@@ -18,7 +17,7 @@ import com.jcraft.jsch.UserInfo;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Jun 6, 2011 11:54:51 AM
  */
-public final class UserData implements UserInfo {
+public final class UserData {
 	/**
 	 * Contraseña del usuario
 	 * 
@@ -58,16 +57,13 @@ public final class UserData implements UserInfo {
 		this.setPassword(password);
 	}
 
-	public String getPassphrase() {
-		return null;
-	}
-
 	/**
 	 * Retorna la contraseña del usuario
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 6, 2011 12:14:41 PM
+	 * @return Contraseña
 	 */
 	public String getPassword() {
 		// retornamos la contraseña
@@ -85,18 +81,6 @@ public final class UserData implements UserInfo {
 	public String getUsername() {
 		// retornamos el nombre de usuario
 		return this.username;
-	}
-
-	public boolean promptPassphrase(final String data) {
-		return true;
-	}
-
-	public boolean promptPassword(final String data) {
-		return true;
-	}
-
-	public boolean promptYesNo(final String data) {
-		return true;
 	}
 
 	/**
@@ -129,10 +113,6 @@ public final class UserData implements UserInfo {
 	public void setPassword(final String password) {
 		// almacenamos la contraseña
 		this.password = password;
-	}
-
-	public void showMessage(final String text) {
-		System.out.println(text);
 	}
 
 	/**
