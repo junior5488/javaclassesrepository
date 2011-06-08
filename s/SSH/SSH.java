@@ -7,6 +7,8 @@
  */
 package s.SSH;
 
+import m.MissingConnectionDataException.MissingConnectionDataException;
+import c.ConnectionData.ConnectionData;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.ConnectionInfo;
 import com.trilead.ssh2.Session;
@@ -28,21 +30,47 @@ import javax.security.auth.login.LoginException;
  * @version Jun 6, 2011 11:53:26 AM
  */
 public final class SSH {
-	private Connection		connection;
+	/**
+	 * Conexion con el servidor
+	 * 
+	 * @version Jun 8, 2011 3:45:19 PM
+	 */
+	private Connection				connection;
 
-	private InetAddress		host;
+	/**
+	 * Datos para la conexion
+	 * 
+	 * @version Jun 8, 2011 3:45:37 PM
+	 */
+	private ConnectionData			connectionData	= ConnectionData.getEmpty();
 
-	private StreamGobbler	inputStream;
+	/**
+	 * InputStream para enviar datos al servidor
+	 * 
+	 * @version Jun 8, 2011 3:47:32 PM
+	 */
+	private StreamGobbler			inputStream;
 
-	private BufferedReader	outputStream;
+	/**
+	 * OutputStream para recibir los datos del servidor
+	 * 
+	 * @version Jun 8, 2011 3:47:34 PM
+	 */
+	private BufferedReader			outputStream;
 
-	private String				password;
+	/**
+	 * Session de comunicacion con el servidor
+	 * 
+	 * @version Jun 8, 2011 3:47:46 PM
+	 */
+	private Session					session;
 
-	private Integer			port	= 22;
-
-	private Session			session;
-
-	private String				username;
+	/**
+	 * Puerto de conexion SSH
+	 * 
+	 * @version Jun 8, 2011 3:39:31 PM
+	 */
+	public static final Integer	Port_SSH			= 22;
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -59,12 +87,23 @@ public final class SSH {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 8, 2011 12:50:56 AM
+	 * @param connectionData Datos de conexion
+	 */
+	public SSH(final ConnectionData connectionData) {
+		// almacenamos los datos de conexion
+		this.setConnectionData(connectionData);
+	}
+
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 12:50:56 AM
 	 * @param host Nombre del host
 	 * @throws UnknownHostException Excepcion si no existe el host
 	 */
 	public SSH(final String host) throws UnknownHostException {
 		// seteamos el host
-		this.setHost(InetAddress.getByName(host));
+		this.setHost(host);
 	}
 
 	/**
@@ -76,8 +115,8 @@ public final class SSH {
 	 * @throws UnknownHostException Excepcion si no existe el host
 	 */
 	public SSH(final String host, final String user) throws UnknownHostException {
-		// seteamos el host
-		this.setHost(InetAddress.getByName(host));
+		// enviamos loa datos
+		this(host);
 		// seteamos el usuario
 		this.setUsername(user);
 	}
@@ -92,10 +131,8 @@ public final class SSH {
 	 * @throws UnknownHostException Excepcion si no existe el host
 	 */
 	public SSH(final String host, final String user, final String pass) throws UnknownHostException {
-		// seteamos el host
-		this.setHost(InetAddress.getByName(host));
-		// seteamos el usuario
-		this.setUsername(user);
+		// enviamos los datos
+		this(host, user);
 		// seteamos la contrasena
 		this.setPassword(pass);
 	}
@@ -111,12 +148,8 @@ public final class SSH {
 	 * @throws UnknownHostException Excepcion si no existe el host
 	 */
 	public SSH(final String host, final String user, final String pass, final Integer port) throws UnknownHostException {
-		// seteamos el host
-		this.setHost(InetAddress.getByName(host));
-		// seteamos el usuario
-		this.setUsername(user);
-		// seteamos la contrasena
-		this.setPassword(pass);
+		// enviamos los datos
+		this(host, user, pass);
 		// seteamos el puerto de conexion
 		this.setPort(port);
 	}
@@ -129,8 +162,11 @@ public final class SSH {
 	 * @version Jun 6, 2011 4:32:43 PM
 	 * @throws IOException Excepcion al conectar al servidor
 	 * @throws LoginException Datos de acceso incorrectos
+	 * @throws MissingConnectionDataException Excepcion si falta algun dato para la conexion
 	 */
-	public void connect() throws IOException, LoginException {
+	public void connect() throws IOException, LoginException, MissingConnectionDataException {
+		// validamos que existan todos los datos para la conexion
+		this.validateConnectionData();
 		// creamos la conexion
 		this.createConnection();
 		// autenticamos
@@ -151,13 +187,26 @@ public final class SSH {
 	 */
 	public Integer disconnect() {
 		// mostramos un log
-		this.log("Disconnecting");
+		this.log("Disconnecting from '" + this.getHost().getHostName() + "'");
 		// cerramos la session
 		this.getSession().close();
 		// cerramos la conexion
 		this.getConnection().close();
 		// retornamos el resultado de la desconexion
 		return this.getSession().getExitStatus();
+	}
+
+	/**
+	 * Retorna los datos para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 2:51:20 PM
+	 * @return Datos de conexion
+	 */
+	public ConnectionData getConnectionData() {
+		// retornamos los datos de la conexion
+		return this.connectionData;
 	}
 
 	/**
@@ -174,6 +223,7 @@ public final class SSH {
 		this.log("Getting server response");
 		// creamos un buffer para la respuesta
 		final StringBuffer response = new StringBuffer();
+		// recorremos hasta finalizar
 		while (true) {
 			// leemos la linea del server
 			final String line = this.getOutputStream().readLine();
@@ -182,7 +232,7 @@ public final class SSH {
 				// finalizamos
 				break;
 			// mostramos un log
-			this.log("Line reader: " + line);
+			this.log("Read line '" + line + "'");
 			// agregamos la linea
 			response.append(line + "\n");
 		}
@@ -227,16 +277,30 @@ public final class SSH {
 	}
 
 	/**
+	 * Almacena los datos para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 2:50:45 PM
+	 * @param connectionData Datos de conexion
+	 */
+	public void setConnectionData(final ConnectionData connectionData) {
+		// almacenamos los parametros de conexion
+		this.connectionData = connectionData;
+	}
+
+	/**
 	 * Almacena el hostname
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 8, 2011 12:35:54 AM
 	 * @param host IP o nombre del Host
+	 * @throws UnknownHostException Excepcion si no existe el host
 	 */
-	public void setHost(final InetAddress host) {
+	public void setHost(final String host) throws UnknownHostException {
 		// almacenamos el host
-		this.host = host;
+		this.getConnectionData().setHostname(host);
 	}
 
 	/**
@@ -248,8 +312,8 @@ public final class SSH {
 	 * @param password the password to set
 	 */
 	public void setPassword(final String password) {
-		// set the value of this.password
-		this.password = password;
+		// almacenamos la contraseña para la conexion
+		this.getConnectionData().setPassword(password);
 	}
 
 	/**
@@ -261,8 +325,8 @@ public final class SSH {
 	 * @param port the port to set
 	 */
 	public void setPort(final Integer port) {
-		// set the value of this.port
-		this.port = port;
+		// almacenamos el puerto para la conexion
+		this.getConnectionData().setPort(port);
 	}
 
 	/**
@@ -274,8 +338,8 @@ public final class SSH {
 	 * @param username the username to set
 	 */
 	public void setUsername(final String username) {
-		// set the value of this.username
-		this.username = username;
+		// almacenamos el usuario para la conexion
+		this.getConnectionData().setUsername(username);
 	}
 
 	/**
@@ -289,7 +353,7 @@ public final class SSH {
 	 */
 	private void autenticate() throws LoginException, IOException {
 		// mostramos un log
-		this.log("Authenticating with username " + this.getUsername());
+		this.log("Authenticating with username '" + this.getUsername() + "'");
 		// intentamos autenticar el usuario
 		if (!this.getConnection().authenticateWithPassword(this.getUsername(), this.getPassword()))
 			// salimos con una excepcion
@@ -323,7 +387,7 @@ public final class SSH {
 	 */
 	private ConnectionInfo createConnection() throws IOException {
 		// mostramos un log
-		this.log("Creating connection to " + this.getHost().getHostName() + ":" + this.getPort());
+		this.log("Creating connection to '" + this.getHost().getHostName() + ":" + this.getPort() + "'");
 		// creamos la conexion
 		this.setConnection(new Connection(this.getHost().getHostAddress(), this.getPort()));
 		// conectamos
@@ -367,7 +431,7 @@ public final class SSH {
 	 */
 	private InetAddress getHost() {
 		// retornamos el host
-		return this.host;
+		return this.getConnectionData().getHostname();
 	}
 
 	/**
@@ -405,8 +469,8 @@ public final class SSH {
 	 * @return The password
 	 */
 	private String getPassword() {
-		// return the value of password
-		return this.password;
+		// retornamos la contraseña de la conexion
+		return this.getConnectionData().getPassword();
 	}
 
 	/**
@@ -418,8 +482,8 @@ public final class SSH {
 	 * @return The port
 	 */
 	private Integer getPort() {
-		// return the value of port
-		return this.port;
+		// retornamos el puerto de la conexion
+		return this.getConnectionData().getPort();
 	}
 
 	/**
@@ -431,7 +495,7 @@ public final class SSH {
 	 * @return The session
 	 */
 	private Session getSession() {
-		// return the value of session
+		// retornamos la session
 		return this.session;
 	}
 
@@ -444,13 +508,21 @@ public final class SSH {
 	 * @return The username
 	 */
 	private String getUsername() {
-		// return the value of username
-		return this.username;
+		// retornamos el usuario para la conexion
+		return this.getConnectionData().getUsername();
 	}
 
+	/**
+	 * Genera un log en consola
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 3:06:36 PM
+	 * @param msg Mensaje a mostrar
+	 */
 	private void log(final String msg) {
 		// mostramos el mensaje en consola
-		System.out.println("[" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + "] " + msg);
+		System.out.println("[" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + "] " + msg);
 	}
 
 	/**
@@ -503,5 +575,43 @@ public final class SSH {
 	private void setSession(final Session session) {
 		// set the value of this.session
 		this.session = session;
+	}
+
+	/**
+	 * Genera una excepcion si el parametro recibido es nulo
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 3:18:33 PM
+	 * @param instance Valor a verificar
+	 * @param message Mensaje a mostrar si el valor es nulo
+	 * @throws MissingConnectionDataException Excepcion si el valor es nulo
+	 */
+	private void throwIfNull(final Object instance, final String message) throws MissingConnectionDataException {
+		// verificamos si tiene valor
+		if (instance == null)
+			// salimos con una excepcion
+			throw new MissingConnectionDataException(message);
+	}
+
+	/**
+	 * Valida que existan todos los datos para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 3:10:39 PM
+	 * @throws MissingConnectionDataException Excepcion si falta algun dato
+	 */
+	private void validateConnectionData() throws MissingConnectionDataException {
+		// verificamos si tenemos el host
+		this.throwIfNull(this.getHost(), "No se especifico el host para la conexion");
+		// verificamos si tenemos el usuario
+		this.throwIfNull(this.getUsername(), "No se especifico el usuario para la conexion");
+		// verificamos si tenemos la contraseña
+		this.throwIfNull(this.getPassword(), "No se especifico la contraseña del usuario");
+		// verificamos si el puerto es nulo
+		if (this.getPort() == null)
+			// seteamos el puerto por defecto
+			this.setPort(SSH.Port_SSH);
 	}
 }

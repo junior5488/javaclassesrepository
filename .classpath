@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="a/|b/|c/|e/|g/|h/|i/|j/|k/|n/|o/|p/|q/|r/|v/|w/|x/|y/|z/" kind="src" path=""/>
+	<classpathentry excluding="a/|b/|e/|g/|h/|i/|j/|k/|n/|o/|p/|q/|r/|u/|v/|w/|x/|y/|z/" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Orion SSH Library"/>
