@@ -373,7 +373,7 @@ public final class SSH {
 		// creamos la entreda
 		this.setInputStream(new StreamGobbler(this.getSession().getStdout()));
 		// creamos la salida
-		this.setOuputStream(new BufferedReader(new InputStreamReader(this.getInputStream())));
+		this.setOutputStream(new BufferedReader(new InputStreamReader(this.getInputStream())));
 	}
 
 	/**
@@ -559,7 +559,7 @@ public final class SSH {
 	 * @version Jun 8, 2011 6:18:08 AM
 	 * @param outputStream Stream de salida
 	 */
-	private void setOuputStream(final BufferedReader outputStream) {
+	private void setOutputStream(final BufferedReader outputStream) {
 		// almacenamos el stream de salida
 		this.outputStream = outputStream;
 	}
