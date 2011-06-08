@@ -34,13 +34,11 @@ public final class SSH {
 
 	private StreamGobbler	inputStream;
 
-	private String				lastCommand	= "";
-
 	private BufferedReader	outputStream;
 
 	private String				password;
 
-	private Integer			port			= 22;
+	private Integer			port	= 22;
 
 	private Session			session;
 
@@ -163,19 +161,6 @@ public final class SSH {
 	}
 
 	/**
-	 * Retorna el ultimo comando ejecutado
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:42 PM
-	 * @return The lastCommand
-	 */
-	public String getLastCommand() {
-		// return the value of lastCommand
-		return this.lastCommand;
-	}
-
-	/**
 	 * Retorna la respuesta recibida del servidor
 	 * 
 	 * @author Hermann D. Schimpf
@@ -185,6 +170,8 @@ public final class SSH {
 	 * @throws IOException Excepcion al leer los datos del server
 	 */
 	public String getServerResponse() throws IOException {
+		// mostramos un log
+		this.log("Getting server response");
 		// creamos un buffer para la respuesta
 		final StringBuffer response = new StringBuffer();
 		while (true) {
@@ -194,6 +181,8 @@ public final class SSH {
 			if (line == null)
 				// finalizamos
 				break;
+			// mostramos un log
+			this.log("Line reader: " + line);
 			// agregamos la linea
 			response.append(line + "\n");
 		}
@@ -232,11 +221,9 @@ public final class SSH {
 	 */
 	public void send(final String command) throws IOException {
 		// mostramos un log
-		this.log("Executing " + command);
+		this.log("Executing '" + command + "'");
 		// ejecutamos el comando
 		this.getSession().execCommand(command);
-		// almacenamos el ultimo comando
-		this.setLastCommand(command);
 	}
 
 	/**
@@ -490,19 +477,6 @@ public final class SSH {
 	private void setInputStream(final StreamGobbler inputStream) {
 		// almacenamos el stream de entrada
 		this.inputStream = inputStream;
-	}
-
-	/**
-	 * Almacena el ultimo comando ejecutado
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:23:42 PM
-	 * @param lastCommand the lastCommand to set
-	 */
-	private void setLastCommand(final String lastCommand) {
-		// set the value of this.lastCommand
-		this.lastCommand = lastCommand;
 	}
 
 	/**
