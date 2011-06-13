@@ -9,13 +9,14 @@ package s.SSH;
 
 import m.MissingConnectionDataException.MissingConnectionDataException;
 import c.ConnectionData.ConnectionData;
+import com.trilead.ssh2.ChannelCondition;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.ConnectionInfo;
 import com.trilead.ssh2.Session;
 import com.trilead.ssh2.StreamGobbler;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -45,18 +46,25 @@ public final class SSH {
 	private ConnectionData			connectionData	= ConnectionData.getEmpty();
 
 	/**
-	 * InputStream para enviar datos al servidor
+	 * InputStream para recivir datos al servidor (errores)
 	 * 
 	 * @version Jun 8, 2011 3:47:32 PM
 	 */
-	private StreamGobbler			inputStream;
+	private InputStream				errStream;
 
 	/**
-	 * OutputStream para recibir los datos del servidor
+	 * InputStream para recivir datos al servidor
+	 * 
+	 * @version Jun 8, 2011 3:47:32 PM
+	 */
+	private InputStream				inputStream;
+
+	/**
+	 * OutputStream para enviar los datos del servidor
 	 * 
 	 * @version Jun 8, 2011 3:47:34 PM
 	 */
-	private BufferedReader			outputStream;
+	private OutputStream				outputStream;
 
 	/**
 	 * Session de comunicacion con el servidor
@@ -197,6 +205,39 @@ public final class SSH {
 	}
 
 	/**
+	 * Envia un comando al servidor
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 6, 2011 4:30:20 PM
+	 * @param command Comando a ejecutar
+	 * @throws IOException Excepcion al enviar el comando al servidor
+	 */
+	public void exec(final String command) throws IOException {
+		// mostramos un log
+		this.log("Executing '" + command + "'");
+		// ejecutamos el comando
+		this.getSession().execCommand(command);
+	}
+
+	/**
+	 * Envia un comando al servidor y espera resultados
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 6, 2011 4:30:20 PM
+	 * @param command Comando a ejecutar
+	 * @param timeout Tiempo de espera para los resultados
+	 * @throws IOException Excepcion al enviar el comando al servidor
+	 */
+	public void exec(final String command, final int timeout) throws IOException {
+		// ejecutamos el comando
+		this.exec(command);
+		// esperamos resultados
+		this.waitForData(timeout);
+	}
+
+	/**
 	 * Retorna los datos para la conexion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -221,20 +262,26 @@ public final class SSH {
 	public String getServerResponse() throws IOException {
 		// mostramos un log
 		this.log("Getting server response");
+		// esperamos que existan datos para leer
+		this.getSession().waitForCondition(ChannelCondition.STDOUT_DATA, 5000);
 		// creamos un buffer para la respuesta
 		final StringBuffer response = new StringBuffer();
+		// obtenemos el input del server
+		final byte[] buff = new byte[8192];
 		// recorremos hasta finalizar
 		while (true) {
 			// leemos la linea del server
-			final String line = this.getOutputStream().readLine();
+			int size = this.getInputStream().read(buff);
+			// verificamos si no hay datos
+			if (size == -1)
+				// leemos la entrada de errores
+				size = this.getErrStream().read(buff);
 			// verificamos si es el final
-			if (line == null)
+			if (size == -1)
 				// finalizamos
 				break;
-			// mostramos un log
-			this.log("Read line '" + line + "'");
-			// agregamos la linea
-			response.append(line + "\n");
+			// agregamos el caracter al string
+			response.append(new String(buff));
 		}
 		// retornamos la respuesta
 		return response.toString();
@@ -261,19 +308,23 @@ public final class SSH {
 	}
 
 	/**
-	 * Envia un comando al servidor
+	 * Envia datos al server
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 6, 2011 4:30:20 PM
-	 * @param command Comando a ejecutar
-	 * @throws IOException Excepcion al enviar el comando al servidor
+	 * @version Jun 13, 2011 11:24:51 AM
+	 * @param data Datos a enviar
+	 * @throws IOException Excepcion al enviar los datos
 	 */
-	public void send(final String command) throws IOException {
-		// mostramos un log
-		this.log("Executing '" + command + "'");
-		// ejecutamos el comando
-		this.getSession().execCommand(command);
+	public void sendData(final String data) throws IOException {
+		// enviamos datos
+		this.getOutputStream().write(data.getBytes());
+		this.getOutputStream().write(new String("\n").getBytes());
+		this.getOutputStream().flush();
+		try {
+			// esperamos a que los datos se envien
+			Thread.sleep(100);
+		} catch (final InterruptedException e) {}
 	}
 
 	/**
@@ -306,7 +357,7 @@ public final class SSH {
 	/**
 	 * Almacena el passworn para la conexion
 	 * 
-	 * @author Hermann D. Schimpf
+	 * @author Hermann D. Schimpfsend
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 8, 2011 12:40:37 AM
 	 * @param password the password to set
@@ -343,6 +394,19 @@ public final class SSH {
 	}
 
 	/**
+	 * Espera a que lleguen datos del server
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 13, 2011 11:27:04 AM
+	 * @param timeout Tiempo de espera
+	 */
+	public void waitForData(final int timeout) {
+		// esperamos que lleguen datos
+		this.getSession().waitForCondition(ChannelCondition.STDOUT_DATA, timeout);
+	}
+
+	/**
 	 * Autentica el usuario y contraseña al servidor
 	 * 
 	 * @author Hermann D. Schimpf
@@ -370,10 +434,12 @@ public final class SSH {
 	private void connectStreams() {
 		// mostramos un log
 		this.log("Connecting input and output");
-		// creamos la entreda
+		// creamos la entrada
 		this.setInputStream(new StreamGobbler(this.getSession().getStdout()));
+		// creamos la entrada de errores
+		this.setErrStream(new StreamGobbler(this.getSession().getStderr()));
 		// creamos la salida
-		this.setOutputStream(new BufferedReader(new InputStreamReader(this.getInputStream())));
+		this.setOutputStream(this.getSession().getStdin());
 	}
 
 	/**
@@ -422,6 +488,19 @@ public final class SSH {
 	}
 
 	/**
+	 * Retorna el stream de entrada de errores
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:11:35 AM
+	 * @return Stream de entrada de errores
+	 */
+	private InputStream getErrStream() {
+		// retornamos el stream de entrada de errores
+		return this.errStream;
+	}
+
+	/**
 	 * Retorna el host para la conexion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -442,7 +521,7 @@ public final class SSH {
 	 * @version Jun 8, 2011 6:11:35 AM
 	 * @return Stream de entrada
 	 */
-	private StreamGobbler getInputStream() {
+	private InputStream getInputStream() {
 		// retornamos el stream de entrada
 		return this.inputStream;
 	}
@@ -455,7 +534,7 @@ public final class SSH {
 	 * @version Jun 8, 2011 6:18:08 AM
 	 * @return Stream de salida
 	 */
-	private BufferedReader getOutputStream() {
+	private OutputStream getOutputStream() {
 		// retornamos el stream de salida
 		return this.outputStream;
 	}
@@ -539,14 +618,27 @@ public final class SSH {
 	}
 
 	/**
+	 * Almacena el stream de entrada de errores
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:11:35 AM
+	 * @param errStream Stream de entrada de errores
+	 */
+	private void setErrStream(final InputStream errStream) {
+		// almacenamos el stream de entrada de errores
+		this.errStream = errStream;
+	}
+
+	/**
 	 * Almacena el stream de entrada
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 8, 2011 6:11:35 AM
-	 * @param outputStream Stream de entrada
+	 * @param inputStream Stream de entrada
 	 */
-	private void setInputStream(final StreamGobbler inputStream) {
+	private void setInputStream(final InputStream inputStream) {
 		// almacenamos el stream de entrada
 		this.inputStream = inputStream;
 	}
@@ -559,7 +651,7 @@ public final class SSH {
 	 * @version Jun 8, 2011 6:18:08 AM
 	 * @param outputStream Stream de salida
 	 */
-	private void setOutputStream(final BufferedReader outputStream) {
+	private void setOutputStream(final OutputStream outputStream) {
 		// almacenamos el stream de salida
 		this.outputStream = outputStream;
 	}
