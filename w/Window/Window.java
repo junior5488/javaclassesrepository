@@ -12,7 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -37,7 +36,7 @@ import javax.swing.border.EtchedBorder;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Jun 13, 2011 4:01:40 PM
  */
-public final class Window /* extends JFrame */{
+public final class Window {
 	/**
 	 * Panel para los botones de la ventana
 	 * 
@@ -88,9 +87,21 @@ public final class Window /* extends JFrame */{
 	 */
 	public Window(final GraphicsConfiguration gc) {
 		// creamos la ventana
+		this(gc, true);
+	}
+
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 13, 2011 4:01:40 PM
+	 * @param gc GraphicsConfiguration
+	 * @param decorated True para utilizar la decoracion local
+	 */
+	public Window(final GraphicsConfiguration gc, final boolean decorated) {
+		// creamos la ventana
 		this.setWindow(new JFrame(gc));
 		// seteamos las propiedades de la ventana
-		this.initWindow();
+		this.initWindow(decorated);
 	}
 
 	/**
@@ -98,15 +109,26 @@ public final class Window /* extends JFrame */{
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 13, 2011 4:01:40 PM
 	 * @param title Titulo de la ventana
-	 * @throws HeadlessException if GraphicsEnviroment.isHeadless() returns true
 	 */
-	public Window(final String title) throws HeadlessException {
+	public Window(final String title) {
+		// creamos la ventana
+		this(title, true);
+	}
+
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 13, 2011 4:01:40 PM
+	 * @param title Titulo de la ventana
+	 * @param decorated True para utilizar la decoracion local
+	 */
+	public Window(final String title, final boolean decorated) {
 		// creamos la ventana
 		this.setWindow(new JFrame(title));
 		// almacenamos el titulo
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
-		this.initWindow();
+		this.initWindow(decorated);
 	}
 
 	/**
@@ -117,12 +139,25 @@ public final class Window /* extends JFrame */{
 	 * @param gc GraphicsConfiguration
 	 */
 	public Window(final String title, final GraphicsConfiguration gc) {
+		// creamos la ventana
+		this(title, gc, true);
+	}
+
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 13, 2011 4:01:40 PM
+	 * @param title Titulo de la ventana
+	 * @param gc GraphicsConfiguration
+	 * @param decorated True para utilizar la decoracion local
+	 */
+	public Window(final String title, final GraphicsConfiguration gc, final boolean decorated) {
 		// enviamos el titulo y las configuraciones
 		this.setWindow(new JFrame(title, gc));
 		// almacenamos el titulo
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
-		this.initWindow();
+		this.initWindow(decorated);
 	}
 
 	/**
@@ -346,17 +381,23 @@ public final class Window /* extends JFrame */{
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 13, 2011 4:01:40 PM
+	 * @param decorated True para utilizar la decoracion local
 	 */
-	private void initWindow() {
+	private void initWindow(final boolean decorated) {
 		// deshabilitamos los bordes y botones
-		this.getWindow().setUndecorated(true);
+		this.getWindow().setUndecorated(decorated);
 		this.getWindow().setResizable(false);
 		// creamos el border layount para acomodar las partes
 		this.getWindow().getContentPane().setLayout(new BorderLayout());
-		// creamos el borde de la ventana
-		this.makeBorders();
-		// armamos las secciones de la ventana
-		this.makeSections();
+		// verificamos si utilizamos las decoraciones locales
+		if (decorated) {
+			// creamos el borde de la ventana
+			this.makeBorders();
+			// armamos las secciones de la ventana
+			this.makeSections();
+		} else
+			// seteamos el main de la ventana
+			this.getWindow().getContentPane().add(this.getContentPanel());
 		// agregamos los listeners
 		this.addListeners();
 		// mostramos la ventana
