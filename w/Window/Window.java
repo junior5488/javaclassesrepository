@@ -42,49 +42,49 @@ public final class Window {
 	 * 
 	 * @version Jun 14, 2011 11:42:15 AM
 	 */
-	private final JPanel					buttonsPanel	= new JPanel(new BorderLayout());
+	private final JPanel				buttonsPanel	= new JPanel(new BorderLayout());
 
 	/**
 	 * Panel para el contenido de la ventana
 	 * 
 	 * @version Jun 14, 2011 11:04:52 AM
 	 */
-	private final JPanel					contentPanel	= new JPanel(new BorderLayout());
+	private final JPanel				contentPanel	= new JPanel(new BorderLayout());
 
 	/**
 	 * Panel principal de la ventana
 	 * 
 	 * @version Jun 14, 2011 9:39:47 AM
 	 */
-	private final JPanel					mainPanel		= new JPanel(new BorderLayout());
+	private final JPanel				mainPanel		= new JPanel(new BorderLayout());
 
 	/**
 	 * Barra de estado de la ventana
 	 * 
 	 * @version Jun 14, 2011 10:03:19 AM
 	 */
-	private final JLabel					statusBar		= new JLabel();
+	private final JLabel				statusBar		= new JLabel();
 
 	/**
 	 * Titulo de la ventana
 	 * 
 	 * @version Jun 13, 2011 5:27:44 PM
 	 */
-	private final JLabel					title				= new JLabel("Window", SwingConstants.LEFT);
+	private final JLabel				title				= new JLabel("Window", SwingConstants.LEFT);
 
 	/**
 	 * Ventana generada
 	 * 
 	 * @version Jun 14, 2011 12:18:18 PM
 	 */
-	private JFrame							window;
+	private JFrame						window;
 
 	/**
 	 * Tamaño por defecto para la ventana
 	 * 
 	 * @version Jun 16, 2011 3:04:40 PM
 	 */
-	private static final Dimension	DEFAULT_SIZE	= new Dimension(600, 400);
+	public static final Dimension	DEFAULT_SIZE	= new Dimension(600, 400);
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -165,6 +165,23 @@ public final class Window {
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
 		this.initWindow(decorated);
+	}
+
+	/**
+	 * Centra la ventana en la pantalla
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 13, 2011 4:53:56 PM
+	 */
+	public void centerOnScreen() {
+		// obtenemos el tamaño de la pantalla
+		final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		// obtenemos el tamaño de la ventana
+		final int x = (dim.width - this.getWindow().getSize().width) / 2;
+		final int y = (dim.height - this.getWindow().getSize().height) / 2;
+		// centramos la ventana
+		this.getWindow().setLocation(x, y);
 	}
 
 	/**
@@ -291,23 +308,6 @@ public final class Window {
 		this.getWindow().setTitle(title);
 		// modificamos el titulo local
 		this.getTitleBar().setText(title);
-	}
-
-	/**
-	 * Centra la ventana en la pantalla
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 13, 2011 4:53:56 PM
-	 */
-	protected void centerScreen() {
-		// obtenemos el tamaño de la pantalla
-		final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		// obtenemos el tamaño de la ventana
-		final int x = (dim.width - this.getWindow().getSize().width) / 2;
-		final int y = (dim.height - this.getWindow().getSize().height) / 2;
-		// centramos la ventana
-		this.getWindow().setLocation(x, y);
 	}
 
 	/**

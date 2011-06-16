@@ -5,7 +5,7 @@
 		<!-- Directorios de compilacion -->
 		<property name="dir.src" value="w/Window"/>
 		<property name="dir.tmp" value="lib/tmp"/>
-		<property name="dir.jar" value="lib/s"/>
+		<property name="dir.jar" value="lib/w"/>
 		<!-- Valores de informacion del programa -->
 		<buildnumber file="w/Window/build.number"/>
 		<property name="jar.start" value="Window"/>
