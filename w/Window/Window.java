@@ -243,6 +243,35 @@ public final class Window {
 	}
 
 	/**
+	 * Setea un mensaje en la barra de estado
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 16, 2011 2:59:56 PM
+	 * @param text Texto para la barra de estado
+	 */
+	public void setStatusText(final String text) {
+		// seteamos el mensaje de la barra de estado
+		this.setStatusText(text, false);
+	}
+
+	/**
+	 * Setea un mensaje en la barra de estado
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 16, 2011 3:00:38 PM
+	 * @param text Texto para la barra de estado
+	 * @param isError True para mostrar el texto como error
+	 */
+	public void setStatusText(final String text, final boolean isError) {
+		// seteamos el texto en la barra
+		this.getStatusBar().setText(text);
+		// seteamos el color del texto (normal, error)
+		this.getStatusBar().setForeground(isError ? Color.RED : Color.BLACK);
+	}
+
+	/**
 	 * Setea el titulo para la ventana
 	 * 
 	 * @author Hermann D. Schimpf
@@ -395,9 +424,13 @@ public final class Window {
 			this.makeBorders();
 			// armamos las secciones de la ventana
 			this.makeSections();
-		} else
+		} else {
 			// seteamos el main de la ventana
 			this.getWindow().getContentPane().add(this.getContentPanel());
+			// seteamos el color de fondo
+			this.getContentPanel().setBackground(new Color(210, 210, 210));
+			this.makeStatusBar(this.getContentPanel());
+		}
 		// agregamos los listeners
 		this.addListeners();
 		// mostramos la ventana
@@ -435,7 +468,7 @@ public final class Window {
 		// agregamos el titulo de la ventana
 		this.makeTitle();
 		// agregamos la barra de estado
-		this.makeStatusBar();
+		this.makeStatusBar(this.getMainPanel());
 	}
 
 	/**
@@ -444,10 +477,11 @@ public final class Window {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 14, 2011 12:02:40 PM
+	 * @param statusBarPanel Panel donde se agregara la barra de estabo
 	 */
-	private void makeStatusBar() {
+	private void makeStatusBar(final JPanel statusBarPanel) {
 		// agregamos la barra de estado a la ventana
-		this.getMainPanel().add(this.getStatusBar(), BorderLayout.SOUTH);
+		statusBarPanel.add(this.getStatusBar(), BorderLayout.SOUTH);
 		// seteamos el borde de la barra de estado
 		this.getStatusBar().setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		// seteamos el tamaño de la barra de estado
