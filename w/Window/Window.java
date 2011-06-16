@@ -42,42 +42,49 @@ public final class Window {
 	 * 
 	 * @version Jun 14, 2011 11:42:15 AM
 	 */
-	private final JPanel	buttonsPanel	= new JPanel(new BorderLayout());
+	private final JPanel					buttonsPanel	= new JPanel(new BorderLayout());
 
 	/**
 	 * Panel para el contenido de la ventana
 	 * 
 	 * @version Jun 14, 2011 11:04:52 AM
 	 */
-	private final JPanel	contentPanel	= new JPanel(new BorderLayout());
+	private final JPanel					contentPanel	= new JPanel(new BorderLayout());
 
 	/**
 	 * Panel principal de la ventana
 	 * 
 	 * @version Jun 14, 2011 9:39:47 AM
 	 */
-	private final JPanel	mainPanel		= new JPanel(new BorderLayout());
+	private final JPanel					mainPanel		= new JPanel(new BorderLayout());
 
 	/**
 	 * Barra de estado de la ventana
 	 * 
 	 * @version Jun 14, 2011 10:03:19 AM
 	 */
-	private final JLabel	statusBar		= new JLabel();
+	private final JLabel					statusBar		= new JLabel();
 
 	/**
 	 * Titulo de la ventana
 	 * 
 	 * @version Jun 13, 2011 5:27:44 PM
 	 */
-	private final JLabel	title				= new JLabel("", SwingConstants.LEFT);
+	private final JLabel					title				= new JLabel("Window", SwingConstants.LEFT);
 
 	/**
 	 * Ventana generada
 	 * 
 	 * @version Jun 14, 2011 12:18:18 PM
 	 */
-	private JFrame			window;
+	private JFrame							window;
+
+	/**
+	 * Tamaño por defecto para la ventana
+	 * 
+	 * @version Jun 16, 2011 3:04:40 PM
+	 */
+	private static final Dimension	DEFAULT_SIZE	= new Dimension(600, 400);
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -433,6 +440,10 @@ public final class Window {
 		}
 		// agregamos los listeners
 		this.addListeners();
+		// verificamos si tiene un tamaño
+		if (this.getWindow().getSize().width == 0)
+			// seteamos el tamaño por defecto
+			this.getWindow().setSize(Window.DEFAULT_SIZE);
 		// mostramos la ventana
 		this.getWindow().setVisible(true);
 	}
