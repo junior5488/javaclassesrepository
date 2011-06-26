@@ -311,6 +311,19 @@ public final class Window {
 	}
 
 	/**
+	 * Asigna el estado de visibilidad para la ventana
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 26, 2011 2:53:12 PM
+	 * @param visible True para mostrar la ventana
+	 */
+	public void setVisible(final boolean visible) {
+		// seteamos el estado de visibilidad de la ventana
+		this.getWindow().setVisible(visible);
+	}
+
+	/**
 	 * Redondea las esquinas de la ventana
 	 * 
 	 * @author Hermann D. Schimpf
@@ -444,8 +457,6 @@ public final class Window {
 		if (this.getWindow().getSize().width == 0)
 			// seteamos el tamaño por defecto
 			this.getWindow().setSize(Window.DEFAULT_SIZE);
-		// mostramos la ventana
-		this.getWindow().setVisible(true);
 	}
 
 	/**
