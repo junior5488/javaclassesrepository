@@ -7,7 +7,6 @@
  */
 package w.Window;
 
-import com.sun.awt.AWTUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,11 +14,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.RoundRectangle2D;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -329,11 +325,10 @@ public final class Window {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 13, 2011 4:52:53 PM
+	 * @deprecated Eliminada la utilizacion de la clase AWTUtilities
 	 */
-	protected void roundCorners() {
-		// redondeamos las esquinas de la ventana
-		AWTUtilities.setWindowShape(this.getWindow(), new RoundRectangle2D.Float(0, 0, this.getWindow().getWidth(), this.getWindow().getHeight(), 15, 15));
-	}
+	@Deprecated
+	protected void roundCorners() {}
 
 	/**
 	 * Setea los listeners de la ventana
@@ -343,14 +338,6 @@ public final class Window {
 	 * @version Jun 13, 2011 4:57:50 PM
 	 */
 	private void addListeners() {
-		// agregamos el capturador al modificar el tamaño de la ventana
-		this.getWindow().addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(final ComponentEvent evt) {
-				// asignamos los bordes redondeados
-				Window.this.roundCorners();
-			}
-		});
 		// agregamos el capturador al cerrar la ventana
 		this.getWindow().addWindowListener(new WindowAdapter() {
 			@Override

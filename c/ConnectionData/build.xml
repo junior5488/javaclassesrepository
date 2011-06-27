@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="SSH" default="make" basedir=".">
+<project name="ConnectionData" default="make" basedir=".">
 	<target name="init">
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
-		<property name="dir.src" value="s/SSH"/>
+		<property name="dir.src" value="c/ConnectionData"/>
 		<property name="dir.tmp" value="lib/tmp"/>
-		<property name="dir.jar" value="lib/s"/>
+		<property name="dir.jar" value="lib/c"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="s/SSH/build.number"/>
-		<property name="jar.start" value="SSH"/>
+		<buildnumber file="c/ConnectionData/build.number"/>
+		<property name="jar.start" value="ConnectionData"/>
 		<property name="jar.version" value="b0.1"/>
-		<property name="jar.mainclass" value="s.SSH.SSH"/>
+		<property name="jar.mainclass" value="c.ConnectionData.ConnectionData"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
 		<property name="compile.debug" value="true"/>
-		<!-- Librerias para la compilacion -->
-		<path id="compile.classpath">
-			<fileset dir="/archivos/Software/JAVA">
-				<include name="orion-ssh2-214.jar"/>
-			</fileset>
-		</path>
    </target>
 	
    <target name="clean" depends="init">
@@ -39,15 +33,7 @@
    
 	<target name="compile" depends="prepare">
 		<echo message="Compilando fuentes del proyecto"/>
-		<javac srcdir="m/MissingConnectionDataException" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
-			<classpath refid="compile.classpath"/>
-		</javac>
-		<javac srcdir="c/ConnectionData" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
-			<classpath refid="compile.classpath"/>
-		</javac>
-		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
-			<classpath refid="compile.classpath"/>
-		</javac>
+		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false"/>
    </target>
    
 	<target name="make" depends="compile">

@@ -15,7 +15,6 @@
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
 		<property name="compile.debug" value="true"/>
-		<!-- Librerias para la compilacion -->
    </target>
 	
    <target name="clean" depends="init">
@@ -50,7 +49,6 @@
 		<echo message="Creando fichero ${jar.file}"/>
    	<jar destfile="${jar.file}" manifest="lib/MANIFEST.MF">
 			<fileset dir="${dir.tmp}" includes="**/*.class"/>
-			<zipgroupfileset dir="${dir.tmp}" includes="**/*.jar"/>
 		</jar>
 		
 		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.name}"/>
