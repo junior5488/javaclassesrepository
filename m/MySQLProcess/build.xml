@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MySQLProcess" default="make" basedir=".">
+	<target name="init">
+		<echo message="Seteando variables de compilacion"/>
+		<!-- Directorios de compilacion -->
+		<property name="dir.src" value="m/MySQLProcess"/>
+		<property name="dir.tmp" value="lib/tmp"/>
+		<property name="dir.jar" value="lib/m"/>
+		<!-- Valores de informacion del programa -->
+		<buildnumber file="m/MySQLProcess/build.number"/>
+		<property name="jar.start" value="MySQLProcess"/>
+		<property name="jar.version" value="b0.1"/>
+		<property name="jar.mainclass" value="m.MySQLProcess.MySQLProcess"/>
+		<property name="jar.author" value="Hermann D. Schimpf"/>
+		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
+		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
+		<property name="compile.debug" value="true"/>
+		<!-- Librerias para la compilacion -->
+		<path id="compile.classpath">
+			<fileset dir="/archivos/Software/JAVA/mysql-connector-java-5.1.13">
+				<include name="mysql-connector-java-5.1.13-bin.jar"/>
+			</fileset>
+		</path>
+   </target>
+	
+   <target name="clean" depends="init">
+		<echo message="Eliminando fichero compilado anteriormente"/>
+   	<delete file="${dir.jar}/${jar.file}"/>
+		<echo message="Eliminando directorio temporal"/>
+   	<delete dir="${dir.tmp}"/>
+   </target>
+   
+	<target name="prepare" depends="clean">
+		<echo message="Creando directorio temporal"/>
+		<mkdir dir="${dir.tmp}"/>
+		<echo message="Creando directorio para fichero compilado"/>
+		<mkdir dir="${dir.jar}"/>
+   </target>
+   
+	<target name="compile" depends="prepare">
+		<echo message="Compilando fuentes del proyecto"/>
+		<javac srcdir="m/MissingConnectionDataException" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="d/DriverLoader" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="d/DBConnection" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="s/SQLLink" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="s/SQLBasics" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="s/SQLProcess" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+   </target>
+   
+	<target name="make" depends="compile">
+		<echo message="Creando fichero Manifest"/>
+		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
+		<manifest file="lib/MANIFEST.MF">
+			<attribute name="Created-By" value="${jar.author}"/>
+			<attribute name="Main-Class" value="${jar.mainclass}"/>
+			<attribute name="Built-Date" value="${TODAY}"/>
+			<attribute name="Implementation-Version" value="${jar.version}.${build.number}"/>
+		</manifest>
+
+		<echo message="Creando fichero ${jar.file}"/>
+   	<jar destfile="${jar.file}" manifest="lib/MANIFEST.MF">
+			<fileset dir="${dir.tmp}" includes="**/*.class"/>
+		</jar>
+		
+		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.name}"/>
+   	
+		<delete dir="${dir.tmp}"/>
+		<delete file="lib/MANIFEST.MF"/>
+	</target>
+</project>
