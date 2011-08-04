@@ -33,7 +33,7 @@ public final class Compiler {
 	 * @param javaFile Fichero .java a compilar
 	 * @return Fichero compilado, null si no se pudo compilar
 	 */
-	public static File Compile(final File javaFile) {
+	public static File compile(final File javaFile) {
 		// fichero resultante
 		File result = null;
 		// obtenemos el compilador del sistema
