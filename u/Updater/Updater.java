@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -88,7 +90,8 @@ public final class Updater {
 	 * @author Schimpf.NET
 	 * @version Aug 3, 2011 11:28:20 PM
 	 * @param jarFile Fichero JAR a actualizar
-	 * @param newFiles Ficheros para actualizar el JAR <directorio, fichero>
+	 * @param newFiles Ficheros para actualizar el JAR <br/>
+	 *           <code>HashMap&lt;directorio, fichero&gt;</code>
 	 * @return True si se actualizo el JAR
 	 */
 	public static boolean update(final File jarFile, final HashMap<String, File> newFiles) {
@@ -98,6 +101,56 @@ public final class Updater {
 		u.setNewFiles(newFiles);
 		// actualizamos el fichero JAR
 		return u.updateJar();
+	}
+
+	/**
+	 * Agrega el fichero
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Información y Gestión
+	 * @author Schimpf.NET
+	 * @version Aug 10, 2011 3:55:05 PM
+	 * @param newFile Fichero a agregar
+	 * @return True si se agrego el fichero
+	 */
+	private boolean add(final Entry<String, File> newFile) {
+		// fichero a agregar
+		FileInputStream fis = null;
+		try {
+			// obtenemos el fichero a agregar
+			fis = new FileInputStream(newFile.getValue());
+			// creamos una nueva entrada JAR
+			final JarEntry newEntry = new JarEntry(newFile.getValue().getAbsolutePath());
+			// agregamos la entrada
+			this.getNewJar().putNextEntry(newEntry);
+			// bytes leidos
+			int bytesRead;
+			// leemos el nuevo fichero
+			while ((bytesRead = fis.read(this.getBuffer())) != -1)
+				// guardamos el contenido
+				this.getNewJar().write(this.getBuffer(), 0, bytesRead);
+			// eliminamos la entrada de la lista
+			this.getNewFiles().remove(newFile.getKey());
+		} catch (final IOException e) {
+			// mostramos el trace de la excepcion
+			e.printStackTrace();
+			// retornamos false
+			return false;
+		} finally {
+			try {
+				// verificamos si es nulo
+				if (fis != null)
+					// cerramos el fichero
+					fis.close();
+			} catch (final IOException e) {
+				// mostramos el trace de la excepcion
+				e.printStackTrace();
+				// retornamos false
+				return false;
+			}
+		}
+		// retornamos true
+		return true;
 	}
 
 	/**
@@ -313,6 +366,14 @@ public final class Updater {
 					// retornamos false
 					return false;
 		}
+		// obtenemos los elementos restantes a agregar
+		final Iterator<Entry<String, File>> newFiles = this.getNewFiles().entrySet().iterator();
+		// recorremos los elementos
+		while (newFiles.hasNext())
+			// agregamos el fichero
+			if (!this.add(newFiles.next()))
+				// retornamos false
+				return false;
 		// retornamos true
 		return true;
 	}
@@ -428,6 +489,8 @@ public final class Updater {
 			while ((bytesRead = fis.read(this.getBuffer())) != -1)
 				// guardamos el contenido
 				this.getNewJar().write(this.getBuffer(), 0, bytesRead);
+			// eliminamos la entrada de la lista
+			this.getNewFiles().remove(this.getNewFiles().get(entry));
 		} catch (final IOException e) {
 			// mostramos el trace de la excepcion
 			e.printStackTrace();
