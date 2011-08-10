@@ -26,14 +26,7 @@ public final class ThreadsManager<TType extends Thread> {
 	private ThreadsListener				listener;
 
 	/**
-	 * Monitor de los threads
-	 * 
-	 * @version Aug 10, 2011 9:44:22 AM
-	 */
-	private final MainThreadsMonitor	monitor;
-
-	/**
-	 * programa principal a correr
+	 * Lista de threads a monitorear
 	 * 
 	 * @version Aug 2, 2011 4:37:13 PM
 	 */
@@ -69,39 +62,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * @param thread Thread que finalizo
 		 */
 		public <TType extends Thread> void threadFinished(TType thread);
-	}
-
-	/**
-	 * Monitor de los threads locales
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 12:40:31 AM
-	 */
-	private final class MainThreadsMonitor extends Thread {
-		/**
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
-		 * @version Aug 5, 2011 12:40:08 AM
-		 */
-		protected MainThreadsMonitor() {
-			// enviamos el constructor
-			super();
-		}
-
-		@Override
-		public void run() {
-			// verificamos si hay threads vivos
-			while (ThreadsManager.this.hasAlive())
-				try {
-					// esperamos 100 (cien) milisegundos
-					Thread.sleep(100);
-				} catch (final InterruptedException ignored) {}
-			// matamos el programa principal
-			ThreadsManager.this.getListener().allThreadsFinished();
-		}
 	}
 
 	/**
@@ -145,6 +105,10 @@ public final class ThreadsManager<TType extends Thread> {
 			} catch (final InterruptedException ignored) {}
 			// ejecutamos el proceso al finalizar el thread
 			ThreadsManager.this.getListener().threadFinished(this.getThread());
+			// verificamos si ya no hay mas threasd
+			if (!ThreadsManager.this.hasAlive())
+				// ejecutamos el proceso de finalizacion de todos los threads
+				ThreadsManager.this.getListener().allThreadsFinished();
 		}
 
 		/**
@@ -160,17 +124,6 @@ public final class ThreadsManager<TType extends Thread> {
 			// retornamos el thread
 			return this.thread;
 		}
-	}
-
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 12:44:50 AM
-	 */
-	public ThreadsManager() {
-		// creamos el thread monitor
-		this.monitor = new MainThreadsMonitor();
 	}
 
 	/**
@@ -244,15 +197,13 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @author Schimpf.NET
 	 * @version Aug 2, 2011 6:07:43 PM
 	 */
-	public void startAll() {
+	public void startThreads() {
 		// recorremos los threads
 		for (final TType thread: this.getThreads())
 			// verificamos si es un nuevo thread
 			if (thread.getState().equals(Thread.State.NEW))
 				// iniciamos el thread
 				thread.start();
-		// iniciamos el monitor de threads
-		this.getMainMonitor().start();
 	}
 
 	/**
@@ -297,20 +248,6 @@ public final class ThreadsManager<TType extends Thread> {
 				return true;
 		// retornamos false
 		return false;
-	}
-
-	/**
-	 * Retorna el monitor de threads
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 10, 2011 9:44:54 AM
-	 * @return Monitor de threads
-	 */
-	private MainThreadsMonitor getMainMonitor() {
-		// retornamos el monitor
-		return this.monitor;
 	}
 
 	/**
