@@ -7,13 +7,13 @@
  */
 package s.SQLLink;
 
-import m.MissingConnectionDataException.MissingConnectionDataException;
+import org.schimpf.lib.d.DBConnection.DBConnection;
+import org.schimpf.lib.d.DriverLoader.DriverLoader;
+import org.schimpf.lib.m.MissingConnectionDataException.MissingConnectionDataException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import d.DBConnection.DBConnection;
-import d.DriverLoader.DriverLoader;
 
 /**
  * Conexion a servidores SQL

@@ -7,8 +7,8 @@
  */
 package s.SQLProcess;
 
-import s.SQLBasics.SQLBasics;
-import s.SQLLink.SQLLink;
+import org.schimpf.lib.s.SQLBasics.SQLBasics;
+import org.schimpf.lib.s.SQLLink.SQLLink;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

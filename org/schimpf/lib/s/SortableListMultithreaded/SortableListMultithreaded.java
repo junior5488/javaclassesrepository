@@ -6,9 +6,9 @@
  */
 package s.SortableListMultithreaded;
 
-import s.SortableList.SortableList;
+import org.schimpf.lib.l.ListPartitioner.ListPartitioner;
+import org.schimpf.lib.s.SortableList.SortableList;
 import java.util.ArrayList;
-import l.ListPartitioner.ListPartitioner;
 
 /**
  * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion

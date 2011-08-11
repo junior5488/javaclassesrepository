@@ -7,8 +7,8 @@
  */
 package s.SSH;
 
-import m.MissingConnectionDataException.MissingConnectionDataException;
-import c.ConnectionData.ConnectionData;
+import org.schimpf.lib.c.ConnectionData.ConnectionData;
+import org.schimpf.lib.m.MissingConnectionDataException.MissingConnectionDataException;
 import com.trilead.ssh2.ChannelCondition;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.ConnectionInfo;
