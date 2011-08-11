@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Compiler" default="make" basedir=".">
+<project name="org.schimpf.awt" default="make" basedir=".">
 	<target name="init">
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
-		<property name="dir.src" value="c/Compiler"/>
-		<property name="dir.tmp" value="lib/tmp"/>
-		<property name="dir.jar" value="lib/c"/>
+		<property name="dir.src" value="Trunk/org/schimpf/awt"/>
+		<property name="dir.tmp" value="Data/lib/tmp"/>
+		<property name="dir.jar" value="Data/lib"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="c/Compiler/build.number"/>
-		<property name="jar.start" value="Compiler"/>
+		<buildnumber file="Data/builds/awt.number"/>
+		<property name="jar.start" value="schimpf-awt"/>
 		<property name="jar.version" value="b0.1"/>
-		<property name="jar.mainclass" value="c.Compiler.Compiler"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
@@ -41,7 +40,6 @@
 		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
 		<manifest file="lib/MANIFEST.MF">
 			<attribute name="Created-By" value="${jar.author}"/>
-			<attribute name="Main-Class" value="${jar.mainclass}"/>
 			<attribute name="Built-Date" value="${TODAY}"/>
 			<attribute name="Implementation-Version" value="${jar.version}.${build.number}"/>
 		</manifest>
