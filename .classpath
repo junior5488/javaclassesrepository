@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="c/|d/|l/|m/|s/|t/|u/|w/" kind="src" path="org/schimpf/lib"/>
+	<classpathentry kind="src" path="Trunk"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SSH Library"/>
