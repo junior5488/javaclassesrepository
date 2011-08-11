@@ -5,7 +5,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Jun 6, 2011 11:54:51 AM
  */
-package org.schimpf.utils;
+package org.schimpf.net;
 
 import sun.security.util.Password;
 import java.io.IOException;

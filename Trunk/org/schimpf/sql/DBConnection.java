@@ -5,7 +5,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 16, 2011 12:27:11 AM
  */
-package org.schimpf.utils;
+package org.schimpf.sql;
 
 import org.schimpf.utils.exceptions.MissingConnectionDataException;
 
@@ -47,9 +47,9 @@ public interface DBConnection {
 	 * @param host Direccion del Servidor
 	 * @param user Usuario de conexion
 	 * @param pass Contraseña del usuario
-	 * @param db Nombre de la Base de Datos
+	 * @param ddbb Nombre de la Base de Datos
 	 */
-	public void setConnectionData(final String host, final String user, final String pass, final String db);
+	public void setConnectionData(final String host, final String user, final String pass, final String ddbb);
 
 	/**
 	 * Almacena el nombre de la base de datos
@@ -57,9 +57,9 @@ public interface DBConnection {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 5:09:44 PM
-	 * @param db Nombre de la Base de Datos
+	 * @param ddbb Nombre de la Base de Datos
 	 */
-	public void setDB(final String db);
+	public void setDDBB(final String ddbb);
 
 	/**
 	 * Almacena la direccion del servidor a conectar

@@ -7,7 +7,6 @@
  */
 package org.schimpf.net;
 
-import org.schimpf.utils.ConnectionData;
 import org.schimpf.utils.exceptions.MissingConnectionDataException;
 import com.trilead.ssh2.ChannelCondition;
 import com.trilead.ssh2.Connection;

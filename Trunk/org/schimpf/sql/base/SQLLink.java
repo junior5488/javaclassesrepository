@@ -7,8 +7,8 @@
  */
 package org.schimpf.sql.base;
 
-import org.schimpf.utils.DBConnection;
-import org.schimpf.utils.DriverLoader;
+import org.schimpf.sql.DBConnection;
+import org.schimpf.sql.DriverLoader;
 import org.schimpf.utils.exceptions.MissingConnectionDataException;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -35,7 +35,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * 
 	 * @version Apr 15, 2011 5:10:38 PM
 	 */
-	private String			db;
+	private String			ddbb;
 
 	/**
 	 * Servidor para la conexion
@@ -107,20 +107,20 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setConnectionData(final String host, final String user, final String pass, final String db) {
+	public void setConnectionData(final String host, final String user, final String pass, final String ddbb) {
 		// almacenamos los datos de conexion
 		this.setHost(host);
 		this.setUser(user);
 		this.setPass(pass);
-		this.setDB(db);
+		this.setDDBB(ddbb);
 	}
 
 	@Override
-	public void setDB(final String db) {
+	public void setDDBB(final String ddbb) {
 		// verificamos si es null
-		this.throwIfNull(db, "El nombre de la Base de Datos no puede ser nula");
+		this.throwIfNull(ddbb, "El nombre de la Base de Datos no puede ser nula");
 		// almacenamos el nombre de la base de datos
-		this.db = db;
+		this.ddbb = ddbb;
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 */
 	private String getConnectionUrl() {
 		// retornamos el URL de conexion
-		return this.getDriverType() + "://" + this.getHost() + "/" + this.getDB();
+		return this.getDriverType() + "://" + this.getHost() + "/" + this.getDDBB();
 	}
 
 	/**
@@ -207,9 +207,9 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @version Apr 15, 2011 5:18:05 PM
 	 * @return Nombre de la Base de Datos
 	 */
-	private String getDB() {
+	private String getDDBB() {
 		// retornamos el nombre de la base de datos
-		return this.db;
+		return this.ddbb;
 	}
 
 	/**
@@ -319,7 +319,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			// retornamos false
 			return false;
 		// verificamos si hay una base de datos
-		if (this.getDB() == null)
+		if (this.getDDBB() == null)
 			// retornamos false
 			return false;
 		// retornamos true

@@ -5,7 +5,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 4:33:35 PM
  */
-package org.schimpf.utils;
+package org.schimpf.sql;
 
 import java.sql.Driver;
 
