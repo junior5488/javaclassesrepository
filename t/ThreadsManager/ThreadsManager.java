@@ -62,6 +62,18 @@ public final class ThreadsManager<TType extends Thread> {
 		 * @param thread Thread que finalizo
 		 */
 		public <TType extends Thread> void threadFinished(TType thread);
+
+		/**
+		 * Se ejecuta cuando un thread inicia
+		 * 
+		 * @author Hermann D. Schimpf
+		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author Schimpf.NET
+		 * @version Aug 10, 2011 9:31:59 AM
+		 * @param <TType> Clase de Threads
+		 * @param thread Thread que inicio
+		 */
+		public <TType extends Thread> void threadStarted(TType thread);
 	}
 
 	/**
@@ -97,12 +109,12 @@ public final class ThreadsManager<TType extends Thread> {
 
 		@Override
 		public void run() {
-			try {
-				// verificamos si el thread finalizo
-				while (!this.getThread().getState().equals(Thread.State.TERMINATED))
-					// esperamos que el thread finalize
-					this.getThread().join(500);
-			} catch (final InterruptedException ignored) {}
+			// esperamos a que inicie
+			this.waitForStart();
+			// ejecutamos el proceso de thread iniciado
+			ThreadsManager.this.getListener().threadStarted(this.getThread());
+			// esperamos a que finalize
+			this.waitForFinish();
 			// ejecutamos el proceso al finalizar el thread
 			ThreadsManager.this.getListener().threadFinished(this.getThread());
 			// verificamos si ya no hay mas threasd
@@ -123,6 +135,40 @@ public final class ThreadsManager<TType extends Thread> {
 		private Thread getThread() {
 			// retornamos el thread
 			return this.thread;
+		}
+
+		/**
+		 * Espera a que el thread finalize
+		 * 
+		 * @author Hermann D. Schimpf
+		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author Schimpf.NET
+		 * @version Aug 11, 2011 8:36:29 AM
+		 */
+		private void waitForFinish() {
+			// verificamos si el thread finalizo
+			while (!this.getThread().getState().equals(Thread.State.TERMINATED))
+				try {
+					// esperamos que el thread finalize
+					this.getThread().join(500);
+				} catch (final InterruptedException ignored) {}
+		}
+
+		/**
+		 * Espera a que el thread inicie
+		 * 
+		 * @author Hermann D. Schimpf
+		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author Schimpf.NET
+		 * @version Aug 11, 2011 8:35:18 AM
+		 */
+		private void waitForStart() {
+			// recorremos mientras el thread es nuevo
+			while (this.getThread().getState().equals(Thread.State.NEW) && !this.getThread().isAlive())
+				try {
+					// esperamos que el thread inicie
+					Thread.sleep(100);
+				} catch (final InterruptedException ignored) {}
 		}
 	}
 
@@ -225,6 +271,9 @@ public final class ThreadsManager<TType extends Thread> {
 
 				@Override
 				public <ThreadType extends Thread> void threadFinished(final ThreadType thread) {}
+
+				@Override
+				public <ThreadType extends Thread> void threadStarted(final ThreadType thread) {}
 			};
 		// retornamos el capturador de eventos
 		return this.listener;
