@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Window" default="make" basedir=".">
+<project name="org.schimpf.utils" default="make" basedir=".">
 	<target name="init">
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
-		<property name="dir.src" value="w/Window"/>
-		<property name="dir.tmp" value="lib/tmp"/>
-		<property name="dir.jar" value="lib/w"/>
+		<property name="dir.src" value="Trunk/org/schimpf/utils"/>
+		<property name="dir.tmp" value="Data/lib/tmp"/>
+		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="w/Window/build.number"/>
-		<property name="jar.start" value="Window"/>
+		<buildnumber file="Data/lib/utils.number"/>
+		<property name="jar.start" value="schimpf-utils"/>
 		<property name="jar.version" value="b0.1"/>
-		<property name="jar.mainclass" value="w.Window.Window"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
@@ -39,21 +38,20 @@
 	<target name="make" depends="compile">
 		<echo message="Creando fichero Manifest"/>
 		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
-		<manifest file="lib/MANIFEST.MF">
+		<manifest file="Data/lib/tmp/MANIFEST.MF">
 			<attribute name="Created-By" value="${jar.author}"/>
-			<attribute name="Main-Class" value="${jar.mainclass}"/>
 			<attribute name="Built-Date" value="${TODAY}"/>
 			<attribute name="Implementation-Version" value="${jar.version}.${build.number}"/>
 		</manifest>
 
 		<echo message="Creando fichero ${jar.file}"/>
-   	<jar destfile="${jar.file}" manifest="lib/MANIFEST.MF">
+   	<jar destfile="${jar.file}" manifest="Data/lib/tmp/MANIFEST.MF">
 			<fileset dir="${dir.tmp}" includes="**/*.class"/>
 		</jar>
 		
 		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.name}"/>
    	
 		<delete dir="${dir.tmp}"/>
-		<delete file="lib/MANIFEST.MF"/>
+		<delete file="Data/lib/tmp/MANIFEST.MF"/>
 	</target>
 </project>
