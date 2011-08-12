@@ -37,6 +37,7 @@
 		<mkdir dir="${dir.tmp}"/>
 		<echo message="Creando directorio para fichero compilado"/>
 		<mkdir dir="${dir.jar}"/>
+		<mkdir dir="${dir.jar}/${jar.version}"/>
    </target>
    
 	<target name="compile" depends="prepare">
@@ -60,7 +61,7 @@
 			<fileset dir="${dir.tmp}" includes="**/*.class"/>
 		</jar>
 		
-		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.name}"/>
+		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.version}/${jar.name}"/>
    	
 		<delete dir="${dir.tmp}"/>
 		<delete file="Data/lib/tmp/MANIFEST.MF"/>
