@@ -4,10 +4,10 @@
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
 		<property name="dir.src" value="Trunk/org/schimpf/sql"/>
-		<property name="dir.tmp" value="Data/lib/tmp"/>
+		<property name="dir.tmp" value="Data/tmp"/>
 		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="Data/lib/sql.number"/>
+		<buildnumber file="Data/ant/sql.number"/>
 		<property name="jar.start" value="schimpf-sql"/>
 		<property name="jar.version" value="b0.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
@@ -16,7 +16,7 @@
 		<property name="compile.debug" value="true"/>
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
-			<fileset dir="Data/builds">
+			<fileset dir="Data/builds/b0.1">
 				<include name="schimpf-utils-b0.1.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA/">
@@ -50,20 +50,20 @@
 	<target name="make" depends="compile">
 		<echo message="Creando fichero Manifest"/>
 		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
-		<manifest file="Data/lib/tmp/MANIFEST.MF">
+		<manifest file="Data/tmp/MANIFEST.MF">
 			<attribute name="Created-By" value="${jar.author}"/>
 			<attribute name="Built-Date" value="${TODAY}"/>
 			<attribute name="Implementation-Version" value="${jar.version}.${build.number}"/>
 		</manifest>
 
 		<echo message="Creando fichero ${jar.file}"/>
-   	<jar destfile="${jar.file}" manifest="Data/lib/tmp/MANIFEST.MF">
+   	<jar destfile="${jar.file}" manifest="Data/tmp/MANIFEST.MF">
 			<fileset dir="${dir.tmp}" includes="**/*.class"/>
 		</jar>
 		
 		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.version}/${jar.name}"/>
    	
 		<delete dir="${dir.tmp}"/>
-		<delete file="Data/lib/tmp/MANIFEST.MF"/>
+		<delete file="Data/tmp/MANIFEST.MF"/>
 	</target>
 </project>
