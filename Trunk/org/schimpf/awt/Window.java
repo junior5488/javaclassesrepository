@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -21,8 +20,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 /**
@@ -34,13 +31,6 @@ import javax.swing.border.EtchedBorder;
  */
 public final class Window {
 	/**
-	 * Panel para los botones de la ventana
-	 * 
-	 * @version Jun 14, 2011 11:42:15 AM
-	 */
-	private final JPanel				buttonsPanel	= new JPanel(new BorderLayout());
-
-	/**
 	 * Panel para el contenido de la ventana
 	 * 
 	 * @version Jun 14, 2011 11:04:52 AM
@@ -48,25 +38,11 @@ public final class Window {
 	private final JPanel				contentPanel	= new JPanel(new BorderLayout());
 
 	/**
-	 * Panel principal de la ventana
-	 * 
-	 * @version Jun 14, 2011 9:39:47 AM
-	 */
-	private final JPanel				mainPanel		= new JPanel(new BorderLayout());
-
-	/**
 	 * Barra de estado de la ventana
 	 * 
 	 * @version Jun 14, 2011 10:03:19 AM
 	 */
 	private final JLabel				statusBar		= new JLabel();
-
-	/**
-	 * Titulo de la ventana
-	 * 
-	 * @version Jun 13, 2011 5:27:44 PM
-	 */
-	private final JLabel				title				= new JLabel("Window", SwingConstants.LEFT);
 
 	/**
 	 * Ventana generada
@@ -90,21 +66,9 @@ public final class Window {
 	 */
 	public Window(final GraphicsConfiguration gc) {
 		// creamos la ventana
-		this(gc, true);
-	}
-
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 13, 2011 4:01:40 PM
-	 * @param gc GraphicsConfiguration
-	 * @param decorated True para utilizar la decoracion local
-	 */
-	public Window(final GraphicsConfiguration gc, final boolean decorated) {
-		// creamos la ventana
 		this.setWindow(new JFrame(gc));
 		// seteamos las propiedades de la ventana
-		this.initWindow(decorated);
+		this.initWindow();
 	}
 
 	/**
@@ -115,23 +79,11 @@ public final class Window {
 	 */
 	public Window(final String title) {
 		// creamos la ventana
-		this(title, true);
-	}
-
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 13, 2011 4:01:40 PM
-	 * @param title Titulo de la ventana
-	 * @param decorated True para utilizar la decoracion local
-	 */
-	public Window(final String title, final boolean decorated) {
-		// creamos la ventana
 		this.setWindow(new JFrame(title));
 		// almacenamos el titulo
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
-		this.initWindow(decorated);
+		this.initWindow();
 	}
 
 	/**
@@ -142,25 +94,12 @@ public final class Window {
 	 * @param gc GraphicsConfiguration
 	 */
 	public Window(final String title, final GraphicsConfiguration gc) {
-		// creamos la ventana
-		this(title, gc, true);
-	}
-
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 13, 2011 4:01:40 PM
-	 * @param title Titulo de la ventana
-	 * @param gc GraphicsConfiguration
-	 * @param decorated True para utilizar la decoracion local
-	 */
-	public Window(final String title, final GraphicsConfiguration gc, final boolean decorated) {
 		// enviamos el titulo y las configuraciones
 		this.setWindow(new JFrame(title, gc));
 		// almacenamos el titulo
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
-		this.initWindow(decorated);
+		this.initWindow();
 	}
 
 	/**
@@ -216,8 +155,6 @@ public final class Window {
 	public void setIconImage(final Image image) {
 		// enviamos la imagen al super
 		this.getWindow().setIconImage(image);
-		// modificamos la imagen local
-		this.getTitleBar().setIcon(new ImageIcon(image));
 	}
 
 	/**
@@ -231,8 +168,6 @@ public final class Window {
 	public void setIconImage(final ImageIcon imageIcon) {
 		// moficamos el icono
 		this.getWindow().setIconImage(imageIcon.getImage());
-		// modificamos la imagen local
-		this.getTitleBar().setIcon(imageIcon);
 	}
 
 	/**
@@ -302,8 +237,6 @@ public final class Window {
 	public void setTitle(final String title) {
 		// enviamos el titulo
 		this.getWindow().setTitle(title);
-		// modificamos el titulo local
-		this.getTitleBar().setText(title);
 	}
 
 	/**
@@ -349,32 +282,6 @@ public final class Window {
 	}
 
 	/**
-	 * Retorna el panel para los botones de la ventana
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 14, 2011 11:41:13 AM
-	 * @return Panel de botones de la ventana
-	 */
-	private JPanel getButtonsPanel() {
-		// retornamos el panel de botones
-		return this.buttonsPanel;
-	}
-
-	/**
-	 * Retorna el Panel principal de la ventana
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 14, 2011 9:40:49 AM
-	 * @return JPanel para el contenido
-	 */
-	private JPanel getMainPanel() {
-		// retornamos el Panel Principal
-		return this.mainPanel;
-	}
-
-	/**
 	 * Retorna la barra de estado de la ventana
 	 * 
 	 * @author Hermann D. Schimpf
@@ -385,19 +292,6 @@ public final class Window {
 	private JLabel getStatusBar() {
 		// retornamos la barra de estado
 		return this.statusBar;
-	}
-
-	/**
-	 * Retorna el label del titulo
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 13, 2011 5:26:11 PM
-	 * @return The title label
-	 */
-	private JLabel getTitleBar() {
-		// return the value of title
-		return this.title;
 	}
 
 	/**
@@ -419,65 +313,23 @@ public final class Window {
 	 * @version Jun 13, 2011 4:01:40 PM
 	 * @param decorated True para utilizar la decoracion local
 	 */
-	private void initWindow(final boolean decorated) {
+	private void initWindow() {
 		// deshabilitamos los bordes y botones
-		this.getWindow().setUndecorated(decorated);
+		this.getWindow().setUndecorated(false);
 		this.getWindow().setResizable(false);
 		// creamos el border layount para acomodar las partes
 		this.getWindow().getContentPane().setLayout(new BorderLayout());
-		// verificamos si utilizamos las decoraciones locales
-		if (decorated) {
-			// creamos el borde de la ventana
-			this.makeBorders();
-			// armamos las secciones de la ventana
-			this.makeSections();
-		} else {
-			// seteamos el main de la ventana
-			this.getWindow().getContentPane().add(this.getContentPanel());
-			// seteamos el color de fondo
-			this.getContentPanel().setBackground(new Color(210, 210, 210));
-			this.makeStatusBar(this.getContentPanel());
-		}
+		// seteamos el main de la ventana
+		this.getWindow().getContentPane().add(this.getContentPanel());
+		// seteamos el color de fondo
+		this.getContentPanel().setBackground(new Color(210, 210, 210));
+		this.makeStatusBar(this.getContentPanel());
 		// agregamos los listeners
 		this.addListeners();
 		// verificamos si tiene un tamaño
 		if (this.getWindow().getSize().width == 0)
 			// seteamos el tamaño por defecto
 			this.getWindow().setSize(Window.DEFAULT_SIZE);
-	}
-
-	/**
-	 * Crea el borde de la ventana
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 14, 2011 11:06:25 AM
-	 */
-	private void makeBorders() {
-		// agregamos el frame principal a la ventana
-		this.getWindow().add(this.getMainPanel());
-		// agregamos el frame de contenido para la ventana
-		this.getMainPanel().add(this.getContentPanel());
-		// seteamos el tamaño de los bordes
-		this.getMainPanel().setBorder(new EmptyBorder(new Insets(0, 6, 5, 6)));
-		// seteamos el color del borde
-		this.getMainPanel().setBackground(Color.GRAY);
-		// seteamos el color para el contenido
-		this.getContentPanel().setBackground(new Color(210, 210, 210));
-	}
-
-	/**
-	 * Arma las secciones de la ventana
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 14, 2011 9:34:47 AM
-	 */
-	private void makeSections() {
-		// agregamos el titulo de la ventana
-		this.makeTitle();
-		// agregamos la barra de estado
-		this.makeStatusBar(this.getMainPanel());
 	}
 
 	/**
@@ -498,45 +350,6 @@ public final class Window {
 		// seteamos el color de fondo de la barra
 		this.getStatusBar().setOpaque(true);
 		this.getStatusBar().setBackground(this.getContentPanel().getBackground());
-	}
-
-	/**
-	 * Agrega el titulo a la ventana
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 14, 2011 11:10:22 AM
-	 */
-	private void makeTitle() {
-		// creamos un panel para el titulo
-		final JPanel titlePanel = new JPanel(new BorderLayout());
-		// agregamos el panel a la ventana
-		this.getMainPanel().add(titlePanel, BorderLayout.NORTH);
-		// agregamos el label para el titulo
-		titlePanel.add(this.getTitleBar(), BorderLayout.WEST);
-		// agregamos el panel para los botones
-		titlePanel.add(this.getButtonsPanel(), BorderLayout.EAST);
-		// seteamos las propiedades de los componentes
-		this.setTitleProperties(titlePanel);
-	}
-
-	/**
-	 * Setea las propiedades de los elementos del titulo
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 14, 2011 11:30:43 AM
-	 * @param titlePanel Panel del titulo
-	 */
-	private void setTitleProperties(final JPanel titlePanel) {
-		// seteamos el color de fondo
-		titlePanel.setBackground(Color.DARK_GRAY);
-		this.getButtonsPanel().setBackground(titlePanel.getBackground());
-		// seteamos el tamaño del panel y de los botones
-		titlePanel.setPreferredSize(new Dimension(this.getWindow().getSize().width, 22));
-		this.getButtonsPanel().setPreferredSize(new Dimension(60, titlePanel.getSize().height));
-		// seteamos el color del titulo
-		this.getTitleBar().setForeground(Color.WHITE);
 	}
 
 	/**
