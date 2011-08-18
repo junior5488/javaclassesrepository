@@ -1,3 +1,8 @@
+/**
+ * @author Hermann D. Schimpf
+ * @author SCHIMPF - Sistemas de Informacion y Gestion
+ * @version Aug 18, 2011 3:39:58 PM
+ */
 package org.schimpf.utils.arrays;
 
 import java.util.ArrayList;
@@ -5,32 +10,36 @@ import java.util.ArrayList;
 /**
  * Lista de objetos ordenable por medio de la comparacion de los objetos mediante el metodo compareTo() de los objetos
  * 
- * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
- * @date Jan 12, 2011 11:29:18 AM
+ * @author Hermann D. Schimpf
+ * @author SCHIMPF - Sistemas de Informacion y Gestion
+ * @version Jan 12, 2011 11:29:18 AM
  * @param <Type> Tipo para realizar la comparacion
  */
 public final class SortableList<Type extends Comparable<? super Type>> extends ArrayList<Type> {
 	/**
 	 * Lista de elementos a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:44:16 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:44:16 PM
 	 */
 	private ArrayList<Type>	listToSort;
 
 	/**
 	 * Lista de elementos ordenados
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:44:01 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:44:01 PM
 	 */
 	private ArrayList<Type>	sortedList;
 
 	/**
 	 * Limpia la lista a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:46:51 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:46:51 PM
 	 */
 	public void cleanListToSort() {
 		// limpiamos la lista a ordenar
@@ -40,8 +49,9 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Retorna la lista a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:46:51 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:46:51 PM
 	 * @return Lista a ordenar
 	 */
 	public ArrayList<Type> getListToSort() {
@@ -52,8 +62,9 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Ordena la lista de forma ascendente
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Jan 12, 2011 12:50:58 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jan 12, 2011 12:50:58 PM
 	 */
 	public void sort() {
 		// ordenamos la lista de forma ascendente
@@ -63,11 +74,12 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Ordena la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Jan 12, 2011 11:44:29 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jan 12, 2011 11:44:29 AM
 	 * @param asc True para ordenar de forma ascendente
 	 */
-	public void sort(boolean asc) {
+	public void sort(final boolean asc) {
 		// limpiamos y obtenemos los valores a ordenar
 		this.cleanAndGetAll();
 		// ordenamos la lista
@@ -79,8 +91,9 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Limpia las listas y obtiene los valores actuales a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Jan 12, 2011 11:56:26 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jan 12, 2011 11:56:26 AM
 	 */
 	private void cleanAndGetAll() {
 		// vaciamos las listas
@@ -95,8 +108,9 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Limpia la lista ordenada
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:44:59 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:44:59 PM
 	 */
 	private void cleanSortedList() {
 		// set the value of this.sortedList
@@ -106,8 +120,9 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Retorna la lista ordenada
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:44:59 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:44:59 PM
 	 * @return Lista ordenada
 	 */
 	private ArrayList<Type> getSortedList() {
@@ -118,14 +133,15 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Reemplaza la lista local con los nuevos elementos ordenados
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:43:23 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:43:23 PM
 	 */
 	private void regenerateList() {
 		// vaciamos la lista local
 		this.clear();
 		// recorremos la lista ordenada
-		for (Type element : this.getSortedList())
+		for (final Type element: this.getSortedList())
 			// agregamos el elemento a la lista local
 			this.add(element);
 	}
@@ -133,14 +149,15 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	/**
 	 * Ordena la lista de elementos
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:42:11 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:42:11 PM
 	 */
-	private void sortList(boolean asc) {
+	private void sortList(final boolean asc) {
 		// diferencia en la comparacion
 		int diff;
 		// indices ya utilizados
-		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		final ArrayList<Integer> indexes = new ArrayList<Integer>();
 		// recorremos las posiciones nuevas
 		for (int n = 0; n <= this.size(); n++)
 			// recorremos la lista de valores originales

@@ -1,6 +1,4 @@
 /**
- * m.SQLLink
- * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 4:44:10 PM

@@ -1,5 +1,6 @@
 /**
- * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
+ * @author Hermann D. Schimpf
+ * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @date Feb 10, 2011 10:27:55 AM
  */
 package org.schimpf.utils.arrays;
@@ -11,7 +12,8 @@ import java.util.Map.Entry;
 /**
  * Clase para dividir una lista
  * 
- * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
+ * @author Hermann D. Schimpf
+ * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @param <Type> Tipo de valores
  * @date Feb 10, 2011 10:27:55 AM
  */
@@ -19,40 +21,45 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Lista original de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:32:13 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:32:13 AM
 	 */
 	private SortableList<Type>			list;
 
 	/**
 	 * Parte final de la lista de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:32:13 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:32:13 AM
 	 */
 	private final SortableList<Type>	listEnd		= new SortableList<Type>();
 
 	/**
 	 * Parte inicial de la lista de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:32:13 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:32:13 AM
 	 */
 	private final SortableList<Type>	listStart	= new SortableList<Type>();
 
 	/**
 	 * Elemento central que divide la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:40:43 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:40:43 AM
 	 */
 	private Type							pivot;
 
 	/**
 	 * Crea una instancia del Particionador
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:31:02 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:31:02 AM
 	 * @param list Listado de objetos a
 	 */
 	public ListPartitioner(final SortableList<Type> list) {
@@ -63,8 +70,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Retorna las listas de los elementos
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:31:35 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:31:35 AM
 	 * @return Listas de elementos separados, indice 0 el inicio, indice 1 el final
 	 */
 	public ArrayList<SortableList<Type>> getPartitionedList() {
@@ -81,8 +89,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Particiona la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:37:14 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:37:14 AM
 	 */
 	public void partition() {
 		// indice de la lista
@@ -114,8 +123,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Almacena un elemento en la lista final de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:31:35 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:31:35 AM
 	 * @param element Elemento a agregar al final
 	 */
 	private void addListEnd(final Type element) {
@@ -126,8 +136,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Almacena un elemento en la lista inicial de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:31:35 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:31:35 AM
 	 * @param element Elemento a agregar al inicio
 	 */
 	private void addListStart(final Type element) {
@@ -138,8 +149,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Busca el elemento pivot para la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 11:00:20 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 11:00:20 AM
 	 */
 	private Type findPivot() {
 		// listado de posiciones y prioridades
@@ -194,8 +206,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Retorna la lista original de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:54:29 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:54:29 AM
 	 * @return Lista de valores
 	 */
 	private SortableList<Type> getList() {
@@ -206,8 +219,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Retorna la lista de elementos finales
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:51:43 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:51:43 AM
 	 * @return Lista final
 	 */
 	private SortableList<Type> getListEnd() {
@@ -218,8 +232,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Retorna la lista de elementos iniciales
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:51:43 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:51:43 AM
 	 * @return Lista inicial
 	 */
 	private SortableList<Type> getListStart() {
@@ -230,8 +245,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Retorna el elemento pivot
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:40:59 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:40:59 AM
 	 * @return The pivot
 	 */
 	private Type getPivot() {
@@ -246,8 +262,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Almacena la lista original de valores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:54:29 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:54:29 AM
 	 * @param Lista de valores
 	 */
 	private void setList(final SortableList<Type> list) {
@@ -258,8 +275,9 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	/**
 	 * Almacena el elemento pivot
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:40:59 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:40:59 AM
 	 * @param pivot the pivot to set
 	 */
 	private void setPivot(final Type pivot) {

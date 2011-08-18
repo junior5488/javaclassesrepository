@@ -1,6 +1,4 @@
 /**
- * d.DBConnection
- * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 16, 2011 12:27:11 AM

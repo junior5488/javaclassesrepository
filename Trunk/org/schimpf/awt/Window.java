@@ -1,5 +1,5 @@
 /**
- * w.Window
+ * Paquete con utilidades graficas
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion

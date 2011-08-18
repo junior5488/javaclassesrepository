@@ -1,24 +1,27 @@
 /**
  * JAVA Classes Repository
  * 
- * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
- * @date Feb 7, 2011 5:45:52 PM
+ * @author Hermann D. Schimpf
+ * @author SCHIMPF - Sistemas de Informacion y Gestion
+ * @version Aug 18, 2011 3:40:11 PM
  */
 package org.schimpf.utils.arrays;
 
 import java.util.ArrayList;
 
 /**
- * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
- * @date Feb 10, 2011 9:13:28 AM
+ * @author Hermann D. Schimpf
+ * @author SCHIMPF - Sistemas de Informacion y Gestion
+ * @version Feb 10, 2011 9:13:28 AM
  * @param <Type> Tipo para realizar la comparacion
  */
 public final class SortableListMultithreaded<Type extends Comparable<? super Type>> extends ArrayList<Type> {
 	/**
 	 * Listado de los elementos a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:25:13 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:25:13 PM
 	 */
 	private SortableList<Type>				arrayData;
 
@@ -26,24 +29,27 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * Bandera para ordenar la lista
 	 * True ordena ascendente, False descendente
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:32:32 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:32:32 PM
 	 */
 	private boolean							asc			= true;
 
 	/**
 	 * Numero de thread para el nombre del thread creado
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:50:02 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:50:02 PM
 	 */
 	private int									THREADNO		= 0;
 
 	/**
 	 * Listado de Threads utilizados para la ordenacion de los elementos
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:25:31 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:25:31 PM
 	 */
 	private final ArrayList<SortThread>	threads		= new ArrayList<SortThread>();
 
@@ -51,31 +57,35 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * Cantidad maxima de threads a crear
 	 * Se obtiene desde la cantidad de procesadores
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:26:02 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:26:02 PM
 	 */
 	private static final int				MAX_THREADS	= Runtime.getRuntime().availableProcessors();
 
 	/**
 	 * Thread utilizado para ordenar la lista de elementos
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:26:43 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:26:43 PM
 	 */
 	private final class SortThread extends Thread {
 		/**
 		 * Listado de elementos a ordenar
 		 * 
-		 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-		 * @date Feb 10, 2011 2:38:54 PM
+		 * @author Hermann D. Schimpf
+		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @version Feb 10, 2011 2:38:54 PM
 		 */
 		private SortableList<Type>	dataToSort	= new SortableList<Type>();
 
 		/**
 		 * Constructor del Thread
 		 * 
-		 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-		 * @date Feb 10, 2011 9:03:24 PM
+		 * @author Hermann D. Schimpf
+		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @version Feb 10, 2011 9:03:24 PM
 		 * @param toSort Listado de elementos a ordenar
 		 * @param name Nombre del Thread
 		 */
@@ -95,8 +105,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 		/**
 		 * Retorna la lista de los elementos
 		 * 
-		 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-		 * @date Feb 10, 2011 10:38:58 AM
+		 * @author Hermann D. Schimpf
+		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @version Feb 10, 2011 10:38:58 AM
 		 * @return Lista de elementos
 		 */
 		protected SortableList<Type> getList() {
@@ -108,8 +119,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Ordena la lista de forma ascendente
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Jan 12, 2011 12:50:58 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jan 12, 2011 12:50:58 PM
 	 */
 	public void sort() {
 		// ordenamos la lista de forma ascendente
@@ -119,8 +131,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Ordena la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Jan 12, 2011 11:44:29 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jan 12, 2011 11:44:29 AM
 	 * @param asc True para ordenar de forma ascendente
 	 */
 	public void sort(final boolean asc) {
@@ -133,8 +146,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Retorna el modo de orden
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:35:48 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:35:48 PM
 	 * @return True si el orden es ascendente
 	 */
 	protected boolean isAscending() {
@@ -145,8 +159,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Guarda el estado de la bandera de orden
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:33:24 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:33:24 PM
 	 * @param asc True para ordenar ascendentemente
 	 */
 	protected void setAsc(final boolean asc) {
@@ -157,8 +172,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Agrega un thread
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:13:18 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:13:18 PM
 	 * @param thread Thread a agregar
 	 */
 	private void addThread(final SortThread thread) {
@@ -169,8 +185,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Obtiene los valores actuales de la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Jan 12, 2011 11:56:26 AM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jan 12, 2011 11:56:26 AM
 	 */
 	private void cleanAndGetAll() {
 		// vaciamos el listado de valores
@@ -184,8 +201,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Divide la lista en dos
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 10:34:55 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 10:34:55 PM
 	 * @param listToDivide Lista a dividir
 	 */
 	private ArrayList<SortableList<Type>> divideList(final SortableList<Type> listToDivide) {
@@ -200,8 +218,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Genera cada thread con su parte a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:23:37 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:23:37 PM
 	 */
 	private void generateThreads() {
 		// dividimos y recorremos las sublistas
@@ -213,8 +232,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Genera cada thread con su parte a ordenar
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:23:37 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:23:37 PM
 	 * @param list Lista a ordenar
 	 * @param subThreads Cantidad maxima de subThreads
 	 */
@@ -235,8 +255,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Retorna la lista de threads
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:13:18 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:13:18 PM
 	 * @return Threads
 	 */
 	private ArrayList<SortThread> getThreads() {
@@ -247,8 +268,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Une las listas obtenidas
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 9:22:24 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 9:22:24 PM
 	 */
 	private void joinLists() {
 		// limpiamos la lista local
@@ -264,8 +286,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Monitorea los threads hasta que los mismos finalizan su ejecucion
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:22:55 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:22:55 PM
 	 */
 	private void monitorThreads() {
 		// seteamos una bandera
@@ -286,8 +309,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Ejecuta el proceso de ordenamiento de la lista
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:51:17 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:51:17 PM
 	 */
 	private void startSort() {
 		// obtenemos los valores originales
@@ -305,8 +329,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	/**
 	 * Inicia todos los threads
 	 * 
-	 * @author Hermann D. Schimpf | SCHIMPF - Sistemas de Informacion y Gestion
-	 * @date Feb 10, 2011 2:23:21 PM
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:23:21 PM
 	 */
 	private void startThreads() {
 		// recorremos cada thread

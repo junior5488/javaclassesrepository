@@ -1,7 +1,6 @@
 /**
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Información y Gestión
- * @author Schimpf.NET
  * @version Aug 3, 2011 10:46:16 PM
  */
 package org.schimpf.java;
@@ -19,7 +18,6 @@ import javax.tools.ToolProvider;
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Información y Gestión
- * @author Schimpf.NET
  * @version Aug 3, 2011 10:46:16 PM
  */
 public final class Compiler {
@@ -28,7 +26,6 @@ public final class Compiler {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Información y Gestión
-	 * @author Schimpf.NET
 	 * @version Aug 3, 2011 10:46:52 PM
 	 * @param javaFile Fichero .java a compilar
 	 * @return Fichero compilado, null si no se pudo compilar

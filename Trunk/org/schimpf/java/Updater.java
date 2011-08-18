@@ -1,7 +1,6 @@
 /**
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Información y Gestión
- * @author Schimpf.NET
  * @version Aug 3, 2011 11:28:20 PM
  */
 package org.schimpf.java;
@@ -24,7 +23,6 @@ import java.util.jar.JarOutputStream;
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Información y Gestión
- * @author Schimpf.NET
  * @version Aug 3, 2011 11:28:20 PM
  */
 public final class Updater {

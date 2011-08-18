@@ -1,6 +1,4 @@
 /**
- * m.MySQLProcess
- * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 16, 2011 2:00:45 AM

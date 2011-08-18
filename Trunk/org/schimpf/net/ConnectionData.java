@@ -1,6 +1,4 @@
 /**
- * u.UserData
- * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Jun 6, 2011 11:54:51 AM

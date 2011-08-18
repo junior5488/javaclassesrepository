@@ -1,6 +1,4 @@
 /**
- * s.SSH
- * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Jun 6, 2011 11:53:26 AM

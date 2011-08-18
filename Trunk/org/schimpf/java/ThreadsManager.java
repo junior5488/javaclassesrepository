@@ -1,7 +1,6 @@
 /**
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
  * @version Aug 10, 2011 9:00:25 AM
  */
 package org.schimpf.java;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
  * 
  * @author Hermann D. Schimpf
  * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
  * @version Aug 10, 2011 9:00:25 AM
  * @param <TType> Class of Threads
  */
@@ -37,7 +35,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 10, 2011 9:11:36 AM
 	 */
 	public interface ThreadsListener {
@@ -46,7 +43,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * 
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 10, 2011 9:27:09 AM
 		 */
 		public void allThreadsFinished();
@@ -56,7 +52,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * 
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 10, 2011 9:31:59 AM
 		 * @param <TType> Clase de Threads
 		 * @param thread Thread que finalizo
@@ -68,7 +63,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * 
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 10, 2011 9:31:59 AM
 		 * @param <TType> Clase de Threads
 		 * @param thread Thread que inicio
@@ -81,7 +75,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 10, 2011 9:42:39 AM
 	 * @param <ThreadType> Tipo de thread
 	 */
@@ -96,7 +89,6 @@ public final class ThreadsManager<TType extends Thread> {
 		/**
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 10, 2011 9:43:08 AM
 		 * @param thread Thread a monitorear
 		 */
@@ -128,7 +120,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * 
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 10, 2011 9:37:15 AM
 		 * @return Thread a monitorear
 		 */
@@ -142,7 +133,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * 
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 11, 2011 8:36:29 AM
 		 */
 		private void waitForFinish() {
@@ -159,7 +149,6 @@ public final class ThreadsManager<TType extends Thread> {
 		 * 
 		 * @author Hermann D. Schimpf
 		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @author Schimpf.NET
 		 * @version Aug 11, 2011 8:35:18 AM
 		 */
 		private void waitForStart() {
@@ -177,7 +166,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 2, 2011 6:02:07 PM
 	 * @param thread Thread a agregar
 	 */
@@ -193,7 +181,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 10, 2011 9:16:37 AM
 	 * @param listener Capturador de eventos
 	 */
@@ -207,7 +194,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 2, 2011 4:41:53 PM
 	 */
 	public void shutdownAll() {
@@ -240,7 +226,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 2, 2011 6:07:43 PM
 	 */
 	public void startThreads() {
@@ -257,7 +242,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 10, 2011 9:16:11 AM
 	 * @return Lista de Listeners
 	 */
@@ -284,7 +268,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 12:42:24 AM
 	 * @return True si existen threads vivos
 	 */
@@ -304,7 +287,6 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 2, 2011 5:58:34 PM
 	 * @return Lista de Threads
 	 */
