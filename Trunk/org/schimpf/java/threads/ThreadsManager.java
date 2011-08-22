@@ -3,7 +3,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Aug 10, 2011 9:00:25 AM
  */
-package org.schimpf.java;
+package org.schimpf.java.threads;
 
 import java.util.ArrayList;
 
