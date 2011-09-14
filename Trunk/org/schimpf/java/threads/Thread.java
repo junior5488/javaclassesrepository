@@ -31,22 +31,36 @@ public abstract class Thread extends java.lang.Thread {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Información y Gestión
 	 * @version Aug 4, 2011 12:20:44 PM
-	 * @param name Nombre del thread
+	 * @param threadClass Clase del thread
 	 */
-	public Thread(final Class<? extends Thread> name) {
+	public Thread(final Class<? extends Thread> threadClass) {
 		// enviamos el nombre
-		super(name.getName().substring(name.getName().lastIndexOf(".") + 1));
+		super("[" + threadClass.getName().substring(threadClass.getName().lastIndexOf(".") + 1) + "]");
 	}
 
 	/**
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Información y Gestión
 	 * @version Aug 4, 2011 12:20:44 PM
-	 * @param name Nombre del thread
+	 * @param threadClass Clase del thread
+	 * @param threadName Nombre del thread
 	 */
-	public Thread(final String name) {
+	public Thread(final Class<? extends Thread> threadClass, final String threadName) {
+		// enviamos la clase
+		this(threadClass);
+		// agregamos el nombre
+		this.setName(this.getName().substring(0, this.getName().length() - 1) + ":" + threadName + "]");
+	}
+
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Información y Gestión
+	 * @version Aug 4, 2011 12:20:44 PM
+	 * @param threadName Nombre del thread
+	 */
+	public Thread(final String threadName) {
 		// enviamos el nombre
-		super(name);
+		super(threadName);
 	}
 
 	@Override
@@ -56,7 +70,7 @@ public abstract class Thread extends java.lang.Thread {
 	}
 
 	@Override
-	public void run() {
+	public final void run() {
 		try {
 			// bandera para continuar ejecutando
 			boolean continueRunning = true;
@@ -65,7 +79,7 @@ public abstract class Thread extends java.lang.Thread {
 				// verificamos si se detuvo
 				if (this.isInterrupted()) {
 					// terminamos el thread
-					this.shutdown(true);
+					this.shutdown();
 					// salimos
 					break;
 				}
@@ -88,23 +102,10 @@ public abstract class Thread extends java.lang.Thread {
 	 * @version Aug 2, 2011 5:35:27 PM
 	 */
 	public final void shutdown() {
-		// finalizamos el proceso
-		this.shutdown(false);
-	}
-
-	/**
-	 * Finaliza el proceso del thread
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Aug 2, 2011 5:35:27 PM
-	 * @param interrupted True si el thread fue interrumpido
-	 */
-	public final void shutdown(final boolean interrupted) {
 		// modificamos la bandera
 		this.running = false;
-		// apagamos el thread
-		this.halt(interrupted);
+		// finalizamos el proceso
+		this.halt(this.isInterrupted());
 	}
 
 	/**
@@ -130,20 +131,6 @@ public abstract class Thread extends java.lang.Thread {
 	protected void halt(final boolean interrupted) {}
 
 	/**
-	 * Retorna el estado del thread
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 2, 2011 5:31:11 PM
-	 * @return Estado del thread
-	 */
-	protected boolean isRunning() {
-		// retornamos la bandera
-		return this.running;
-	}
-
-	/**
 	 * Muestra un mensaje en consola
 	 * 
 	 * @author Hermann D. Schimpf
@@ -155,5 +142,19 @@ public abstract class Thread extends java.lang.Thread {
 	protected final void log(final String message) {
 		// mostramos el mensaje en consola
 		System.out.println("[" + this.getName().substring(this.getName().lastIndexOf(".") + 1) + "] " + message);
+	}
+
+	/**
+	 * Retorna el estado del thread
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 2, 2011 5:31:11 PM
+	 * @return Estado del thread
+	 */
+	private boolean isRunning() {
+		// retornamos la bandera
+		return this.running;
 	}
 }

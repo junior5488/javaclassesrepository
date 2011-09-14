@@ -29,6 +29,13 @@ import java.util.ArrayList;
  */
 public final class ThreadsManager<TType extends Thread> {
 	/**
+	 * Bandera para saber si finalizaron todos los threads
+	 * 
+	 * @version Sep 14, 2011 3:48:10 PM
+	 */
+	private boolean						allFinished	= false;
+
+	/**
 	 * Capturadores de eventos registrados
 	 * 
 	 * @version Aug 10, 2011 9:15:40 AM
@@ -40,7 +47,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @version Aug 2, 2011 4:37:13 PM
 	 */
-	private final ArrayList<TType>	threads	= new ArrayList<TType>();
+	private final ArrayList<TType>	threads		= new ArrayList<TType>();
 
 	/**
 	 * Monitorea un thread hasta su finalizacion
@@ -90,7 +97,7 @@ public final class ThreadsManager<TType extends Thread> {
 			// verificamos si ya no hay mas threasd
 			if (!ThreadsManager.this.hasAlive())
 				// ejecutamos el proceso de finalizacion de todos los threads
-				ThreadsManager.this.getListener().allThreadsFinished();
+				ThreadsManager.this.allThreadsFinished();
 			// retornamos false para finalizar
 			return false;
 		}
@@ -176,7 +183,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 2, 2011 4:41:53 PM
 	 */
-	public void shutdownAll() {
+	public synchronized void shutdownAll() {
 		// recorremos hasta que existan threads
 		while (this.getThreads().size() > 0) {
 			// lista con los threads finalizados
@@ -188,7 +195,7 @@ public final class ThreadsManager<TType extends Thread> {
 				try {
 					// esperamos a que el thread finalize
 					thread.join(500);
-				} catch (final InterruptedException e) {}
+				} catch (final InterruptedException ignored) {}
 				// verificamos si finalizo
 				if (thread.getState().equals(Thread.State.TERMINATED))
 					// agregamos el thread para eliminar
@@ -208,13 +215,32 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 2, 2011 6:07:43 PM
 	 */
-	public void startThreads() {
+	public synchronized void startThreads() {
 		// recorremos los threads
 		for (final TType thread: this.getThreads())
 			// verificamos si es un nuevo thread
 			if (thread.getState().equals(Thread.State.NEW))
 				// iniciamos el thread
 				thread.start();
+		// modificamos la bandera
+		this.allFinished = false;
+	}
+
+	/**
+	 * Modifica la bandera y ejecuta el proceso de terminacion de todos los threads
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 14, 2011 3:27:37 PM
+	 */
+	protected synchronized void allThreadsFinished() {
+		// verificamos si la bandera esta off
+		if (!this.isAllFinished())
+			// ejecutamos el proceso de finalizacion de todos los threads
+			this.getListener().allThreadsFinished();
+		// modificamos la bandera
+		this.allFinished = true;
 	}
 
 	/**
@@ -276,5 +302,19 @@ public final class ThreadsManager<TType extends Thread> {
 	private ArrayList<TType> getThreads() {
 		// retornamos la lista de los threads
 		return this.threads;
+	}
+
+	/**
+	 * Retorna la bandera de finalizacion completa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 14, 2011 3:29:49 PM
+	 * @return Bandera de finalizacion
+	 */
+	private boolean isAllFinished() {
+		// retornamos la bandera
+		return this.allFinished;
 	}
 }
