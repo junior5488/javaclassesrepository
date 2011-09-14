@@ -18,6 +18,7 @@
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/b0.1">
 				<include name="schimpf-utils-b0.1.jar"/>
+				<include name="schimpf-java-b0.1.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA">
 				<include name="ssh-java.jar"/>
