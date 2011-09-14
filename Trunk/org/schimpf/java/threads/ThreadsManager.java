@@ -1,6 +1,18 @@
 /**
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
+ * | This program is free software: you can redistribute it and/or modify
+ * | it under the terms of the GNU General Public License as published by
+ * | the Free Software Foundation, either version 3 of the License.
+ * |
+ * | This program is distributed in the hope that it will be useful,
+ * | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * | GNU General Public License for more details.
+ * |
+ * | You should have received a copy of the GNU General Public License
+ * | along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @version Aug 10, 2011 9:00:25 AM
  */
 package org.schimpf.java.threads;
@@ -10,8 +22,8 @@ import java.util.ArrayList;
 /**
  * Administrador de Threads
  * 
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @version Aug 10, 2011 9:00:25 AM
  * @param <TType> Class of Threads
  */
@@ -31,50 +43,10 @@ public final class ThreadsManager<TType extends Thread> {
 	private final ArrayList<TType>	threads	= new ArrayList<TType>();
 
 	/**
-	 * Interfaz con los metodos para capturar los eventos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Aug 10, 2011 9:11:36 AM
-	 */
-	public interface ThreadsListener {
-		/**
-		 * Se ejecuta cuando todos los threads han finalizado
-		 * 
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @version Aug 10, 2011 9:27:09 AM
-		 */
-		public void allThreadsFinished();
-
-		/**
-		 * Se ejecuta cuando un thread finaliza
-		 * 
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @version Aug 10, 2011 9:31:59 AM
-		 * @param <TType> Clase de Threads
-		 * @param thread Thread que finalizo
-		 */
-		public <TType extends Thread> void threadFinished(TType thread);
-
-		/**
-		 * Se ejecuta cuando un thread inicia
-		 * 
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
-		 * @version Aug 10, 2011 9:31:59 AM
-		 * @param <TType> Clase de Threads
-		 * @param thread Thread que inicio
-		 */
-		public <TType extends Thread> void threadStarted(TType thread);
-	}
-
-	/**
 	 * Monitorea un thread hasta su finalizacion
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 10, 2011 9:42:39 AM
 	 * @param <ThreadType> Tipo de thread
 	 */
@@ -87,12 +59,14 @@ public final class ThreadsManager<TType extends Thread> {
 		private final ThreadType	thread;
 
 		/**
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 		 * @version Aug 10, 2011 9:43:08 AM
 		 * @param thread Thread a monitorear
 		 */
 		protected SingleThreadMonitor(final ThreadType thread) {
+			// enviamos el constructor
+			super(thread.getClass());
 			// almacenamos el thread a monitorear
 			this.thread = thread;
 			// empezamos a monitorear
@@ -100,7 +74,7 @@ public final class ThreadsManager<TType extends Thread> {
 		}
 
 		@Override
-		public void run() {
+		protected boolean execute() {
 			// esperamos a que inicie
 			this.waitForStart();
 			// ejecutamos el proceso de thread iniciado
@@ -113,13 +87,15 @@ public final class ThreadsManager<TType extends Thread> {
 			if (!ThreadsManager.this.hasAlive())
 				// ejecutamos el proceso de finalizacion de todos los threads
 				ThreadsManager.this.getListener().allThreadsFinished();
+			// retornamos false para finalizar
+			return false;
 		}
 
 		/**
 		 * Retorna el thread a monitorear
 		 * 
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 		 * @version Aug 10, 2011 9:37:15 AM
 		 * @return Thread a monitorear
 		 */
@@ -131,8 +107,8 @@ public final class ThreadsManager<TType extends Thread> {
 		/**
 		 * Espera a que el thread finalize
 		 * 
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 		 * @version Aug 11, 2011 8:36:29 AM
 		 */
 		private void waitForFinish() {
@@ -147,8 +123,8 @@ public final class ThreadsManager<TType extends Thread> {
 		/**
 		 * Espera a que el thread inicie
 		 * 
-		 * @author Hermann D. Schimpf
-		 * @author SCHIMPF - Sistemas de Informacion y Gestion
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 		 * @version Aug 11, 2011 8:35:18 AM
 		 */
 		private void waitForStart() {
@@ -156,7 +132,7 @@ public final class ThreadsManager<TType extends Thread> {
 			while (this.getThread().getState().equals(Thread.State.NEW) && !this.getThread().isAlive())
 				try {
 					// esperamos que el thread inicie
-					Thread.sleep(100);
+					java.lang.Thread.sleep(100);
 				} catch (final InterruptedException ignored) {}
 		}
 	}
@@ -164,8 +140,8 @@ public final class ThreadsManager<TType extends Thread> {
 	/**
 	 * Agrega un thread al manager
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 2, 2011 6:02:07 PM
 	 * @param thread Thread a agregar
 	 */
@@ -179,8 +155,8 @@ public final class ThreadsManager<TType extends Thread> {
 	/**
 	 * Setea el capturador de eventos
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 10, 2011 9:16:37 AM
 	 * @param listener Capturador de eventos
 	 */
@@ -192,8 +168,8 @@ public final class ThreadsManager<TType extends Thread> {
 	/**
 	 * Finaliza la ejecucion del programa
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 2, 2011 4:41:53 PM
 	 */
 	public void shutdownAll() {
@@ -224,8 +200,8 @@ public final class ThreadsManager<TType extends Thread> {
 	/**
 	 * Inicia todos los threads
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 2, 2011 6:07:43 PM
 	 */
 	public void startThreads() {
@@ -266,8 +242,8 @@ public final class ThreadsManager<TType extends Thread> {
 	/**
 	 * Retorna si existen threads en ejecucion
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 5, 2011 12:42:24 AM
 	 * @return True si existen threads vivos
 	 */
@@ -285,8 +261,8 @@ public final class ThreadsManager<TType extends Thread> {
 	/**
 	 * Retorna la lista de threads
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 2, 2011 5:58:34 PM
 	 * @return Lista de Threads
 	 */

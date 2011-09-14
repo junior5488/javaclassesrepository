@@ -31,6 +31,17 @@ public abstract class Thread extends java.lang.Thread {
 		super(name.getName().substring(name.getName().lastIndexOf(".") + 1));
 	}
 
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Información y Gestión
+	 * @version Aug 4, 2011 12:20:44 PM
+	 * @param name Nombre del thread
+	 */
+	public Thread(final String name) {
+		// enviamos el nombre
+		super(name);
+	}
+
 	@Override
 	public void run() {
 		// bandera para continuar ejecutando
