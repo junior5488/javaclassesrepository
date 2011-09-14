@@ -14,11 +14,18 @@ package org.schimpf.java.threads;
  */
 public abstract class Thread extends java.lang.Thread {
 	/**
+	 * Bandera para saber si el thread fue interrumpido
+	 * 
+	 * @version Sep 14, 2011 1:27:55 PM
+	 */
+	private boolean	interrupted	= false;
+
+	/**
 	 * Bandera para el estado del thread
 	 * 
 	 * @version Aug 2, 2011 5:30:25 PM
 	 */
-	private boolean	running	= true;
+	private boolean	running		= true;
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -43,24 +50,33 @@ public abstract class Thread extends java.lang.Thread {
 	}
 
 	@Override
+	public final boolean isInterrupted() {
+		// retornamos la bandera de interrupcion
+		return this.interrupted;
+	}
+
+	@Override
 	public void run() {
-		// bandera para continuar ejecutando
-		boolean continueRunning = true;
-		// mientras estemos ejecutando
-		while (this.isRunning() && continueRunning) {
-			// verificamos si se detuvo
-			if (this.isInterrupted()) {
-				// terminamos el thread
-				this.shutdown(true);
-				// salimos
-				break;
-			}
-			// iniciamos el proceso del thread
-			continueRunning = this.execute();
-			try {
+		try {
+			// bandera para continuar ejecutando
+			boolean continueRunning = true;
+			// mientras estemos ejecutando
+			while (this.isRunning() && continueRunning) {
+				// verificamos si se detuvo
+				if (this.isInterrupted()) {
+					// terminamos el thread
+					this.shutdown(true);
+					// salimos
+					break;
+				}
+				// iniciamos el proceso del thread
+				continueRunning = this.execute();
 				// esperamos 100 (cien) milisegundos
 				java.lang.Thread.sleep(100);
-			} catch (final InterruptedException e) {}
+			}
+		} catch (final InterruptedException e) {
+			// modificamos la bandera
+			this.interrupted = true;
 		}
 	}
 
@@ -98,8 +114,9 @@ public abstract class Thread extends java.lang.Thread {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Aug 2, 2011 5:24:11 PM
 	 * @return True para continuar ejecutando el thread
+	 * @throws InterruptedException Al interrumpir el thread
 	 */
-	protected abstract boolean execute();
+	protected abstract boolean execute() throws InterruptedException;
 
 	/**
 	 * Finaliza el proceso del thread

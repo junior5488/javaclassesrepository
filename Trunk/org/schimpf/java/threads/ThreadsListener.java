@@ -23,8 +23,9 @@ package org.schimpf.java.threads;
  * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @version Sep 13, 2011 10:29:43 PM
+ * @param <TType> Clase de Threads
  */
-public interface ThreadsListener {
+public interface ThreadsListener<TType extends Thread> {
 	/**
 	 * Se ejecuta cuando todos los threads han finalizado
 	 * 
@@ -40,10 +41,20 @@ public interface ThreadsListener {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 10, 2011 9:31:59 AM
-	 * @param <TType> Clase de Threads
 	 * @param thread Thread que finalizo
 	 */
-	public <TType extends Thread> void threadFinished(TType thread);
+	public void threadFinished(TType thread);
+
+	/**
+	 * Se ejecuta cuando un thread es interrumpido
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 14, 2011 1:29:40 PM
+	 * @param thread Thread que se interrumpio
+	 */
+	public void threadInterrupted(TType thread);
 
 	/**
 	 * Se ejecuta cuando un thread inicia
@@ -51,8 +62,7 @@ public interface ThreadsListener {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 10, 2011 9:31:59 AM
-	 * @param <TType> Clase de Threads
 	 * @param thread Thread que inicio
 	 */
-	public <TType extends Thread> void threadStarted(TType thread);
+	public void threadStarted(TType thread);
 }

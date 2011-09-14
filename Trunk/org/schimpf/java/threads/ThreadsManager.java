@@ -33,7 +33,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @version Aug 10, 2011 9:15:40 AM
 	 */
-	private ThreadsListener				listener;
+	private ThreadsListener<TType>	listener;
 
 	/**
 	 * Lista de threads a monitorear
@@ -48,15 +48,14 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @version Aug 10, 2011 9:42:39 AM
-	 * @param <ThreadType> Tipo de thread
 	 */
-	private final class SingleThreadMonitor<ThreadType extends Thread> extends Thread {
+	private final class SingleThreadMonitor extends Thread {
 		/**
 		 * Thread a monitorear
 		 * 
 		 * @version Aug 10, 2011 9:36:37 AM
 		 */
-		private final ThreadType	thread;
+		private final TType	thread;
 
 		/**
 		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -64,7 +63,7 @@ public final class ThreadsManager<TType extends Thread> {
 		 * @version Aug 10, 2011 9:43:08 AM
 		 * @param thread Thread a monitorear
 		 */
-		protected SingleThreadMonitor(final ThreadType thread) {
+		protected SingleThreadMonitor(final TType thread) {
 			// enviamos el constructor
 			super(thread.getClass());
 			// almacenamos el thread a monitorear
@@ -81,8 +80,13 @@ public final class ThreadsManager<TType extends Thread> {
 			ThreadsManager.this.getListener().threadStarted(this.getThread());
 			// esperamos a que finalize
 			this.waitForFinish();
-			// ejecutamos el proceso al finalizar el thread
-			ThreadsManager.this.getListener().threadFinished(this.getThread());
+			// verificamos si el thread fue interrumpido
+			if (this.getThread().isInterrupted())
+				// ejecutamos el proceso al interrumpir el thread
+				ThreadsManager.this.getListener().threadInterrupted(this.getThread());
+			else
+				// ejecutamos el proceso al finalizar el thread
+				ThreadsManager.this.getListener().threadFinished(this.getThread());
 			// verificamos si ya no hay mas threasd
 			if (!ThreadsManager.this.hasAlive())
 				// ejecutamos el proceso de finalizacion de todos los threads
@@ -99,7 +103,7 @@ public final class ThreadsManager<TType extends Thread> {
 		 * @version Aug 10, 2011 9:37:15 AM
 		 * @return Thread a monitorear
 		 */
-		private Thread getThread() {
+		private TType getThread() {
 			// retornamos el thread
 			return this.thread;
 		}
@@ -149,7 +153,7 @@ public final class ThreadsManager<TType extends Thread> {
 		// agregamos un thread a la lista
 		this.getThreads().add(thread);
 		// agregamos el monitor del thread
-		new SingleThreadMonitor<TType>(thread);
+		new SingleThreadMonitor(thread);
 	}
 
 	/**
@@ -160,7 +164,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 10, 2011 9:16:37 AM
 	 * @param listener Capturador de eventos
 	 */
-	public void setListener(final ThreadsListener listener) {
+	public void setListener(final ThreadsListener<TType> listener) {
 		// seteamos el capturador de eventos
 		this.listener = listener;
 	}
@@ -221,19 +225,22 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 10, 2011 9:16:11 AM
 	 * @return Lista de Listeners
 	 */
-	protected ThreadsListener getListener() {
+	protected ThreadsListener<TType> getListener() {
 		// verificamos si es null
 		if (this.listener == null)
 			// retornamos uno vacio
-			return new ThreadsListener() {
+			return new ThreadsListener<TType>() {
 				@Override
 				public void allThreadsFinished() {}
 
 				@Override
-				public <ThreadType extends Thread> void threadFinished(final ThreadType thread) {}
+				public void threadFinished(final TType thread) {}
 
 				@Override
-				public <ThreadType extends Thread> void threadStarted(final ThreadType thread) {}
+				public void threadInterrupted(final TType thread) {}
+
+				@Override
+				public void threadStarted(final TType thread) {}
 			};
 		// retornamos el capturador de eventos
 		return this.listener;
