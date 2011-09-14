@@ -33,7 +33,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 2:32:32 PM
 	 */
-	private boolean							asc			= true;
+	private boolean							asc					= true;
 
 	/**
 	 * Numero de thread para el nombre del thread creado
@@ -42,7 +42,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 10:50:02 PM
 	 */
-	private int									THREADNO		= 0;
+	private int									THREADNO				= 0;
 
 	/**
 	 * Listado de Threads utilizados para la ordenacion de los elementos
@@ -51,7 +51,7 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 2:25:31 PM
 	 */
-	private final ArrayList<SortThread>	threads		= new ArrayList<SortThread>();
+	private final ArrayList<SortThread>	threads				= new ArrayList<SortThread>();
 
 	/**
 	 * Cantidad maxima de threads a crear
@@ -61,7 +61,14 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 2:26:02 PM
 	 */
-	private static final int				MAX_THREADS	= Runtime.getRuntime().availableProcessors();
+	private static final int				MAX_THREADS			= Runtime.getRuntime().availableProcessors();
+
+	/**
+	 * Version de la clase
+	 * 
+	 * @version Sep 13, 2011 10:28:04 PM
+	 */
+	private static final long				serialVersionUID	= 1L;
 
 	/**
 	 * Thread utilizado para ordenar la lista de elementos

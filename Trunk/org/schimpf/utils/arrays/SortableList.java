@@ -23,7 +23,7 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 2:44:16 PM
 	 */
-	private ArrayList<Type>	listToSort;
+	private ArrayList<Type>		listToSort;
 
 	/**
 	 * Lista de elementos ordenados
@@ -32,7 +32,14 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 2:44:01 PM
 	 */
-	private ArrayList<Type>	sortedList;
+	private ArrayList<Type>		sortedList;
+
+	/**
+	 * Version de la clase
+	 * 
+	 * @version Sep 13, 2011 10:27:44 PM
+	 */
+	private static final long	serialVersionUID	= 1L;
 
 	/**
 	 * Limpia la lista a ordenar
