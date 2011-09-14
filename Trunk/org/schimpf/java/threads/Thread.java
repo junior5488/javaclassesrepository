@@ -52,17 +52,6 @@ public abstract class Thread extends java.lang.Thread {
 		this.setName(this.getName().substring(0, this.getName().length() - 1) + ":" + threadName + "]");
 	}
 
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Información y Gestión
-	 * @version Aug 4, 2011 12:20:44 PM
-	 * @param threadName Nombre del thread
-	 */
-	public Thread(final String threadName) {
-		// enviamos el nombre
-		super(threadName);
-	}
-
 	@Override
 	public final boolean isInterrupted() {
 		// retornamos la bandera de interrupcion
