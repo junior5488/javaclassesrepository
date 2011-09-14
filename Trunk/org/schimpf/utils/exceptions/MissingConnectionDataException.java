@@ -14,6 +14,13 @@ package org.schimpf.utils.exceptions;
  */
 public final class MissingConnectionDataException extends Exception {
 	/**
+	 * Version de la clase
+	 * 
+	 * @version Sep 13, 2011 10:28:33 PM
+	 */
+	private static final long	serialVersionUID	= 1L;
+
+	/**
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 5:14:33 PM
