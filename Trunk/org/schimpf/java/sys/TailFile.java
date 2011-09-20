@@ -26,14 +26,14 @@ public final class TailFile extends File implements Runnable {
 	 * 
 	 * @version Sep 19, 2011 11:35:33 PM
 	 */
-	private final boolean	continueRunning	= true;
+	private boolean		continueRunning	= true;
 
 	/**
 	 * Capturador de cambios del fichero
 	 * 
 	 * @version Sep 19, 2011 11:27:13 PM
 	 */
-	private TailListener		listener;
+	private TailListener	listener;
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -107,6 +107,19 @@ public final class TailFile extends File implements Runnable {
 		final Thread thread = new Thread(this);
 		// iniciamos la captura de modificaciones
 		thread.start();
+	}
+
+	/**
+	 * Detiene el monitoreo sobre el fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 20, 2011 2:05:51 PM
+	 */
+	public void stopRunning() {
+		// modificamos la bandera
+		this.continueRunning = false;
 	}
 
 	/**
