@@ -17,6 +17,7 @@
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/b0.1">
+				<include name="schimpf-net-b0.1.jar"/>
 				<include name="schimpf-utils-b0.1.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA/">
@@ -42,9 +43,9 @@
    
 	<target name="compile" depends="prepare">
 		<echo message="Compilando fuentes del proyecto"/>
-	<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
-		<classpath refid="compile.classpath"/>
-	</javac>
+		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
    </target>
    
 	<target name="make" depends="compile">

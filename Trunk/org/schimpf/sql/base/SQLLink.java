@@ -5,6 +5,7 @@
  */
 package org.schimpf.sql.base;
 
+import org.schimpf.net.utils.ConnectionData;
 import org.schimpf.sql.DBConnection;
 import org.schimpf.sql.DriverLoader;
 import org.schimpf.utils.exceptions.MissingConnectionDataException;
@@ -102,6 +103,15 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		}
 		// retornamos true
 		return true;
+	}
+
+	@Override
+	public void setConnectionData(final ConnectionData data, final String ddbb) {
+		// almacenamos los datos de conexion
+		this.setHost(data.getHostname().getHostName());
+		this.setUser(data.getUsername());
+		this.setPass(data.getPassword());
+		this.setDDBB(ddbb);
 	}
 
 	@Override

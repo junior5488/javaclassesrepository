@@ -5,6 +5,7 @@
  */
 package org.schimpf.sql;
 
+import org.schimpf.net.utils.ConnectionData;
 import org.schimpf.utils.exceptions.MissingConnectionDataException;
 
 /**
@@ -35,6 +36,17 @@ public interface DBConnection {
 	 * @return True si se desconecto del servidor
 	 */
 	public boolean disconnect();
+
+	/**
+	 * Almacena los datos para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:10:59 PM
+	 * @param data Datos para la conexion
+	 * @param ddbb Nombre de la base de datos
+	 */
+	public void setConnectionData(final ConnectionData data, final String ddbb);
 
 	/**
 	 * Almacena los datos para la conexion
