@@ -47,7 +47,7 @@ public final class EmailSender {
 	 */
 	public EmailSender(final String smtpHost) {
 		// almacenamos el host SMTP
-		this.getProperties().setProperty("mail.smtp.host", smtpHost);
+		this.getProperties().put("mail.smtp.host", smtpHost);
 		// iniciamos el mensaje
 		this.message = new MimeMessage(Session.getDefaultInstance(this.getProperties()));
 	}
