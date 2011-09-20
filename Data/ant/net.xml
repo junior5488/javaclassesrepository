@@ -22,6 +22,8 @@
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA">
 				<include name="ssh-java.jar"/>
+				<include name="email/mailapi.jar"/>
+				<include name="email/smtp.jar"/>
 			</fileset>
 		</path>
    </target>
