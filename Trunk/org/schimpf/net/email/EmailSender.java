@@ -62,7 +62,7 @@ public final class EmailSender {
 	 * @param email Direccion de correo
 	 * @throws MessagingException Si la direccion de correo es invalida
 	 */
-	public void addBackCarbonCopyRecipient(final Address email) throws MessagingException {
+	public void addBCCRecipient(final Address email) throws MessagingException {
 		// agregamos la direccion de correo al email
 		this.getMessage().addRecipient(RecipientType.BCC, email);
 	}
@@ -77,7 +77,7 @@ public final class EmailSender {
 	 * @param email Direccion de correo
 	 * @throws MessagingException Si la direccion de correo es invalida
 	 */
-	public void addCarbonCopyRecipient(final Address email) throws MessagingException {
+	public void addCCRecipient(final Address email) throws MessagingException {
 		// agregamos la direccion de correo al email
 		this.getMessage().addRecipient(RecipientType.CC, email);
 	}
@@ -106,6 +106,21 @@ public final class EmailSender {
 	}
 
 	/**
+	 * Setea el contenido del correo
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 20, 2011 12:42:13 AM
+	 * @param contents Contenidos para el mensaje
+	 * @throws MessagingException Si el contenido es invalido
+	 */
+	public void setContents(final Multipart contents) throws MessagingException {
+		// seteamos el contenido del email
+		this.getMessage().setContent(contents);
+	}
+
+	/**
 	 * Setea el origen del correo
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -121,18 +136,18 @@ public final class EmailSender {
 	}
 
 	/**
-	 * Setea el contenido del correo
+	 * Setea el asunto del correo
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Sep 20, 2011 12:42:13 AM
-	 * @param contents Contenidos para el mensaje
-	 * @throws MessagingException Si el contenido es invalido
+	 * @version Sep 20, 2011 10:22:58 AM
+	 * @param subject Asunto
+	 * @throws MessagingException Si el asunto es null
 	 */
-	public void setMessageContents(final Multipart contents) throws MessagingException {
-		// seteamos el contenido del email
-		this.getMessage().setContent(contents);
+	public void setSubject(final String subject) throws MessagingException {
+		// seteamos el asunto del email
+		this.getMessage().setSubject(subject);
 	}
 
 	/**
