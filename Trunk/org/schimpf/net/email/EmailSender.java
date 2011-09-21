@@ -72,7 +72,6 @@ public final class EmailSender {
 	public EmailSender(final String smtpHost) throws NoSuchProviderException {
 		// almacenamos el host SMTP
 		this.getProperties().put("mail.smtp.host", smtpHost);
-		this.getProperties().put("mail.debug", true);
 		// iniciamos la sesion
 		this.session = Session.getInstance(this.getProperties());
 		// iniciamos el transporte
