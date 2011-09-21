@@ -6,10 +6,12 @@
  */
 package org.schimpf.net.email;
 
+import java.util.Date;
 import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
@@ -29,7 +31,7 @@ public final class EmailSender {
 	 * 
 	 * @version Sep 20, 2011 12:21:38 AM
 	 */
-	private final MimeMessage	message;
+	private MimeMessage			message;
 
 	/**
 	 * Entorno para conectar al servidor SMTP
@@ -39,17 +41,42 @@ public final class EmailSender {
 	private final Properties	properties	= System.getProperties();
 
 	/**
+	 * Sesion para el envio del correo
+	 * 
+	 * @version Sep 21, 2011 9:47:45 AM
+	 */
+	private final Session		session;
+
+	/**
+	 * Destinatario del correo
+	 * 
+	 * @version Sep 21, 2011 10:05:05 AM
+	 */
+	private Address				to;
+
+	/**
+	 * Transporte para enviar el mensaje
+	 * 
+	 * @version Sep 21, 2011 9:49:15 AM
+	 */
+	private final Transport		transport;
+
+	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Sep 20, 2011 12:30:09 AM
 	 * @param smtpHost Servidor SMTP para el envio del correo
+	 * @throws NoSuchProviderException Si el metodo de envio SMTP no esta disponible
 	 */
-	public EmailSender(final String smtpHost) {
+	public EmailSender(final String smtpHost) throws NoSuchProviderException {
 		// almacenamos el host SMTP
 		this.getProperties().put("mail.smtp.host", smtpHost);
-		// iniciamos el mensaje
-		this.message = new MimeMessage(Session.getDefaultInstance(this.getProperties()));
+		this.getProperties().put("mail.debug", true);
+		// iniciamos la sesion
+		this.session = Session.getInstance(this.getProperties());
+		// iniciamos el transporte
+		this.transport = this.getSession().getTransport("smtp");
 	}
 
 	/**
@@ -83,6 +110,49 @@ public final class EmailSender {
 	}
 
 	/**
+	 * Conecta el transporte para el envio del correo
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 21, 2011 9:52:17 AM
+	 * @throws MessagingException Si no se puede conectar
+	 */
+	public void connect() throws MessagingException {
+		// conecta el transporte del correo
+		this.getTransport().connect();
+		// iniciamos el mensaje
+		this.message = new MimeMessage(this.getSession());
+	}
+
+	/**
+	 * Conecta el transporte para el envio del correo
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 21, 2011 9:53:17 AM
+	 * @param user Usuario
+	 * @param pass Contrasena
+	 * @return True si la conexion se realizo exitosamente
+	 */
+	public boolean connect(final String user, final String pass) {
+		try {
+			// conectamos el transporte con autenticacion
+			this.getTransport().connect((String) this.getProperties().get("mail.smtp.host"), user, pass);
+			// iniciamos el mensaje
+			this.message = new MimeMessage(this.getSession());
+			// retornamos true
+			return true;
+		} catch (final MessagingException e) {
+			// print the StackTrace
+			e.printStackTrace();
+		}
+		// retornamos false
+		return false;
+	}
+
+	/**
 	 * Envia el correo generado
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -93,8 +163,12 @@ public final class EmailSender {
 	 */
 	public boolean sendMail() {
 		try {
+			// seteamos la fecha de envio del correo
+			this.getMessage().setSentDate(new Date());
 			// enviamos el correo
-			Transport.send(this.getMessage());
+			this.getTransport().sendMessage(this.getMessage(), new Address[] { this.getTO() });
+			// cerramos la conexion
+			this.getTransport().close();
 			// retornamos true
 			return true;
 		} catch (final MessagingException e) {
@@ -163,6 +237,10 @@ public final class EmailSender {
 	public void setTo(final Address address) throws MessagingException {
 		// seteamos el destino
 		this.getMessage().setRecipient(RecipientType.TO, address);
+		// verificamos si hay valor
+		if (this.to == null)
+			// almacenamos el destinatario
+			this.to = address;
 	}
 
 	/**
@@ -191,5 +269,47 @@ public final class EmailSender {
 	private Properties getProperties() {
 		// retornamos el entorno
 		return this.properties;
+	}
+
+	/**
+	 * Retorna la sesion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 21, 2011 9:48:27 AM
+	 * @return Sesion
+	 */
+	private Session getSession() {
+		// retornamos la sesion
+		return this.session;
+	}
+
+	/**
+	 * Retorna el destinatario
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 21, 2011 10:04:13 AM
+	 * @return Destinatario
+	 */
+	private Address getTO() {
+		// retornamos el destinatario
+		return this.to;
+	}
+
+	/**
+	 * Retorna el transporte
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 21, 2011 9:50:33 AM
+	 * @return Transporte para el envio
+	 */
+	private Transport getTransport() {
+		// retornamos el transporte
+		return this.transport;
 	}
 }
