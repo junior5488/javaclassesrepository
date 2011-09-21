@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="Trunk"/>
 	<classpathentry kind="src" path="Data/test"/>
-	<classpathentry excluding="build.xml|lib/|schimpf-smtpintruder-b0.1.jar|smtp-intruder" kind="src" path="Data/apps/smtp-intruder"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SSH Library"/>
