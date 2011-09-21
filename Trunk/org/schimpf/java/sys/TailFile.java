@@ -61,8 +61,10 @@ public final class TailFile extends File implements Runnable {
 			final BufferedReader br = new BufferedReader(new FileReader(this));
 			// iniciamos un contenedor
 			String line = null;
-			// nos pocisionamos al final del fichero
-			br.skip(this.length() - 1);
+			// verificamos si el fichero tiene contenidos
+			if (this.length() > 0)
+				// nos pocisionamos al final del fichero
+				br.skip(this.length() - 1);
 			// recorremos hasta recibir la orden de finalizar
 			while (this.continueRunning()) {
 				// leemos una linea del fichero
