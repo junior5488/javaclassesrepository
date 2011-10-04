@@ -5,6 +5,9 @@
  */
 package org.schimpf.java.threads;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Thread para procesos
  * 
@@ -144,6 +147,6 @@ public abstract class Thread extends java.lang.Thread {
 	 */
 	protected final void log(final String message) {
 		// mostramos el mensaje en consola
-		System.out.println(this.getName().substring(this.getName().lastIndexOf(".") + 1) + " " + message);
+		System.out.println(new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + ": " + this.getName().substring(this.getName().lastIndexOf(".") + 1) + " " + message);
 	}
 }
