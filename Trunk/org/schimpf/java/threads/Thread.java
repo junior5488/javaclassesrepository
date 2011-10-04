@@ -130,7 +130,7 @@ public abstract class Thread extends java.lang.Thread {
 	 */
 	protected final void log(final String message) {
 		// mostramos el mensaje en consola
-		System.out.println("[" + this.getName().substring(this.getName().lastIndexOf(".") + 1) + "] " + message);
+		System.out.println(this.getName().substring(this.getName().lastIndexOf(".") + 1) + " " + message);
 	}
 
 	/**
