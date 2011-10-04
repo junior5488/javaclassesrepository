@@ -100,6 +100,20 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
+	 * Retorna el estado de la conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 3:50:09 PM
+	 * @return True si hay conexion
+	 */
+	public final boolean isConnected() {
+		// retornamos si existe una conexion
+		return this.getConnection() != null;
+	}
+
+	/**
 	 * Inicia el puerto y el thread
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>

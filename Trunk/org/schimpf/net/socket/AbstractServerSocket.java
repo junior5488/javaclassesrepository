@@ -145,7 +145,7 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 			// abrimos el socket
 			this.setConnection(this.getServerSocket().accept());
 			// mostramos quien se conecto
-			this.log("Connection received from " + this.getConnection().getInetAddress().getHostName());
+			this.log("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + " (" + this.getConnection().getInetAddress().getHostName() + ")");
 		} catch (final IOException e) {
 			// mostramos el stackTrace
 			e.printStackTrace();

@@ -259,26 +259,8 @@ public final class ThreadsManager<TType extends Thread> {
 	protected ThreadsListener<TType> getListener() {
 		// verificamos si es null
 		if (this.listener == null)
-			// retornamos uno vacio
-			return new ThreadsListener<TType>() {
-				@Override
-				public void allThreadsFinished() {}
-
-				@Override
-				public void threadResumed(final TType thread) {}
-
-				@Override
-				public void threadFinished(final TType thread) {}
-
-				@Override
-				public void threadInterrupted(final TType thread) {}
-
-				@Override
-				public void threadPaused(final TType thread) {}
-
-				@Override
-				public void threadStarted(final TType thread) {}
-			};
+			// creamos uno vacio
+			this.listener = new EmptyThreadsListener<TType>();
 		// retornamos el capturador de eventos
 		return this.listener;
 	}
