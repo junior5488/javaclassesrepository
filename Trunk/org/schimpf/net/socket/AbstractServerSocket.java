@@ -79,6 +79,12 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	}
 
 	@Override
+	protected final Object firstData() {
+		// retornamos null
+		return null;
+	}
+
+	@Override
 	protected final Socket getConnection() {
 		// retornamos la conexion abierta
 		return this.connection;
@@ -91,13 +97,10 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	}
 
 	@Override
-	protected final void init() {
+	protected final void initConnection() {
 		// esperamos una conexion
 		this.waitForConnection();
 	}
-
-	@Override
-	protected final void sendFirst() {}
 
 	/**
 	 * Retorna el socket principal

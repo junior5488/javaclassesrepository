@@ -108,7 +108,7 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	}
 
 	@Override
-	protected final void init() {}
+	protected final void initConnection() {}
 
 	/**
 	 * Retorna el socket principal

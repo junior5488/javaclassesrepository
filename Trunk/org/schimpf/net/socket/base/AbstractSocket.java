@@ -32,6 +32,13 @@ public abstract class AbstractSocket extends Thread {
 	private ObjectInputStream		inputStream;
 
 	/**
+	 * Bandera para continuar con el puerto abierto
+	 * 
+	 * @version Oct 4, 2011 1:33:14 PM
+	 */
+	private boolean					isContinue	= true;
+
+	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
@@ -57,7 +64,7 @@ public abstract class AbstractSocket extends Thread {
 	 * 
 	 * @version Aug 5, 2011 9:16:15 AM
 	 */
-	public static final Integer	PORT	= 3600;
+	public static final Integer	PORT			= 3600;
 	static {
 		try {
 			// cargamos el localhost
@@ -93,15 +100,53 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
+	 * Inicia el puerto y el thread
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 12:57:06 PM
+	 * @throws InterruptedException Si el thread ya finalizo
+	 */
+	public final void open() throws InterruptedException {
+		// verificamos si esta finalizado
+		if (this.getState().equals(State.TERMINATED))
+			// salimos con una excepcion
+			throw new InterruptedException("El thread ya esta finalizado");
+		// modificamos la bandera
+		this.setIsContinue(true);
+		// verificamos si el estado es nuevo
+		if (this.getState().equals(State.NEW))
+			// iniciamos el thread
+			this.start();
+		else
+			synchronized (this) {
+				// continuamos la ejecucion
+				this.notify();
+			}
+	}
+
+	/**
 	 * Cierra el socket
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 10:40:53 AM
+	 * @param isContinue False para finalizar el thread
 	 */
-	protected final void close() {
+	protected final void close(final boolean isContinue) {
+		// modificamos la bandera
+		this.setIsContinue(isContinue);
+		// verificamos si esta esperando
+		if (this.getState().equals(State.WAITING) || this.getState().equals(State.TIMED_WAITING))
+			synchronized (this) {
+				// levantamos el thread
+				this.notify();
+			}
 		try {
+			// mostramos un log
+			this.log("Clossing connection port..");
 			// cerramos la conexion
 			this.getConnection().close();
 		} catch (final IOException e) {
@@ -121,9 +166,11 @@ public abstract class AbstractSocket extends Thread {
 	protected abstract void endConnection();
 
 	@Override
-	protected final boolean execute() {
+	protected final boolean execute() throws InterruptedException {
+		// mostramos un log
+		this.log("Opening connection..");
 		// iniciamos
-		this.init();
+		this.initConnection();
 		// abrimos los streams de comunicacion
 		this.openStreams();
 		// bandera para continuar recibiendo
@@ -131,11 +178,13 @@ public abstract class AbstractSocket extends Thread {
 		// verificamos si empezamos enviando
 		if (!this.startListening())
 			// enviamos el primer dato
-			this.sendFirst();
+			this.send(this.firstData());
+		// datos a recibir
+		Object data;
 		// ingresamos a un bucle
 		do {
 			// recibimos los datos y los procesamos
-			final Object data = this.receive();
+			data = this.receive();
 			// bandera para continuar el thread
 			continuar = data != null;
 			// verificamos si hay datos
@@ -145,7 +194,7 @@ public abstract class AbstractSocket extends Thread {
 					// modificamos la bandera
 					continuar = false;
 					// mostramos un log
-					this.log("Clossing connection..");
+					this.log("Ending connection..");
 					// finalizamos la conexion
 					this.endConnection();
 					// verificamos si el comando fue shutdown
@@ -154,17 +203,39 @@ public abstract class AbstractSocket extends Thread {
 						this.log("Shuting down connection..");
 						// finalizamos la conexion
 						this.shutdownConnection();
-						// verificamos si el puerto no se cerro
-						if (!this.getConnection().isClosed())
-							// finalizamos el puerto
-							this.close();
 					}
+					// verificamos si el puerto no se cerro
+					if (!this.getConnection().isClosed())
+						// finalizamos el puerto
+						this.close(!data.equals(Commands.SHUTDOWN));
 				} else
 					// procesamos los datos
 					continuar = this.process(data);
 		} while (continuar);
+		// verificamos la bandera
+		if (this.isContinue())
+			// verificamos si el comando fue finalizar
+			if (data == null || !data.equals(Commands.SHUTDOWN))
+				synchronized (this) {
+					// pausamos el trhead
+					this.wait();
+				}
 		// retornamos si seguimos con el puerto abierto
-		return !this.getConnection().isClosed();
+		return this.isContinue();
+	}
+
+	/**
+	 * Envia el primer dato al server
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 11:53:31 AM
+	 * @return Datos a enviar
+	 */
+	protected Object firstData() {
+		// por defecto enviamos null
+		return null;
 	}
 
 	/**
@@ -197,7 +268,7 @@ public abstract class AbstractSocket extends Thread {
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 10:58:17 AM
 	 */
-	protected abstract void init();
+	protected void initConnection() {}
 
 	/**
 	 * Procesa los datos recibidos
@@ -244,16 +315,6 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
-	 * Envia el primer dato al server
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 11:53:31 AM
-	 */
-	protected abstract void sendFirst();
-
-	/**
 	 * Finaliza la conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -289,6 +350,20 @@ public abstract class AbstractSocket extends Thread {
 	private ObjectOutputStream getOutput() {
 		// retornamos el stream de salida
 		return this.outputStream;
+	}
+
+	/**
+	 * Retorna la bandera para continuar el proceso
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 1:31:52 PM
+	 * @return Bandera para continuar
+	 */
+	private boolean isContinue() {
+		// retornamos la bandera
+		return this.isContinue;
 	}
 
 	/**
@@ -346,6 +421,20 @@ public abstract class AbstractSocket extends Thread {
 	private void setInput(final ObjectInputStream stream) {
 		// almacenamos el stream de entrada
 		this.inputStream = stream;
+	}
+
+	/**
+	 * Almacena la bandera para continuar
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 1:32:37 PM
+	 * @param isContinue Valor para la bandera
+	 */
+	private void setIsContinue(final boolean isContinue) {
+		// almacenamos la bandera
+		this.isContinue = isContinue;
 	}
 
 	/**
