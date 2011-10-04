@@ -56,6 +56,28 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 		}
 	}
 
+	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 10:56:11 AM
+	 * @param name Nombre del thread
+	 * @param port Puerto para inicar el socket
+	 */
+	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name, final Integer port) {
+		// enviamos el constructor
+		super(name, true);
+		try {
+			// creamos el socket
+			this.serverSocket = new ServerSocket(port);
+		} catch (final IOException e) {
+			// mostramos el trace
+			e.printStackTrace();
+			// finalizamos el thread
+			this.shutdown();
+		}
+	}
+
 	@Override
 	protected final Socket getConnection() {
 		// retornamos la conexion abierta
