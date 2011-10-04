@@ -141,13 +141,24 @@ public abstract class AbstractSocket extends Thread {
 			// verificamos si hay datos
 			if (data != null)
 				// verificamos si es el comando de salir
-				if (data.equals(Commands.EXIT)) {
+				if (data.equals(Commands.EXIT) || data.equals(Commands.SHUTDOWN)) {
 					// modificamos la bandera
 					continuar = false;
 					// mostramos un log
 					this.log("Clossing connection..");
 					// finalizamos la conexion
 					this.endConnection();
+					// verificamos si el comando fue shutdown
+					if (data.equals(Commands.SHUTDOWN)) {
+						// mostramos un log
+						this.log("Shuting down connection..");
+						// finalizamos la conexion
+						this.shutdownConnection();
+						// verificamos si el puerto no se cerro
+						if (!this.getConnection().isClosed())
+							// finalizamos el puerto
+							this.close();
+					}
 				} else
 					// procesamos los datos
 					continuar = this.process(data);
@@ -241,6 +252,16 @@ public abstract class AbstractSocket extends Thread {
 	 * @version Aug 5, 2011 11:53:31 AM
 	 */
 	protected abstract void sendFirst();
+
+	/**
+	 * Finaliza la conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 12:03:04 PM
+	 */
+	protected abstract void shutdownConnection();
 
 	/**
 	 * Retorna el stream de entrada
