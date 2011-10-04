@@ -120,6 +120,20 @@ public abstract class Thread extends java.lang.Thread {
 	protected void halt(final boolean interrupted) {}
 
 	/**
+	 * Retorna el estado del thread
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 2, 2011 5:31:11 PM
+	 * @return Estado del thread
+	 */
+	protected boolean isRunning() {
+		// retornamos la bandera
+		return this.running;
+	}
+
+	/**
 	 * Muestra un mensaje en consola
 	 * 
 	 * @author Hermann D. Schimpf
@@ -131,19 +145,5 @@ public abstract class Thread extends java.lang.Thread {
 	protected final void log(final String message) {
 		// mostramos el mensaje en consola
 		System.out.println(this.getName().substring(this.getName().lastIndexOf(".") + 1) + " " + message);
-	}
-
-	/**
-	 * Retorna el estado del thread
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 2, 2011 5:31:11 PM
-	 * @return Estado del thread
-	 */
-	private boolean isRunning() {
-		// retornamos la bandera
-		return this.running;
 	}
 }
