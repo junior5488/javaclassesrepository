@@ -36,6 +36,17 @@ public interface ThreadsListener<TType extends Thread> {
 	public void allThreadsFinished();
 
 	/**
+	 * Se ejecuta cuando un thread continua su ejecucion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Sep 14, 2011 1:29:40 PM
+	 * @param thread Thread que se continua su ejecucion
+	 */
+	public void threadResumed(TType thread);
+
+	/**
 	 * Se ejecuta cuando un thread finaliza
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -55,6 +66,16 @@ public interface ThreadsListener<TType extends Thread> {
 	 * @param thread Thread que se interrumpio
 	 */
 	public void threadInterrupted(TType thread);
+
+	/**
+	 * Se ejecuta cuando un thread es pausado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @version Aug 10, 2011 9:31:59 AM
+	 * @param thread Thread que se pauso
+	 */
+	public void threadPaused(TType thread);
 
 	/**
 	 * Se ejecuta cuando un thread inicia

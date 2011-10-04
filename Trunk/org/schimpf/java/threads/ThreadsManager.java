@@ -85,15 +85,36 @@ public final class ThreadsManager<TType extends Thread> {
 			this.waitForStart();
 			// ejecutamos el proceso de thread iniciado
 			ThreadsManager.this.getListener().threadStarted(this.getThread());
-			// esperamos a que finalize
-			this.waitForFinish();
-			// verificamos si el thread fue interrumpido
-			if (this.getThread().isInterrupted())
-				// ejecutamos el proceso al interrumpir el thread
-				ThreadsManager.this.getListener().threadInterrupted(this.getThread());
-			else
-				// ejecutamos el proceso al finalizar el thread
-				ThreadsManager.this.getListener().threadFinished(this.getThread());
+			// obtenemos el estado actual del thread
+			State oldState = this.getThread().getState();
+			// ingresamos a un bucle
+			do {
+				// monitoreamos un cambio de estado
+				while (oldState.equals(this.getThread().getState()))
+					try {
+						// esperamos 100ms
+						java.lang.Thread.sleep(100);
+					} catch (final InterruptedException e) {}
+				// obtenemos el estado actual del thread
+				oldState = this.getThread().getState();
+				// verificamos si el thread fue interrumpido
+				if (this.getThread().isInterrupted())
+					// ejecutamos el proceso al interrumpir el thread
+					ThreadsManager.this.getListener().threadInterrupted(this.getThread());
+				// verificamos si continua ejecutandose
+				else if (oldState.equals(State.RUNNABLE))
+					// ejecutamos el proceso al continuar el thread
+					ThreadsManager.this.getListener().threadResumed(this.getThread());
+				// verificamos si es estado es en espera
+				else if (oldState.equals(State.WAITING) || oldState.equals(State.TIMED_WAITING))
+					// ejecutamos el proceso al pausar el thread
+					ThreadsManager.this.getListener().threadPaused(this.getThread());
+				// verificamos si finalizo
+				else if (oldState.equals(State.TERMINATED))
+					// ejecutamos el proceso al finalizar el thread
+					ThreadsManager.this.getListener().threadFinished(this.getThread());
+				// recorremos hasta que el thread finalize
+			} while (!oldState.equals(State.TERMINATED));
 			// verificamos si ya no hay mas threasd
 			if (!ThreadsManager.this.hasAlive())
 				// ejecutamos el proceso de finalizacion de todos los threads
@@ -113,22 +134,6 @@ public final class ThreadsManager<TType extends Thread> {
 		private TType getThread() {
 			// retornamos el thread
 			return this.thread;
-		}
-
-		/**
-		 * Espera a que el thread finalize
-		 * 
-		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-		 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-		 * @version Aug 11, 2011 8:36:29 AM
-		 */
-		private void waitForFinish() {
-			// verificamos si el thread finalizo
-			while (!this.getThread().getState().equals(Thread.State.TERMINATED))
-				try {
-					// esperamos que el thread finalize
-					this.getThread().join(500);
-				} catch (final InterruptedException ignored) {}
 		}
 
 		/**
@@ -260,10 +265,16 @@ public final class ThreadsManager<TType extends Thread> {
 				public void allThreadsFinished() {}
 
 				@Override
+				public void threadResumed(final TType thread) {}
+
+				@Override
 				public void threadFinished(final TType thread) {}
 
 				@Override
 				public void threadInterrupted(final TType thread) {}
+
+				@Override
+				public void threadPaused(final TType thread) {}
 
 				@Override
 				public void threadStarted(final TType thread) {}
