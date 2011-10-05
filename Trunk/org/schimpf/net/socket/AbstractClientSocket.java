@@ -35,18 +35,19 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 11:13:30 AM
 	 * @param name Nombre del thread
+	 * @throws IOException Si no se puede crear la conexion al socket
 	 */
-	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name) {
+	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name) throws IOException {
 		// enviamos el constructor
 		super(name);
 		try {
 			// creamos el socket
 			this.clientSocket = new ClientSocket(AbstractSocket.HOST, AbstractSocket.PORT);
 		} catch (final IOException e) {
-			// mostramos el trace
-			e.printStackTrace();
 			// finalizamos el thread
 			this.shutdown();
+			// relanzamos la excepcion
+			throw e;
 		}
 	}
 
@@ -58,18 +59,19 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	 * @param name Nombre del thread
 	 * @param host Host para iniciar el socket
 	 * @param port Puerto para iniciar el socket
+	 * @throws IOException Si no se puede crear la conexion al socket
 	 */
-	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final InetAddress host, final Integer port) {
+	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final InetAddress host, final Integer port) throws IOException {
 		// enviamos el constructor
 		super(name);
 		try {
 			// creamos el socket
 			this.clientSocket = new ClientSocket(host, port);
 		} catch (final IOException e) {
-			// mostramos el trace
-			e.printStackTrace();
 			// finalizamos el thread
 			this.shutdown();
+			// relanzamos la excepcion
+			throw e;
 		}
 	}
 
@@ -80,18 +82,19 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	 * @version Aug 5, 2011 11:13:30 AM
 	 * @param name Nombre del thread
 	 * @param port Puerto para iniciar el socket
+	 * @throws IOException Si no se puede crear la conexion al socket
 	 */
-	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final Integer port) {
+	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final Integer port) throws IOException {
 		// enviamos el constructor
 		super(name);
 		try {
 			// creamos el socket
 			this.clientSocket = new ClientSocket(AbstractSocket.HOST, port);
 		} catch (final IOException e) {
-			// mostramos el trace
-			e.printStackTrace();
 			// finalizamos el thread
 			this.shutdown();
+			// relanzamos la excepcion
+			throw e;
 		}
 	}
 

@@ -10,6 +10,7 @@ import org.schimpf.net.socket.base.AbstractSocket;
 import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.socket.base.ServerSocket;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -41,18 +42,19 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 10:56:11 AM
 	 * @param name Nombre del thread
+	 * @throws IOException Si no se puede crear el socket
 	 */
-	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name) {
+	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name) throws IOException {
 		// enviamos el constructor
-		super(name, true);
+		super(name, AbstractSocket.PORT, true);
 		try {
 			// creamos el socket
 			this.serverSocket = new ServerSocket(AbstractSocket.PORT);
 		} catch (final IOException e) {
-			// mostramos el trace
-			e.printStackTrace();
 			// finalizamos el thread
 			this.shutdown();
+			// relanzamos la excepcion
+			throw e;
 		}
 	}
 
@@ -63,20 +65,34 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	 * @version Aug 5, 2011 10:56:11 AM
 	 * @param name Nombre del thread
 	 * @param port Puerto para inicar el socket
+	 * @throws IOException Si no se puede crear el socket
 	 */
-	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name, final Integer port) {
+	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name, final Integer port) throws IOException {
 		// enviamos el constructor
-		super(name, true);
+		super(name, port, true);
 		try {
 			// creamos el socket
 			this.serverSocket = new ServerSocket(port);
 		} catch (final IOException e) {
-			// mostramos el trace
-			e.printStackTrace();
 			// finalizamos el thread
 			this.shutdown();
+			// relanzamos la exepcion
+			throw e;
 		}
 	}
+
+	/**
+	 * Ejecuta un proceso al recibir una conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 5:10:41 PM
+	 * @param source Origen de la conexion
+	 * @param localPort Puerto en que se recibio la conexion
+	 * @param sourcePort Puerto de conexion con el origen
+	 */
+	protected void connectionReceived(final InetAddress source, final Integer localPort, final Integer sourcePort) {}
 
 	@Override
 	protected final Object firstData() {
@@ -146,6 +162,8 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 			this.setConnection(this.getServerSocket().accept());
 			// mostramos quien se conecto
 			this.log("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + " (" + this.getConnection().getInetAddress().getHostName() + ")");
+			// ejecutamos el proceso de conexion recivida
+			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
 		} catch (final IOException e) {
 			// mostramos el stackTrace
 			e.printStackTrace();
