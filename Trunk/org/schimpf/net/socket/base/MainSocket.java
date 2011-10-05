@@ -29,6 +29,17 @@ public interface MainSocket {
 	public void close() throws IOException;
 
 	/**
+	 * Retorna el puerto de conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 6:28:07 PM
+	 * @return Puerto de conexion
+	 */
+	public int getLocalPort();
+
+	/**
 	 * Retorna si el socket esta cerrado
 	 * 
 	 * @author Hermann D. Schimpf
