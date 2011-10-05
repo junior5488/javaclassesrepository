@@ -100,6 +100,22 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 11:49:13 AM
+	 * @param name Nombre del thread
+	 * @param port Puerto de conexion
+	 * @param startListening Iniciar escuchando datos
+	 */
+	public AbstractSocket(final Class<? extends AbstractSocket> name, final Integer port, final boolean startListening) {
+		// enviamos el constructor
+		super(name, port.toString());
+		// almacenamos la bandera
+		this.setStartListening(startListening);
+	}
+
+	/**
 	 * Retorna el estado de la conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -204,7 +220,7 @@ public abstract class AbstractSocket extends Thread {
 			// verificamos si hay datos
 			if (data != null)
 				// verificamos si es el comando de salir
-				if (data.equals(Commands.EXIT) || data.equals(Commands.SHUTDOWN)) {
+				if (data.toString().equalsIgnoreCase(Commands.EXIT) || data.toString().equalsIgnoreCase(Commands.SHUTDOWN)) {
 					// modificamos la bandera
 					continuar = false;
 					// mostramos un log
@@ -212,7 +228,7 @@ public abstract class AbstractSocket extends Thread {
 					// finalizamos la conexion
 					this.endConnection();
 					// verificamos si el comando fue shutdown
-					if (data.equals(Commands.SHUTDOWN)) {
+					if (data.toString().equalsIgnoreCase(Commands.SHUTDOWN)) {
 						// mostramos un log
 						this.log("Shuting down connection..");
 						// finalizamos la conexion
@@ -221,15 +237,18 @@ public abstract class AbstractSocket extends Thread {
 					// verificamos si el puerto no se cerro
 					if (!this.getConnection().isClosed())
 						// finalizamos el puerto
-						this.close(!data.equals(Commands.SHUTDOWN));
-				} else
+						this.close(!data.toString().equalsIgnoreCase(Commands.SHUTDOWN));
+				} else {
+					// mostramos un log
+					this.log("RECEIVED: " + data);
 					// procesamos los datos
 					continuar = this.process(data);
+				}
 		} while (continuar);
 		// verificamos la bandera
 		if (this.isContinue())
 			// verificamos si el comando fue finalizar
-			if (data == null || !data.equals(Commands.SHUTDOWN))
+			if (data == null || !data.toString().equalsIgnoreCase(Commands.SHUTDOWN))
 				synchronized (this) {
 					// pausamos el trhead
 					this.wait();
