@@ -39,18 +39,18 @@ public abstract class AbstractSocket extends Thread {
 	private boolean					isContinue	= true;
 
 	/**
+	 * Bandera para iniciar escuchando
+	 * 
+	 * @version Aug 22, 2011 3:38:35 PM
+	 */
+	private boolean					isServer;
+
+	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
 	 */
 	private ObjectOutputStream		outputStream;
-
-	/**
-	 * Bandera para iniciar escuchando
-	 * 
-	 * @version Aug 22, 2011 3:38:35 PM
-	 */
-	private boolean					startListening;
 
 	/**
 	 * Host por defecto
@@ -90,13 +90,13 @@ public abstract class AbstractSocket extends Thread {
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 11:49:13 AM
 	 * @param name Nombre del thread
-	 * @param startListening Iniciar escuchando datos
+	 * @param isServer Iniciar escuchando datos como servidor
 	 */
-	public AbstractSocket(final Class<? extends AbstractSocket> name, final boolean startListening) {
+	public AbstractSocket(final Class<? extends AbstractSocket> name, final boolean isServer) {
 		// enviamos el constructor
 		super(name);
 		// almacenamos la bandera
-		this.setStartListening(startListening);
+		this.setIsServer(isServer);
 	}
 
 	/**
@@ -106,13 +106,13 @@ public abstract class AbstractSocket extends Thread {
 	 * @version Aug 5, 2011 11:49:13 AM
 	 * @param name Nombre del thread
 	 * @param port Puerto de conexion
-	 * @param startListening Iniciar escuchando datos
+	 * @param isServer Iniciar escuchando datos como servidor
 	 */
-	public AbstractSocket(final Class<? extends AbstractSocket> name, final Integer port, final boolean startListening) {
+	public AbstractSocket(final Class<? extends AbstractSocket> name, final Integer port, final boolean isServer) {
 		// enviamos el constructor
 		super(name, port.toString());
 		// almacenamos la bandera
-		this.setStartListening(startListening);
+		this.setIsServer(isServer);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public abstract class AbstractSocket extends Thread {
 	@Override
 	protected final boolean execute() throws InterruptedException {
 		// mostramos un log
-		this.log("Opening connection..");
+		this.log("Starting connection..");
 		// iniciamos
 		this.initConnection();
 		// abrimos los streams de comunicacion
@@ -206,7 +206,7 @@ public abstract class AbstractSocket extends Thread {
 		// bandera para continuar recibiendo
 		boolean continuar = true;
 		// verificamos si empezamos enviando
-		if (!this.startListening())
+		if (!this.isServer())
 			// enviamos el primer dato
 			this.send(this.firstData());
 		// datos a recibir
@@ -218,37 +218,22 @@ public abstract class AbstractSocket extends Thread {
 			// bandera para continuar el thread
 			continuar = data != null;
 			// verificamos si hay datos
-			if (data != null)
-				// verificamos si es el comando de salir
-				if (data.toString().equalsIgnoreCase(Commands.EXIT) || data.toString().equalsIgnoreCase(Commands.SHUTDOWN)) {
-					// modificamos la bandera
-					continuar = false;
-					// mostramos un log
-					this.log("Ending connection..");
-					// finalizamos la conexion
-					this.endConnection();
-					// verificamos si el comando fue shutdown
-					if (data.toString().equalsIgnoreCase(Commands.SHUTDOWN)) {
-						// mostramos un log
-						this.log("Shuting down connection..");
-						// finalizamos la conexion
-						this.shutdownConnection();
-					}
-					// verificamos si el puerto no se cerro
-					if (!this.getConnection().isClosed())
-						// finalizamos el puerto
-						this.close(!data.toString().equalsIgnoreCase(Commands.SHUTDOWN));
-				} else {
-					// mostramos un log
-					this.log("RECEIVED: " + data);
+			if (data != null) {
+				// mostramos un log
+				this.log((Commands.get(data.toString()) != null ? "=>> " : ">>> ") + data);
+				// verificamos si es un comando interno
+				if (Commands.get(data.toString()) != null)
+					// procesamos el comando
+					continuar = this.processCommand(Commands.get(data.toString()));
+				else
 					// procesamos los datos
 					continuar = this.process(data);
-				}
+			}
 		} while (continuar);
 		// verificamos la bandera
 		if (this.isContinue())
 			// verificamos si el comando fue finalizar
-			if (data == null || !data.toString().equalsIgnoreCase(Commands.SHUTDOWN))
+			if (data == null || Commands.get(data.toString()) != null && !Commands.get(data.toString()).equals(Commands.SHUTDOWN))
 				synchronized (this) {
 					// pausamos el trhead
 					this.wait();
@@ -316,6 +301,18 @@ public abstract class AbstractSocket extends Thread {
 	protected abstract boolean process(Object data);
 
 	/**
+	 * Proceso del comando personalizado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 5, 2011 12:15:12 AM
+	 * @param command Comando
+	 * @return False si se quiere finalizar la transmision de datos
+	 */
+	protected abstract boolean processAfterCommand(Commands command);
+
+	/**
 	 * Envia datos al output
 	 * 
 	 * @author Hermann D. Schimpf
@@ -332,7 +329,7 @@ public abstract class AbstractSocket extends Thread {
 				// retornamos false
 				return false;
 			// mostramos un mensaje
-			this.log("SENDING: " + data);
+			this.log((Commands.get(data.toString()) != null ? "<<= " : "<<< ") + data);
 			// enviamos el dato
 			this.getOutput().writeObject(data);
 			// escribimos el dato
@@ -400,6 +397,20 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
+	 * Retorna la bandera
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 22, 2011 3:38:49 PM
+	 * @return True si inicia escuchando
+	 */
+	private boolean isServer() {
+		// retornamos la bandera
+		return this.isServer;
+	}
+
+	/**
 	 * Abre los streams de comunicacion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -409,11 +420,68 @@ public abstract class AbstractSocket extends Thread {
 	 */
 	private void openStreams() {
 		try {
+			// mostramos un log
+			this.log("Opening streams..");
 			// abrimos el stream de salida
 			this.setOutput(new ObjectOutputStream(this.getConnection().getOutputStream()));
 			// abrimos el stream de entrada
 			this.setInput(new ObjectInputStream(this.getConnection().getInputStream()));
 		} catch (final IOException e) {}
+	}
+
+	/**
+	 * Procesa el comando recibido
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 4, 2011 11:51:06 PM
+	 * @param command Comando recibido
+	 * @return True si el comando es correcto
+	 */
+	private boolean processCommand(final Commands command) {
+		// bandera de retorno
+		boolean continuar = true;
+		// verificamos si el comando es OK
+		if (command.equals(Commands.OK))
+			// procesamos el ok
+			continuar = this.process(command);
+		// verificamos si es el comando de saludo inicial
+		else if (command.equals(Commands.HELO) && this.isServer())
+			// enviamos el comando de retorno
+			this.send(Commands.HELO);
+		// verificamos si el comando es saludo final
+		else if (command.equals(Commands.BYE) && !this.isServer()) {
+			// modificamos la bandera
+			continuar = false;
+			// cerramos el puerto
+			this.close(false);
+			// verificamos si es el comando de salir
+		} else if (command.equals(Commands.EXIT) || command.equals(Commands.SHUTDOWN)) {
+			// modificamos la bandera
+			continuar = false;
+			// mostramos un log
+			this.log("Ending connection..");
+			// finalizamos la conexion
+			this.endConnection();
+			// verificamos si el comando fue shutdown
+			if (command.equals(Commands.SHUTDOWN)) {
+				// mostramos un log
+				this.log("Shuting down connection..");
+				// finalizamos la conexion
+				this.shutdownConnection();
+			}
+			// enviamos adios
+			this.send(Commands.BYE);
+			// verificamos si el puerto no se cerro
+			if (!this.getConnection().isClosed())
+				// finalizamos el puerto
+				this.close(!command.equals(Commands.SHUTDOWN));
+		} else
+			// procesamos el comando personalizadamente
+			continuar = this.processAfterCommand(command);
+		// retornamos la bandera
+		return continuar;
 	}
 
 	/**
@@ -471,6 +539,20 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
+	 * Almacena la bandera para iniciar escuchando como servidor
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 22, 2011 3:37:32 PM
+	 * @param isServer True para iniciar escuchando como servidor
+	 */
+	private void setIsServer(final boolean isServer) {
+		// almacenamos la bandera
+		this.isServer = isServer;
+	}
+
+	/**
 	 * Almacena el outputStream de la conexion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -485,33 +567,5 @@ public abstract class AbstractSocket extends Thread {
 		this.outputStream = stream;
 		// limpiamos el stream
 		this.getOutput().flush();
-	}
-
-	/**
-	 * Almacena la bandera para iniciar escuchando
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 22, 2011 3:37:32 PM
-	 * @param startListening True para iniciar escuchando
-	 */
-	private void setStartListening(final boolean startListening) {
-		// almacenamos la bandera
-		this.startListening = startListening;
-	}
-
-	/**
-	 * Retorna la bandera
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 22, 2011 3:38:49 PM
-	 * @return True si inicia escuchando
-	 */
-	private boolean startListening() {
-		// retornamos la bandera
-		return this.startListening;
 	}
 }

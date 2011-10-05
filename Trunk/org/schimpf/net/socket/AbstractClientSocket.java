@@ -9,6 +9,7 @@ package org.schimpf.net.socket;
 import org.schimpf.net.socket.base.AbstractSocket;
 import org.schimpf.net.socket.base.ClientSocket;
 import org.schimpf.net.socket.base.MainSocket;
+import org.schimpf.net.utils.Commands;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -99,6 +100,12 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	}
 
 	@Override
+	protected final Object firstData() {
+		// retornamos el comando de saludo?
+		return Commands.HELO;
+	}
+
+	@Override
 	protected final Socket getConnection() {
 		// retornamos el socket local
 		return this.getClientSocket();
@@ -112,6 +119,20 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 
 	@Override
 	protected final void initConnection() {}
+
+	@Override
+	protected boolean processAfterCommand(final Commands command) {
+		// verificamos si es el saludo retornado
+		if (command.equals(Commands.HELO))
+			// solicitamos iniciar datos
+			this.send(Commands.DATA);
+		// verificamos si es la respuesta a iniciar datos
+		else if (command.equals(Commands.START))
+			// iniciamos el proceso de datos
+			this.process(Commands.START);
+		// retornamos true
+		return true;
+	}
 
 	/**
 	 * Retorna el socket principal

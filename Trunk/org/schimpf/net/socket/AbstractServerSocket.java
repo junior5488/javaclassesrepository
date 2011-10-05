@@ -9,6 +9,7 @@ package org.schimpf.net.socket;
 import org.schimpf.net.socket.base.AbstractSocket;
 import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.socket.base.ServerSocket;
+import org.schimpf.net.utils.Commands;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -116,6 +117,20 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	protected final void initConnection() {
 		// esperamos una conexion
 		this.waitForConnection();
+	}
+
+	@Override
+	protected boolean processAfterCommand(final Commands command) {
+		// verificamos si el comando es iniciar datos
+		if (command.equals(Commands.DATA))
+			// enviamos start
+			this.send(Commands.START);
+		// verificamos si es el saludo final del cliente
+		else if (command.equals(Commands.BYE))
+			// retornamos false
+			return false;
+		// retornamos true
+		return true;
 	}
 
 	/**
