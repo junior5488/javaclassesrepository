@@ -169,6 +169,25 @@ public final class ThreadsManager<TType extends Thread> {
 	}
 
 	/**
+	 * Retorna si existen threads en ejecucion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @version Aug 5, 2011 12:42:24 AM
+	 * @return True si existen threads vivos
+	 */
+	public boolean hasAlive() {
+		// recorremos los threads
+		for (final TType thread: this.getThreads())
+			// verificamos si esta vivo
+			if (!thread.getState().equals(Thread.State.TERMINATED))
+				// retornamos true
+				return true;
+		// retornamos false
+		return false;
+	}
+
+	/**
 	 * Setea el capturador de eventos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -263,25 +282,6 @@ public final class ThreadsManager<TType extends Thread> {
 			this.listener = new EmptyThreadsListener<TType>();
 		// retornamos el capturador de eventos
 		return this.listener;
-	}
-
-	/**
-	 * Retorna si existen threads en ejecucion
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @version Aug 5, 2011 12:42:24 AM
-	 * @return True si existen threads vivos
-	 */
-	protected boolean hasAlive() {
-		// recorremos los threads
-		for (final TType thread: this.getThreads())
-			// verificamos si esta vivo
-			if (!thread.getState().equals(Thread.State.TERMINATED))
-				// retornamos true
-				return true;
-		// retornamos false
-		return false;
 	}
 
 	/**
