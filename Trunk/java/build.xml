@@ -1,31 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.schimpf.net" default="make" basedir=".">
+<project name="org.schimpf.java" default="make" basedir=".">
 	<target name="init">
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
-		<property name="dir.src" value="Trunk/org/schimpf/net"/>
+		<property name="dir.src" value="Trunk/java/src"/>
 		<property name="dir.tmp" value="Data/tmp"/>
 		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="Data/ant/net.number"/>
-		<property name="jar.start" value="schimpf-net"/>
+		<buildnumber file="Trunk/java/build.number"/>
+		<property name="jar.start" value="schimpf-java"/>
 		<property name="jar.version" value="b0.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
 		<property name="compile.debug" value="true"/>
-		<!-- Librerias para la compilacion -->
-		<path id="compile.classpath">
-			<fileset dir="Data/builds/b0.1">
-				<include name="schimpf-utils-b0.1.jar"/>
-				<include name="schimpf-java-b0.1.jar"/>
-			</fileset>
-			<fileset dir="/archivos/Software/JAVA">
-				<include name="ssh-java.jar"/>
-				<include name="email/mailapi.jar"/>
-				<include name="email/smtp.jar"/>
-			</fileset>
-		</path>
    </target>
 	
    <target name="clean" depends="init">
@@ -45,9 +33,7 @@
    
 	<target name="compile" depends="prepare">
 		<echo message="Compilando fuentes del proyecto"/>
-		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
-			<classpath refid="compile.classpath"/>
-		</javac>
+		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false"/>
    </target>
    
 	<target name="make" depends="compile">

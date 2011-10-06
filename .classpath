@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="Trunk"/>
+	<classpathentry kind="src" path="Trunk/util/src"/>
+	<classpathentry kind="src" path="Trunk/awt/src"/>
+	<classpathentry kind="src" path="Trunk/java/src"/>
+	<classpathentry kind="src" path="Trunk/net/src"/>
+	<classpathentry kind="src" path="Trunk/sql/src"/>
 	<classpathentry kind="src" path="Data/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>

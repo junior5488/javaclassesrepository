@@ -3,7 +3,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 5:14:32 PM
  */
-package org.schimpf.utils.exceptions;
+package org.schimpf.util.exceptions;
 
 /**
  * Excepcion de falta de datos de conexion

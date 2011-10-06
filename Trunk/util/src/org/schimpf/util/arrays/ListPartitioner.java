@@ -3,7 +3,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @date Feb 10, 2011 10:27:55 AM
  */
-package org.schimpf.utils.arrays;
+package org.schimpf.util.arrays;
 
 import java.util.ArrayList;
 import java.util.HashMap;

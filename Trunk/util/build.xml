@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.schimpf.awt" default="make" basedir=".">
+<project name="org.schimpf.utils" default="make" basedir=".">
 	<target name="init">
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
-		<property name="dir.src" value="Trunk/org/schimpf/awt"/>
+		<property name="dir.src" value="Trunk/util/src"/>
 		<property name="dir.tmp" value="Data/tmp"/>
 		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="Data/ant/awt.number"/>
-		<property name="jar.start" value="schimpf-awt"/>
+		<buildnumber file="Trunk/util/build.number"/>
+		<property name="jar.start" value="schimpf-util"/>
 		<property name="jar.version" value="b0.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>

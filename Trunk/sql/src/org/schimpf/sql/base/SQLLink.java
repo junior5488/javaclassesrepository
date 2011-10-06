@@ -8,7 +8,7 @@ package org.schimpf.sql.base;
 import org.schimpf.net.utils.ConnectionData;
 import org.schimpf.sql.DBConnection;
 import org.schimpf.sql.DriverLoader;
-import org.schimpf.utils.exceptions.MissingConnectionDataException;
+import org.schimpf.util.exceptions.MissingConnectionDataException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;

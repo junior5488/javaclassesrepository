@@ -5,7 +5,7 @@
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Aug 18, 2011 3:40:11 PM
  */
-package org.schimpf.utils.arrays;
+package org.schimpf.util.arrays;
 
 import java.util.ArrayList;
 

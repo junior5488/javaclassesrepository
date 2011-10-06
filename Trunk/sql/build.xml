@@ -3,11 +3,11 @@
 	<target name="init">
 		<echo message="Seteando variables de compilacion"/>
 		<!-- Directorios de compilacion -->
-		<property name="dir.src" value="Trunk/org/schimpf/sql"/>
+		<property name="dir.src" value="Trunk/sql/src"/>
 		<property name="dir.tmp" value="Data/tmp"/>
 		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
-		<buildnumber file="Data/ant/sql.number"/>
+		<buildnumber file="Trunk/sql/build.number"/>
 		<property name="jar.start" value="schimpf-sql"/>
 		<property name="jar.version" value="b0.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
@@ -18,7 +18,7 @@
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/b0.1">
 				<include name="schimpf-net-b0.1.jar"/>
-				<include name="schimpf-utils-b0.1.jar"/>
+				<include name="schimpf-util-b0.1.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA/">
 				<include name="mysql-connector-java.jar"/>

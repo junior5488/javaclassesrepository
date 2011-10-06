@@ -6,7 +6,7 @@
 package org.schimpf.sql;
 
 import org.schimpf.net.utils.ConnectionData;
-import org.schimpf.utils.exceptions.MissingConnectionDataException;
+import org.schimpf.util.exceptions.MissingConnectionDataException;
 
 /**
  * Metodos necesarios para una conexion a servidores SQL
