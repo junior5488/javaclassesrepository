@@ -46,6 +46,13 @@ public abstract class AbstractSocket extends Thread {
 	private boolean					isServer;
 
 	/**
+	 * Ultimo comando enviado
+	 * 
+	 * @version Oct 6, 2011 11:46:11 AM
+	 */
+	private Commands					lastCommand;
+
+	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
@@ -195,6 +202,20 @@ public abstract class AbstractSocket extends Thread {
 	 */
 	protected abstract void endConnection();
 
+	/**
+	 * Retorna si tenemos procesos especiales
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:51:00 AM
+	 * @return True si hay procesos especiales
+	 */
+	protected boolean especialProcess() {
+		// por defecto enviamos false
+		return false;
+	}
+
 	@Override
 	protected final boolean execute() throws InterruptedException {
 		// mostramos un log
@@ -218,17 +239,25 @@ public abstract class AbstractSocket extends Thread {
 			// bandera para continuar el thread
 			continuar = data != null;
 			// verificamos si hay datos
-			if (data != null) {
-				// mostramos un log
-				this.log((Commands.get(data.toString()) != null ? "=>> " : ">>> ") + data);
+			if (data != null)
 				// verificamos si es un comando interno
-				if (Commands.get(data.toString()) != null)
+				if (Commands.get(data.toString()) != null) {
+					// mostramos un log
+					this.log("=>> " + data);
 					// procesamos el comando
 					continuar = this.processCommand(Commands.get(data.toString()));
-				else
+					// verificamos si el ultimo comando fue datos y tenemos procesos especiales
+				} else if (this.lastCommand().equals(Commands.DATA) && this.especialProcess()) {
+					// procesamos los datos especiales
+					if (this.processEspecial(data))
+						// enviamos los datos al proceso normal
+						continuar = this.process(data);
+				} else {
+					// mostramos un log
+					this.log(">>> " + data);
 					// procesamos los datos
 					continuar = this.process(data);
-			}
+				}
 		} while (continuar);
 		// verificamos la bandera
 		if (this.isContinue())
@@ -289,6 +318,20 @@ public abstract class AbstractSocket extends Thread {
 	protected void initConnection() {}
 
 	/**
+	 * Retorna el ultimo comando
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:45:11 AM
+	 * @return Ultimo comando enviado
+	 */
+	protected Commands lastCommand() {
+		// retornamos el ultimo comando enviado
+		return this.lastCommand;
+	}
+
+	/**
 	 * Procesa los datos recibidos
 	 * 
 	 * @author Hermann D. Schimpf
@@ -313,6 +356,21 @@ public abstract class AbstractSocket extends Thread {
 	protected abstract boolean processAfterCommand(Commands command);
 
 	/**
+	 * Procesa los datos especiales
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:52:18 AM
+	 * @param data Datos a procesar
+	 * @return True si continuamos con al proceso normal
+	 */
+	protected boolean processEspecial(final Object data) {
+		// por defecto enviamos true
+		return true;
+	}
+
+	/**
 	 * Envia datos al output
 	 * 
 	 * @author Hermann D. Schimpf
@@ -323,13 +381,33 @@ public abstract class AbstractSocket extends Thread {
 	 * @return True si se envio correctamente
 	 */
 	protected final boolean send(final Object data) {
+		// enviamos los datos
+		return this.send(data, null);
+	}
+
+	/**
+	 * Envia datos al output
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 9:50:18 AM
+	 * @param data Datos a enviar
+	 * @param overWrite Mensaje para sobreescribir
+	 * @return True si se envio correctamente
+	 */
+	protected final boolean send(final Object data, final String overWrite) {
 		try {
 			// verificamos si la conexion esta cerrada
 			if (this.getConnection().isClosed())
 				// retornamos false
 				return false;
 			// mostramos un mensaje
-			this.log((Commands.get(data.toString()) != null ? "<<= " : "<<< ") + data);
+			this.log((Commands.get(data.toString()) != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
+			// verificamos si es un comando
+			if (Commands.get(data.toString()) != null)
+				// almacenamos el comando
+				this.setLastCommand(Commands.get(data.toString()));
 			// enviamos el dato
 			this.getOutput().writeObject(data);
 			// escribimos el dato
@@ -443,11 +521,13 @@ public abstract class AbstractSocket extends Thread {
 		// bandera de retorno
 		boolean continuar = true;
 		// verificamos si el comando es OK
-		if (command.equals(Commands.OK))
-			// procesamos el ok
-			continuar = this.process(command);
-		// verificamos si es el comando de saludo inicial
-		else if (command.equals(Commands.HELO) && this.isServer())
+		if (command.equals(Commands.OK)) {
+			// enviamos el OK al afterCommand
+			if (this.processAfterCommand(command))
+				// procesamos el ok
+				continuar = this.process(command);
+			// verificamos si es el comando de saludo inicial
+		} else if (command.equals(Commands.HELO) && this.isServer())
 			// enviamos el comando de retorno
 			this.send(Commands.HELO);
 		// verificamos si el comando es saludo final
@@ -457,7 +537,7 @@ public abstract class AbstractSocket extends Thread {
 			// cerramos el puerto
 			this.close(false);
 			// verificamos si es el comando de salir
-		} else if (command.equals(Commands.EXIT) || command.equals(Commands.SHUTDOWN)) {
+		} else if (command.equals(Commands.EXIT) || command.equals(Commands.SHUTDOWN) || command.equals(Commands.AUTH_FAIL)) {
 			// modificamos la bandera
 			continuar = false;
 			// mostramos un log
@@ -476,7 +556,7 @@ public abstract class AbstractSocket extends Thread {
 			// verificamos si el puerto no se cerro
 			if (!this.getConnection().isClosed())
 				// finalizamos el puerto
-				this.close(!command.equals(Commands.SHUTDOWN));
+				this.close(command.equals(Commands.EXIT));
 		} else
 			// procesamos el comando personalizadamente
 			continuar = this.processAfterCommand(command);
@@ -550,6 +630,20 @@ public abstract class AbstractSocket extends Thread {
 	private void setIsServer(final boolean isServer) {
 		// almacenamos la bandera
 		this.isServer = isServer;
+	}
+
+	/**
+	 * Almacena el ultimo comando enviado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:46:48 AM
+	 * @param command Comando enviado
+	 */
+	private void setLastCommand(final Commands command) {
+		// almacenamos el ultimo comando enviado
+		this.lastCommand = command;
 	}
 
 	/**

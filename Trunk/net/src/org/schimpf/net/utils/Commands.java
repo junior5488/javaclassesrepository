@@ -16,6 +16,24 @@ package org.schimpf.net.utils;
  */
 public enum Commands {
 	/**
+	 * Comando para solicitar autenticacion
+	 * 
+	 * @version Oct 6, 2011 11:25:13 AM
+	 */
+	AUTH,
+	/**
+	 * Comando de autenticacion fallida
+	 * 
+	 * @version Oct 6, 2011 11:56:16 AM
+	 */
+	AUTH_FAIL,
+	/**
+	 * Comando para aceptar la autenticacion
+	 * 
+	 * @version Oct 6, 2011 11:59:03 AM
+	 */
+	AUTH_OK,
+	/**
 	 * Comando de despedida
 	 * 
 	 * @version Oct 4, 2011 11:49:02 PM
@@ -39,6 +57,12 @@ public enum Commands {
 	 * @version Aug 5, 2011 10:20:41 AM
 	 */
 	HELO,
+	/**
+	 * Comando para responder que no hay autenticacion disponible
+	 * 
+	 * @version Oct 6, 2011 11:29:52 AM
+	 */
+	NO_AUTH,
 	/**
 	 * Comando de datos recibidos
 	 * 

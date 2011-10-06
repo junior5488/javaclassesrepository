@@ -99,9 +99,29 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 		}
 	}
 
+	/**
+	 * Envia la autenticacion necesaria al servidor
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:30:41 AM
+	 * @return Datos de autenticacion
+	 */
+	protected Object autenticate() {
+		// por defecto null
+		return null;
+	}
+
+	@Override
+	protected final boolean especialProcess() {
+		// retornamos false, no tenemos procesos especiales
+		return false;
+	}
+
 	@Override
 	protected final Object firstData() {
-		// retornamos el comando de saludo?
+		// retornamos el comando de saludo
 		return Commands.HELO;
 	}
 
@@ -126,6 +146,23 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 		if (command.equals(Commands.HELO))
 			// solicitamos iniciar datos
 			this.send(Commands.DATA);
+		// verificamos si la respuesta es autenticarse
+		else if (command.equals(Commands.AUTH)) {
+			// verificamos si tenemos autenticacion
+			if (this.autenticate() != null)
+				// enviamos si tenemos autenticacion
+				this.send(Commands.OK);
+			else
+				// enviamos que no hay autenticacion
+				this.send(Commands.NO_AUTH);
+			// verificamos si la autenticacion fue correcta
+		} else if (command.equals(Commands.AUTH_OK))
+			// solicitamos permiso para datos
+			this.send(Commands.DATA);
+		// verificamos si el comando es datos
+		else if (command.equals(Commands.DATA))
+			// enviamos los datos de autenticacion
+			this.send(this.autenticate(), "AUTH DATA");
 		// verificamos si es la respuesta a iniciar datos
 		else if (command.equals(Commands.START))
 			// iniciamos el proceso de datos

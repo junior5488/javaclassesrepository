@@ -24,6 +24,13 @@ import java.net.Socket;
  */
 public abstract class AbstractServerSocket extends AbstractSocket {
 	/**
+	 * Bandera de autenticacion correcta
+	 * 
+	 * @version Oct 6, 2011 12:24:33 PM
+	 */
+	private boolean		autenticated	= false;
+
+	/**
 	 * Socket de conexion abierta en el puerto
 	 * 
 	 * @version Aug 5, 2011 9:15:52 AM
@@ -96,6 +103,16 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	protected void connectionReceived(final InetAddress source, final Integer localPort, final Integer sourcePort) {}
 
 	@Override
+	protected final boolean especialProcess() {
+		// verificamos si ya estamos autenticados
+		if (this.isAutenticated())
+			// retornamos false
+			return false;
+		// retornamos true porque tenemos el proceso de autenticacion
+		return true;
+	}
+
+	@Override
 	protected final Object firstData() {
 		// retornamos null
 		return null;
@@ -115,22 +132,88 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 
 	@Override
 	protected final void initConnection() {
+		// vaciamos la bandera de autenticacion
+		this.autenticated = false;
 		// esperamos una conexion
 		this.waitForConnection();
+	}
+
+	/**
+	 * Retorna si se requiere autenticacion para la conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:33:17 AM
+	 * @return True para solicitar autenticacion
+	 */
+	protected boolean needsAuthentication() {
+		// por defecto no utilizamos autenticacion
+		return false;
 	}
 
 	@Override
 	protected boolean processAfterCommand(final Commands command) {
 		// verificamos si el comando es iniciar datos
-		if (command.equals(Commands.DATA))
-			// enviamos start
-			this.send(Commands.START);
-		// verificamos si es el saludo final del cliente
-		else if (command.equals(Commands.BYE))
+		if (command.equals(Commands.DATA)) {
+			// verificamos si necesitamos autenticacion
+			if (this.needsAuthentication() && !this.isAutenticated())
+				// enviamos la peticion de autenticacion
+				this.send(Commands.AUTH);
+			else
+				// enviamos start
+				this.send(Commands.START);
+			// verificamos si el comando es OK y tenemos autenticacion
+		} else if (command.equals(Commands.OK) && this.needsAuthentication()) {
+			// solicitamos la autenticacion
+			this.send(Commands.DATA);
 			// retornamos false
 			return false;
+			// verificamos si es el saludo final del cliente
+		} else if (command.equals(Commands.BYE))
+			// retornamos false
+			return false;
+		// verificamos si recibimos que no hay autenticacion
+		else if (command.equals(Commands.NO_AUTH))
+			// enviamos shutdown
+			this.send(Commands.SHUTDOWN);
 		// retornamos true
 		return true;
+	}
+
+	@Override
+	protected final boolean processEspecial(final Object data) {
+		// mostramos un log
+		this.log("=>> AUTH DATA");
+		// validamos la autenticacion
+		if (!this.validateAutentication(data)) {
+			// modificamos la bandera de autenticacion fallida
+			this.autenticated = false;
+			// enviamos autenticacion fallida
+			this.send(Commands.AUTH_FAIL);
+		} else {
+			// modificamos la bandera de autenticacion correcta
+			this.autenticated = true;
+			// enviamos autenticacion correcta
+			this.send(Commands.AUTH_OK);
+		}
+		// retornamos false para no enviar la autenticacion al proceso normal
+		return false;
+	}
+
+	/**
+	 * Valida la autenticacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:57:06 AM
+	 * @param data Datos de autenticacion recibidos
+	 * @return True para aceptar la validacion
+	 */
+	protected boolean validateAutentication(final Object data) {
+		// por defecto enviamos false
+		return false;
 	}
 
 	/**
@@ -145,6 +228,20 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	private ServerSocket getServerSocket() {
 		// retornamos el socket
 		return this.serverSocket;
+	}
+
+	/**
+	 * Retorna si ya se realizo la autenticacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 12:00:27 PM
+	 * @return Bandera de autenticacion
+	 */
+	private boolean isAutenticated() {
+		// retornamos la banderta
+		return this.autenticated;
 	}
 
 	/**
@@ -176,7 +273,7 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 			// abrimos el socket
 			this.setConnection(this.getServerSocket().accept());
 			// mostramos quien se conecto
-			this.log("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + " (" + this.getConnection().getInetAddress().getHostName() + ")");
+			this.log("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
 			// ejecutamos el proceso de conexion recivida
 			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
 		} catch (final IOException e) {
