@@ -8,7 +8,7 @@
 		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
 		<buildnumber file="Trunk/sql/build.number"/>
-		<property name="jar.start" value="schimpf-sql"/>
+		<property name="jar.start" value="libschimpf-sql"/>
 		<property name="jar.version" value="b0.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
@@ -17,8 +17,8 @@
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/b0.1">
-				<include name="schimpf-net-b0.1.jar"/>
-				<include name="schimpf-util-b0.1.jar"/>
+				<include name="libschimpf-net-b0.1.jar"/>
+				<include name="libschimpf-util-b0.1.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA/">
 				<include name="mysql-connector-java.jar"/>

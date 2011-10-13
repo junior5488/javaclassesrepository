@@ -8,7 +8,7 @@
 		<property name="dir.jar" value="Data/builds"/>
 		<!-- Valores de informacion del programa -->
 		<buildnumber file="Trunk/awt/build.number"/>
-		<property name="jar.start" value="schimpf-awt"/>
+		<property name="jar.start" value="libschimpf-awt"/>
 		<property name="jar.version" value="b0.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
