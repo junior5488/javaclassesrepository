@@ -52,11 +52,23 @@ public enum Commands {
 	 */
 	EXIT,
 	/**
+	 * Comando para iniciar el envio de un fichero
+	 * 
+	 * @version Oct 14, 2011 12:26:30 PM
+	 */
+	FILE,
+	/**
 	 * Comando de saludo
 	 * 
 	 * @version Aug 5, 2011 10:20:41 AM
 	 */
 	HELO,
+	/**
+	 * Comando para solicitar el nombre del fichero
+	 * 
+	 * @version Oct 14, 2011 1:09:49 PM
+	 */
+	NAME,
 	/**
 	 * Comando para responder que no hay autenticacion disponible
 	 * 
@@ -70,11 +82,23 @@ public enum Commands {
 	 */
 	OK,
 	/**
+	 * Comando para iniciar el envio del fichero
+	 * 
+	 * @version Oct 14, 2011 1:17:40 PM
+	 */
+	SEND,
+	/**
 	 * Comando para finalizar el programa
 	 * 
 	 * @version Aug 5, 2011 3:58:20 PM
 	 */
 	SHUTDOWN,
+	/**
+	 * Comando para solicitar el tamaño de datos
+	 * 
+	 * @version Oct 14, 2011 1:07:40 PM
+	 */
+	SIZE,
 	/**
 	 * Comando para identificar el inicio de datos
 	 * 

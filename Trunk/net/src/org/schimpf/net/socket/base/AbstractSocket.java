@@ -8,11 +8,16 @@ package org.schimpf.net.socket.base;
 
 import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
@@ -24,6 +29,27 @@ import java.net.UnknownHostException;
  * @version Aug 5, 2011 9:11:16 AM
  */
 public abstract class AbstractSocket extends Thread {
+	/**
+	 * Fichero a enviar
+	 * 
+	 * @version Oct 14, 2011 1:29:46 PM
+	 */
+	private File						file;
+
+	/**
+	 * Nombre del fichero a recibir
+	 * 
+	 * @version Oct 14, 2011 1:18:59 PM
+	 */
+	private String						fileName;
+
+	/**
+	 * Tamano del fichero a recibir
+	 * 
+	 * @version Oct 14, 2011 1:19:54 PM
+	 */
+	private Long						fileSize;
+
 	/**
 	 * Stream de entrada de mensajes
 	 * 
@@ -246,6 +272,23 @@ public abstract class AbstractSocket extends Thread {
 					this.log("=>> " + data);
 					// procesamos el comando
 					continuar = this.processCommand(Commands.get(data.toString()));
+					// verificamos si pedimos el nombre
+				} else if (this.lastCommand().equals(Commands.NAME)) {
+					// mostramos un log
+					this.log(">>> " + data);
+					// almacenamos el nombre del fichero
+					this.setFileName(data.toString());
+					// solicitamos el tamano del fichero
+					this.send(Commands.SIZE);
+				} else if (this.lastCommand().equals(Commands.SIZE)) {
+					// mostramos un log
+					this.log(">>> " + data + " bytes");
+					// almacenamos el tamano del fichero
+					this.setFileSize(Long.parseLong(data.toString()));
+					// solicitamos el fichero
+					this.send(Commands.SEND);
+					// recibimos el fichero y lo procesamos
+					this.fileReceived(this.receiveFile());
 					// verificamos si el ultimo comando fue datos y tenemos procesos especiales
 				} else if (this.lastCommand().equals(Commands.DATA) && this.especialProcess()) {
 					// procesamos los datos especiales
@@ -270,6 +313,17 @@ public abstract class AbstractSocket extends Thread {
 		// retornamos si seguimos con el puerto abierto
 		return this.isContinue();
 	}
+
+	/**
+	 * Procesa el fichero recibido
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 12:33:00 PM
+	 * @param fileReceived Fichero recibido
+	 */
+	protected void fileReceived(final File fileReceived) {}
 
 	/**
 	 * Envia el primer dato al server
@@ -423,6 +477,22 @@ public abstract class AbstractSocket extends Thread {
 	}
 
 	/**
+	 * Envia un fichero a travez del socket
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 12:42:47 PM
+	 * @param file Fichero a enviar
+	 */
+	protected final void sendFile(final File file) {
+		// almacenamos el fichero a enviar
+		this.file = file;
+		// soliticamos el envio del fichero
+		this.send(Commands.FILE);
+	}
+
+	/**
 	 * Finaliza la conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -431,6 +501,48 @@ public abstract class AbstractSocket extends Thread {
 	 * @version Oct 4, 2011 12:03:04 PM
 	 */
 	protected abstract void shutdownConnection();
+
+	/**
+	 * Retorna el fichero a enviar
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 1:30:50 PM
+	 * @return Fichero a enviar
+	 */
+	private File getFile() {
+		// retornamos el fichero a enviar
+		return this.file;
+	}
+
+	/**
+	 * Retorna el nombre del fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 1:19:23 PM
+	 * @return Nombre del fichero
+	 */
+	private String getFileName() {
+		// retornamos el nombre del fichero
+		return this.fileName;
+	}
+
+	/**
+	 * Retorna el tamano del fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 1:21:39 PM
+	 * @return Tamano del fichero
+	 */
+	private Long getFileSize() {
+		// retornamos el tamano del fichero
+		return this.fileSize;
+	}
 
 	/**
 	 * Retorna el stream de entrada
@@ -530,6 +642,22 @@ public abstract class AbstractSocket extends Thread {
 		} else if (command.equals(Commands.HELO) && this.isServer())
 			// enviamos el comando de retorno
 			this.send(Commands.HELO);
+		// verificamos si es el comando para enviar un fichero
+		else if (command.equals(Commands.FILE))
+			// solitamos el nombre del fichero
+			this.send(Commands.NAME);
+		// verificamos si el comando es obtener el nombre del fichero
+		else if (command.equals(Commands.NAME))
+			// retornamos el nombre del fichero
+			this.send(this.getFile().getName());
+		// verificamos si el comando es obtener tamano
+		else if (command.equals(Commands.SIZE))
+			// retornamos el tamano del fichero
+			this.send(this.getFile().length());
+		// verificamos si es el comando para enviar el fichero
+		else if (command.equals(Commands.SEND))
+			// enviamos el fichero
+			this.sendFileContents();
 		// verificamos si el comando es saludo final
 		else if (command.equals(Commands.BYE) && !this.isServer()) {
 			// modificamos la bandera
@@ -588,6 +716,131 @@ public abstract class AbstractSocket extends Thread {
 		}
 		// retornamos null
 		return null;
+	}
+
+	/**
+	 * Recibe un fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 12:32:11 PM
+	 * @return Datos del fichero recibido
+	 */
+	private File receiveFile() {
+		// mostramos un log
+		this.log("Receiving file (" + this.getFileName() + ": " + this.getFileSize() + " bytes)..");
+		// creamos un fichero temporal
+		File result = null;
+		try {
+			// creamos un fichero temporal
+			result = File.createTempFile(this.getFileName(), null);
+			// abrimos el fichero
+			final FileOutputStream outFile = new FileOutputStream(result);
+			// iniciamos un buffer
+			final byte[] buff = new byte[this.getConnection().getReceiveBufferSize()];
+			// iniciamos una bandera
+			int bytesReceived = 0;
+			// iniciamos un acumulador
+			long totalReceived = 0;
+			// recorremos mientras recibimos datos
+			while ((bytesReceived = this.getConnection().getInputStream().read(buff)) > 0) {
+				// sumamos al acumulador
+				totalReceived = totalReceived + bytesReceived;
+				// agregamos el pedazo al fichero temporal
+				outFile.write(buff, 0, bytesReceived);
+				// verificamos si es el final
+				if (totalReceived >= this.getFileSize())
+					// salimos
+					break;
+			}
+			// cerramos el fichero
+			outFile.close();
+			// mostramos un log
+			this.log("File received");
+		} catch (final SocketException e) {
+			// mostramos el trace de la excepcion
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// mostramos el trace de la excepcion
+			e.printStackTrace();
+		}
+		// retornamos el fichero
+		return result;
+	}
+
+	/**
+	 * Envia el contenido del fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 1:28:36 PM
+	 * @throws FileNotFoundException Si el fichero no existe
+	 */
+	private void sendFileContents() {
+		// mostramos un log
+		this.log("Sending file (" + this.getFile().getName() + ": " + this.getFile().length() + " bytes)..");
+		// iniciamos una bandera
+		int bytesRead = 0;
+		try {
+			// abrimos el fichero
+			final FileInputStream inFile = new FileInputStream(this.getFile());
+			// creamos un buffer para el envio
+			final byte[] buff = new byte[this.getConnection().getSendBufferSize()];
+			// leemos el fichero
+			while ((bytesRead = inFile.read(buff)) > 0) {
+				// enviamos el buffer por el socket
+				this.getConnection().getOutputStream().write(buff, 0, bytesRead);
+				// vaciamos el buffer
+				this.getConnection().getOutputStream().flush();
+			}
+			// cerramos el fichero
+			inFile.close();
+			// vaciamos el fichero enviado
+			this.file = null;
+			// mostramos un log
+			this.log("File sent");
+		} catch (final SocketException e) {
+			// mostramos el trace de la excepcion
+			e.printStackTrace();
+		} catch (final FileNotFoundException e) {
+			try {
+				// enviamos -1 para finalizar
+				this.getConnection().getOutputStream().write(-1);
+			} catch (final IOException ignored) {}
+		} catch (final IOException e) {
+			// mostramos el trace de la excepcion
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Almacena el nombre del fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 1:17:50 PM
+	 * @param fileName Nombre del fichero a recibir
+	 */
+	private void setFileName(final String fileName) {
+		// almacenamos el nombre del fichero
+		this.fileName = fileName;
+	}
+
+	/**
+	 * Almacena el tamano del fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 14, 2011 1:21:10 PM
+	 * @param fileSize Tamano del fichero
+	 */
+	private void setFileSize(final Long fileSize) {
+		// almacenamos el tamano del fichero
+		this.fileSize = fileSize;
 	}
 
 	/**
