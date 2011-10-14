@@ -17,8 +17,7 @@
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/b0.1">
-				<include name="libschimpf-net-b0.1.jar"/>
-				<include name="libschimpf-util-b0.1.jar"/>
+				<include name="*.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA/">
 				<include name="mysql-connector-java.jar"/>
