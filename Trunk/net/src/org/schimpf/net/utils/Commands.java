@@ -16,11 +16,23 @@ package org.schimpf.net.utils;
  */
 public enum Commands {
 	/**
+	 * Comando de datos recibidos
+	 * 
+	 * @version Oct 4, 2011 11:42:54 PM
+	 */
+	ACK,
+	/**
 	 * Comando para solicitar autenticacion
 	 * 
 	 * @version Oct 6, 2011 11:25:13 AM
 	 */
 	AUTH,
+	/**
+	 * Datos de autenticacion
+	 * 
+	 * @version Oct 21, 2011 1:43:37 PM
+	 */
+	AUTH_DATA,
 	/**
 	 * Comando de autenticacion fallida
 	 * 
@@ -64,29 +76,17 @@ public enum Commands {
 	 */
 	HELO,
 	/**
+	 * Comando para responder falso
+	 * 
+	 * @version Oct 6, 2011 11:29:52 AM
+	 */
+	NAK,
+	/**
 	 * Comando para solicitar el nombre del fichero
 	 * 
 	 * @version Oct 14, 2011 1:09:49 PM
 	 */
 	NAME,
-	/**
-	 * Comando para responder que no hay autenticacion disponible
-	 * 
-	 * @version Oct 6, 2011 11:29:52 AM
-	 */
-	NO_AUTH,
-	/**
-	 * Comando de datos recibidos
-	 * 
-	 * @version Oct 4, 2011 11:42:54 PM
-	 */
-	OK,
-	/**
-	 * Comando para iniciar el envio del fichero
-	 * 
-	 * @version Oct 14, 2011 1:17:40 PM
-	 */
-	SEND,
 	/**
 	 * Comando para finalizar el programa
 	 * 
@@ -98,13 +98,7 @@ public enum Commands {
 	 * 
 	 * @version Oct 14, 2011 1:07:40 PM
 	 */
-	SIZE,
-	/**
-	 * Comando para identificar el inicio de datos
-	 * 
-	 * @version Oct 5, 2011 12:28:14 AM
-	 */
-	START;
+	SIZE;
 	/**
 	 * Retorna el comando desde su nombre
 	 * 

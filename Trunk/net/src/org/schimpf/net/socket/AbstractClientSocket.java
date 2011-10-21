@@ -64,7 +64,7 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	 */
 	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final InetAddress host, final Integer port) throws IOException {
 		// enviamos el constructor
-		super(name);
+		super(name, port);
 		try {
 			// creamos el socket
 			this.clientSocket = new ClientSocket(host, port);
@@ -87,7 +87,7 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	 */
 	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final Integer port) throws IOException {
 		// enviamos el constructor
-		super(name);
+		super(name, port);
 		try {
 			// creamos el socket
 			this.clientSocket = new ClientSocket(AbstractSocket.HOST, port);
@@ -114,12 +114,6 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	}
 
 	@Override
-	protected final boolean especialProcess() {
-		// retornamos false, no tenemos procesos especiales
-		return false;
-	}
-
-	@Override
 	protected final Object firstData() {
 		// retornamos el comando de saludo
 		return Commands.HELO;
@@ -141,34 +135,60 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	protected final void initConnection() {}
 
 	@Override
-	protected boolean processAfterCommand(final Commands command) {
-		// verificamos si es el saludo retornado
-		if (command.equals(Commands.HELO))
-			// solicitamos iniciar datos
-			this.send(Commands.DATA);
-		// verificamos si la respuesta es autenticarse
-		else if (command.equals(Commands.AUTH)) {
-			// verificamos si tenemos autenticacion
-			if (this.autenticate() != null)
-				// enviamos si tenemos autenticacion
-				this.send(Commands.OK);
-			else
-				// enviamos que no hay autenticacion
-				this.send(Commands.NO_AUTH);
-			// verificamos si la autenticacion fue correcta
-		} else if (command.equals(Commands.AUTH_OK))
-			// solicitamos permiso para datos
-			this.send(Commands.DATA);
-		// verificamos si el comando es datos
-		else if (command.equals(Commands.DATA))
-			// enviamos los datos de autenticacion
-			this.send(this.autenticate(), "AUTH DATA");
-		// verificamos si es la respuesta a iniciar datos
-		else if (command.equals(Commands.START))
-			// iniciamos el proceso de datos
-			this.process(Commands.START);
-		// retornamos true
-		return true;
+	protected final boolean processStage(final Stage stage, final Object data) {
+		// generamos una bandera
+		boolean continuar = true;
+		// verificamos si es la etapa inicial
+		if (stage.equals(Stage.INIT)) {
+			// verificamos si obtuvimos helo
+			if (Commands.get(data.toString()).equals(Commands.HELO))
+				// solicitamos datos
+				this.send(Commands.DATA);
+			// verificamos si solicito autenticacion
+			else if (Commands.get(data.toString()).equals(Commands.AUTH)) {
+				// modificamos a la etapa de autenticacion
+				this.setStage(Stage.AUTH);
+				// verificamos si tenemos autenticacion
+				if (this.autenticate() != null)
+					// aceptamos la autenticacion
+					this.send(Commands.ACK);
+				else
+					// avisamos que no tenemos autenticacion
+					this.send(Commands.NAK);
+			} else if (Commands.get(data.toString()).equals(Commands.ACK)) {
+				// cambiamos a la etapa de proceso externo
+				this.setStage(Stage.POST);
+				// iniciamos el proceso externo
+				this.processData(null);
+			}
+			// verificamos si estamos en la etapa de autenticacion
+		} else if (stage.equals(Stage.AUTH))
+			// verificamos si recibimos la solicitud de datos de autenticacion
+			if (Commands.get(data.toString()).equals(Commands.DATA))
+				// enviamos los datos de autenticacion
+				this.send(this.autenticate(), Commands.AUTH_DATA);
+			// verificamos si recibimos autenticacion fallida
+			else if (Commands.get(data.toString()).equals(Commands.NAK)) {
+				// modificamos la bandera
+				continuar = false;
+				// enviamos bye
+				this.send(Commands.BYE);
+				// finalizamos el puerto
+				this.close(continuar);
+				// verificamos si recibimos autenticacion correcta
+			} else if (Commands.get(data.toString()).equals(Commands.ACK))
+				// verificamos si el comando anterior fue datos de autenticacion
+				if (this.getLastCommand().equals(Commands.AUTH_DATA))
+					// solitamos permiso para datos
+					this.send(Commands.DATA);
+				else {
+					// cambiamos a la etapa de proceso externo
+					this.setStage(Stage.POST);
+					// iniciamos el proceso externo
+					this.processData(null);
+				}
+		// retornamos la bandera
+		return continuar;
 	}
 
 	/**
