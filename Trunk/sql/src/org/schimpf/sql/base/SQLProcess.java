@@ -50,7 +50,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 		super(driver);
 	}
 
-	public boolean executeSQL() {
+	public final boolean executeSQL() {
 		try {
 			// verificamos si hay una conexion abierta
 			if (this.getConnection() == null)
@@ -79,7 +79,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	 * @param query Sentencia SQL
 	 * @return True si la consulta se ejecuto exitosamente
 	 */
-	public boolean executeSQL(final String query) {
+	public final boolean executeSQL(final String query) {
 		// almacenamos la sentencia SQL
 		this.setQuery(query);
 		// ejecutamos la consulta SQL
@@ -95,13 +95,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	 * @return ResultSet
 	 */
 	@Override
-	public ResultSet getResultSet() {
+	public final ResultSet getResultSet() {
 		// retornamos el ResultSet
 		return this.resultSet;
 	}
 
 	@Override
-	public boolean hasNext() {
+	public final boolean hasNext() {
 		try {
 			// verificamos si hay un resultset
 			if (this.getResultSet() == null)
@@ -125,7 +125,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	 * @version Apr 16, 2011 1:12:33 AM
 	 * @return Sentencia SQL
 	 */
-	protected String getQuery() {
+	protected final String getQuery() {
 		// retornamos la sentencia SQL
 		return this.query;
 	}
@@ -138,7 +138,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	 * @version Apr 16, 2011 12:53:36 AM
 	 * @return Consulta SQL
 	 */
-	protected PreparedStatement getStatement() {
+	protected final PreparedStatement getStatement() {
 		// retornamos la consulta SQL
 		return this.statement;
 	}
@@ -151,7 +151,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	 * @version Apr 16, 2011 1:12:33 AM
 	 * @param query Consulta SQL
 	 */
-	protected void setQuery(final String query) {
+	protected final void setQuery(final String query) {
 		// almacenamos la sentencia SQL
 		this.query = query;
 	}

@@ -14,7 +14,7 @@ import org.schimpf.sql.base.SQLProcess;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 16, 2011 2:00:45 AM
  */
-public class MySQLProcess extends SQLProcess {
+public final class MySQLProcess extends SQLProcess {
 	/**
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion

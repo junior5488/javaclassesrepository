@@ -69,7 +69,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public boolean connect() throws MissingConnectionDataException {
+	public final boolean connect() throws MissingConnectionDataException {
 		// verificamos si estan todos los datos de conexion
 		if (!this.validateConnectionData())
 			// salimos con una excepcion
@@ -83,7 +83,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public boolean disconnect() {
+	public final boolean disconnect() {
 		try {
 			// verificamos si esta deshabilitado el autocommit
 			if (!this.getConnection().getAutoCommit())
@@ -106,7 +106,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setConnectionData(final ConnectionData data, final String ddbb) {
+	public final void setConnectionData(final ConnectionData data, final String ddbb) {
 		// almacenamos los datos de conexion
 		this.setHost(data.getHostname().getHostName());
 		this.setUser(data.getUsername());
@@ -115,7 +115,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setConnectionData(final String host, final String user, final String pass, final String ddbb) {
+	public final void setConnectionData(final String host, final String user, final String pass, final String ddbb) {
 		// almacenamos los datos de conexion
 		this.setHost(host);
 		this.setUser(user);
@@ -124,7 +124,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setDDBB(final String ddbb) {
+	public final void setDDBB(final String ddbb) {
 		// verificamos si es null
 		this.throwIfNull(ddbb, "El nombre de la Base de Datos no puede ser nula");
 		// almacenamos el nombre de la base de datos
@@ -132,7 +132,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setHost(final String host) {
+	public final void setHost(final String host) {
 		// verificamos si es null
 		this.throwIfNull(host, "La direccion del servidor no puede ser nula");
 		// almacenamos la direccion del servidor
@@ -140,7 +140,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setPass(final String pass) {
+	public final void setPass(final String pass) {
 		// verificamos si es null
 		this.throwIfNull(pass, "La contraseña no puede ser nula");
 		// almacenamos la contraseña
@@ -148,7 +148,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public void setUser(final String user) {
+	public final void setUser(final String user) {
 		// verificamos si es null
 		this.throwIfNull(user, "El usuario no puede ser nulo");
 		// almacenamos el usuario
@@ -163,7 +163,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @version Apr 15, 2011 5:42:34 PM
 	 * @return Conexion con el servidor de Bases de Datos
 	 */
-	protected Connection getConnection() {
+	protected final Connection getConnection() {
 		// retornamos la conexion
 		return this.connection;
 	}
@@ -187,7 +187,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @version Apr 15, 2011 5:44:47 PM
 	 * @param e SQL Exception
 	 */
-	protected void SQLException(final SQLException e) {
+	protected final void SQLException(final SQLException e) {
 		// mostramos la descripcion del error
 		System.err.println(e.getMessage() + ", SQLState " + e.getSQLState() + ", Error " + e.getErrorCode());
 		// print the StackTrace
