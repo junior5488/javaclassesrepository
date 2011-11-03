@@ -1,7 +1,7 @@
 /**
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+ * @author <B>Schimpf.NET</B>
  * @version Aug 5, 2011 10:16:24 AM
  */
 package org.schimpf.net.utils;
@@ -9,9 +9,9 @@ package org.schimpf.net.utils;
 /**
  * Comandos locales de comunicacion
  * 
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+ * @author <B>Schimpf.NET</B>
  * @version Aug 5, 2011 10:16:24 AM
  */
 public enum Commands {

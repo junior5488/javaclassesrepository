@@ -8,6 +8,8 @@ package org.schimpf.net.socket.base;
 
 import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,7 +30,7 @@ import java.net.UnknownHostException;
  * @author Schimpf.NET
  * @version Aug 5, 2011 9:11:16 AM
  */
-public abstract class AbstractSocket extends Thread {
+public abstract class AbstractSocket extends Thread implements SignalHandler {
 	/**
 	 * Fichero a enviar
 	 * 
@@ -165,6 +167,14 @@ public abstract class AbstractSocket extends Thread {
 		super(name, port.toString());
 	}
 
+	@Override
+	public final void handle(final Signal signal) {
+		// verificamos si la señal es salida desde consola
+		if (signal.getNumber() == 2 || signal.getNumber() == 15)
+			// realizamos el shutdown
+			this.shutdownRequest();
+	}
+
 	/**
 	 * Retorna el estado de la conexion
 	 * 
@@ -205,6 +215,16 @@ public abstract class AbstractSocket extends Thread {
 				this.notify();
 			}
 	}
+
+	/**
+	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Nov 1, 2011 11:04:59 AM
+	 */
+	public abstract void shutdownRequest();
 
 	/**
 	 * Cierra el socket

@@ -1,7 +1,7 @@
 /**
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+ * @author <B>Schimpf.NET</B>
  * @version Aug 5, 2011 11:13:27 AM
  */
 package org.schimpf.net.socket;
@@ -17,9 +17,9 @@ import java.net.Socket;
 /**
  * Socket Cliente
  * 
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+ * @author <B>Schimpf.NET</B>
  * @version Aug 5, 2011 11:13:27 AM
  */
 public abstract class AbstractClientSocket extends AbstractSocket {
@@ -31,9 +31,9 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	private ClientSocket	clientSocket;
 
 	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
 	 * @version Aug 5, 2011 11:13:30 AM
 	 * @param name Nombre del thread
 	 * @throws IOException Si no se puede crear la conexion al socket
@@ -53,9 +53,9 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	}
 
 	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
 	 * @version Aug 5, 2011 11:13:30 AM
 	 * @param name Nombre del thread
 	 * @param host Host para iniciar el socket
@@ -77,9 +77,9 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	}
 
 	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
 	 * @version Aug 5, 2011 11:13:30 AM
 	 * @param name Nombre del thread
 	 * @param port Puerto para iniciar el socket
@@ -138,55 +138,66 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	protected final boolean processStage(final Stage stage, final Object data) {
 		// generamos una bandera
 		boolean continuar = true;
-		// verificamos si es la etapa inicial
-		if (stage.equals(Stage.INIT)) {
-			// verificamos si obtuvimos helo
-			if (Commands.get(data.toString()).equals(Commands.HELO))
-				// solicitamos datos
-				this.send(Commands.DATA);
-			// verificamos si solicito autenticacion
-			else if (Commands.get(data.toString()).equals(Commands.AUTH)) {
-				// modificamos a la etapa de autenticacion
-				this.setStage(Stage.AUTH);
-				// verificamos si tenemos autenticacion
-				if (this.autenticate() != null)
-					// aceptamos la autenticacion
-					this.send(Commands.ACK);
-				else
-					// avisamos que no tenemos autenticacion
-					this.send(Commands.NAK);
-			} else if (Commands.get(data.toString()).equals(Commands.ACK)) {
-				// cambiamos a la etapa de proceso externo
-				this.setStage(Stage.POST);
-				// iniciamos el proceso externo
-				this.processData(null);
-			}
-			// verificamos si estamos en la etapa de autenticacion
-		} else if (stage.equals(Stage.AUTH))
-			// verificamos si recibimos la solicitud de datos de autenticacion
-			if (Commands.get(data.toString()).equals(Commands.DATA))
-				// enviamos los datos de autenticacion
-				this.send(this.autenticate(), Commands.AUTH_DATA);
-			// verificamos si recibimos autenticacion fallida
-			else if (Commands.get(data.toString()).equals(Commands.NAK)) {
-				// modificamos la bandera
-				continuar = false;
-				// enviamos bye
-				this.send(Commands.BYE);
-				// finalizamos el puerto
-				this.close(continuar);
-				// verificamos si recibimos autenticacion correcta
-			} else if (Commands.get(data.toString()).equals(Commands.ACK))
-				// verificamos si el comando anterior fue datos de autenticacion
-				if (this.getLastCommand().equals(Commands.AUTH_DATA))
-					// solitamos permiso para datos
+		// verificamos la etapa
+		switch (stage) {
+			// si estamos en la etapa inicial
+			case INIT:
+				// verificamos si obtuvimos helo
+				if (Commands.get(data.toString()).equals(Commands.HELO))
+					// solicitamos datos
 					this.send(Commands.DATA);
-				else {
+				// verificamos si solicito autenticacion
+				else if (Commands.get(data.toString()).equals(Commands.AUTH)) {
+					// modificamos a la etapa de autenticacion
+					this.setStage(Stage.AUTH);
+					// verificamos si tenemos autenticacion
+					if (this.autenticate() != null)
+						// aceptamos la autenticacion
+						this.send(Commands.ACK);
+					else
+						// avisamos que no tenemos autenticacion
+						this.send(Commands.NAK);
+				} else if (Commands.get(data.toString()).equals(Commands.ACK)) {
 					// cambiamos a la etapa de proceso externo
 					this.setStage(Stage.POST);
 					// iniciamos el proceso externo
 					this.processData(null);
 				}
+				// finalizamos la seccion
+				break;
+			// si estamos en la etapa de autenticacion
+			case AUTH:
+				// verificamos si recibimos la solicitud de datos de autenticacion
+				if (Commands.get(data.toString()).equals(Commands.DATA))
+					// enviamos los datos de autenticacion
+					this.send(this.autenticate(), Commands.AUTH_DATA);
+				// verificamos si recibimos autenticacion fallida
+				else if (Commands.get(data.toString()).equals(Commands.NAK)) {
+					// modificamos la bandera
+					continuar = false;
+					// enviamos bye
+					this.send(Commands.BYE);
+					// finalizamos el puerto
+					this.close(continuar);
+					// verificamos si recibimos autenticacion correcta
+				} else if (Commands.get(data.toString()).equals(Commands.ACK))
+					// verificamos si el comando anterior fue datos de autenticacion
+					if (this.getLastCommand().equals(Commands.AUTH_DATA))
+						// solitamos permiso para datos
+						this.send(Commands.DATA);
+					else {
+						// cambiamos a la etapa de proceso externo
+						this.setStage(Stage.POST);
+						// iniciamos el proceso externo
+						this.processData(null);
+					}
+				// finalizamos la seccion
+				break;
+			// en cualquier otra etapa no hacemos nada
+			default:
+				// finalizamos la seccion
+				break;
+		}
 		// retornamos la bandera
 		return continuar;
 	}
@@ -194,9 +205,9 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	/**
 	 * Retorna el socket principal
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
 	 * @version Aug 5, 2011 9:22:43 AM
 	 * @return ClientSoket
 	 */

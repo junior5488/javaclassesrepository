@@ -148,65 +148,75 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	protected final boolean processStage(final Stage stage, final Object data) {
 		// generamos una bandera
 		boolean continuar = true;
-		// verificamos si estamos en la etapa inicial
-		if (stage.equals(Stage.INIT)) {
-			// verificamos si es el saludo
-			if (Commands.get(data.toString()).equals(Commands.HELO))
-				// saludamos
-				this.send(Commands.HELO);
-			// verificamos si es la solicitud de datos
-			else if (Commands.get(data.toString()).equals(Commands.DATA))
-				// verificamos si no estamos autenticados
-				if (!this.isAutenticated()) {
-					// modificamos la etapa al proceso de autenticacion
-					this.setStage(Stage.AUTH);
-					// solicitamos autenticacion
-					this.send(Commands.AUTH);
-				} else {
-					// modificamos la etapa al proceso externo
-					this.setStage(Stage.POST);
-					// enviamos ok para aceptar datos
-					this.send(Commands.ACK);
+		// verificamos en que etapa estamos
+		switch (stage) {
+			case INIT:
+				// verificamos si es el saludo
+				if (Commands.get(data.toString()).equals(Commands.HELO))
+					// saludamos
+					this.send(Commands.HELO);
+				// verificamos si es la solicitud de datos
+				else if (Commands.get(data.toString()).equals(Commands.DATA))
+					// verificamos si no estamos autenticados
+					if (!this.isAutenticated()) {
+						// modificamos la etapa al proceso de autenticacion
+						this.setStage(Stage.AUTH);
+						// solicitamos autenticacion
+						this.send(Commands.AUTH);
+					} else {
+						// modificamos la etapa al proceso externo
+						this.setStage(Stage.POST);
+						// enviamos ok para aceptar datos
+						this.send(Commands.ACK);
+					}
+				// finalizamos la etapa
+				break;
+			case AUTH:
+				// verificamos si el comando anterior fue solicitud de autenticacion
+				if (this.getLastCommand().equals(Commands.AUTH)) {
+					// verificamos si se acepto la autenticacion
+					if (Commands.get(data.toString()).equals(Commands.ACK))
+						// solicitamos los datos de autenticacion
+						this.send(Commands.DATA);
+					else if (Commands.get(data.toString()).equals(Commands.NAK))
+						// retornamos autenticacion fallida
+						this.send(Commands.NAK);
+					// verificamos si solicitamos los datos de autenticacion
+				} else if (this.getLastCommand().equals(Commands.DATA)) {
+					// validamos la autenticacion
+					if (this.validateAutentication(data)) {
+						// modificamos la bandera de autenticacion
+						this.autenticated = true;
+						// enviamos autenticacion correcta
+						this.send(Commands.ACK);
+					} else {
+						// modificamos la bandera de autenticacion
+						this.autenticated = false;
+						// enviamos autenticacion fallida
+						this.send(Commands.NAK);
+					}
+				} else if (Commands.get(data.toString()).equals(Commands.DATA))
+					// verificamos si estamos autenticados
+					if (this.isAutenticated()) {
+						// cambiamos a la etapa externa
+						this.setStage(Stage.POST);
+						// retornamos ok
+						this.send(Commands.ACK);
+					} else
+						// retonamos false
+						this.send(Commands.NAK);
+				// finalizamos la etapa
+				break;
+			// en cualquier otro caso
+			default:
+				if (Commands.get(data.toString()).equals(Commands.BYE)) {
+					// modificamos la bandera
+					continuar = false;
+					// cerramos la conexion esperando por una nueva
+					this.close(true);
 				}
-		} else if (stage.equals(Stage.AUTH)) {
-			// verificamos si el comando anterior fue solicitud de autenticacion
-			if (this.getLastCommand().equals(Commands.AUTH)) {
-				// verificamos si se acepto la autenticacion
-				if (Commands.get(data.toString()).equals(Commands.ACK))
-					// solicitamos los datos de autenticacion
-					this.send(Commands.DATA);
-				else if (Commands.get(data.toString()).equals(Commands.NAK))
-					// retornamos autenticacion fallida
-					this.send(Commands.NAK);
-				// verificamos si solicitamos los datos de autenticacion
-			} else if (this.getLastCommand().equals(Commands.DATA)) {
-				// validamos la autenticacion
-				if (this.validateAutentication(data)) {
-					// modificamos la bandera de autenticacion
-					this.autenticated = true;
-					// enviamos autenticacion correcta
-					this.send(Commands.ACK);
-				} else {
-					// modificamos la bandera de autenticacion
-					this.autenticated = false;
-					// enviamos autenticacion fallida
-					this.send(Commands.NAK);
-				}
-			} else if (Commands.get(data.toString()).equals(Commands.DATA))
-				// verificamos si estamos autenticados
-				if (this.isAutenticated()) {
-					// cambiamos a la etapa externa
-					this.setStage(Stage.POST);
-					// retornamos ok
-					this.send(Commands.ACK);
-				} else
-					// retonamos false
-					this.send(Commands.NAK);
-		} else if (Commands.get(data.toString()).equals(Commands.BYE)) {
-			// modificamos la bandera
-			continuar = false;
-			// cerramos la conexion esperando por una nueva
-			this.close(true);
+				// finalizamos la etapa
+				break;
 		}
 		// retornamos la bandera
 		return continuar;
