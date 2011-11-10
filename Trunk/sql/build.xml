@@ -21,6 +21,7 @@
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA/">
 				<include name="mysql-connector-java.jar"/>
+				<include name="postgresql-connector-java.jar"/>
 			</fileset>
 		</path>
    </target>
