@@ -1,0 +1,10 @@
+#!/bin/bash
+
+clear
+DIR=`dirname "$0"`
+cd "$DIR/.."
+ant -Dbasedir=. -f Trunk/util/build.xml
+ant -Dbasedir=. -f Trunk/awt/build.xml
+ant -Dbasedir=. -f Trunk/java/build.xml
+ant -Dbasedir=. -f Trunk/net/build.xml
+ant -Dbasedir=. -f Trunk/sql/build.xml
