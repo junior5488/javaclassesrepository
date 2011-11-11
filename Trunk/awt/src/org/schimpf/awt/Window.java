@@ -324,9 +324,6 @@ public final class Window {
 	 * @param decorated True para utilizar la decoracion local
 	 */
 	private void initWindow() {
-		// deshabilitamos los bordes y botones
-		this.getWindow().setUndecorated(false);
-		this.getWindow().setResizable(false);
 		// creamos el border layount para acomodar las partes
 		this.getWindow().getContentPane().setLayout(new BorderLayout());
 		// seteamos el main de la ventana
