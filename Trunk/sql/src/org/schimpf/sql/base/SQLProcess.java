@@ -86,6 +86,24 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 		return this.executeSQL();
 	}
 
+	public final int executeUpdate() {
+		try {
+			// verificamos si hay una conexion abierta
+			if (this.getConnection() == null)
+				// salimos con una excepcion
+				throw new SQLException("No existe una conexion abierta");
+			// creamos la consulta SQL
+			this.setStatement(this.getConnection().prepareStatement(this.getQuery()));
+			// ejecutamos el update
+			return this.getStatement().executeUpdate();
+		} catch (final SQLException e) {
+			// mostramos el detalle de la excepcion
+			this.SQLException(e);
+			// retornamos false
+			return -1;
+		}
+	}
+
 	/**
 	 * Retorna el resultset
 	 * 

@@ -26,6 +26,16 @@ public interface SQLBasics {
 	public boolean executeSQL();
 
 	/**
+	 * Ejecuta una consulta update SQL
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Mar 15, 2012 13:51:02 AM
+	 * @return Numero de actualizaciones, -1 si dio error
+	 */
+	public int executeUpdate();
+
+	/**
 	 * Retorna el resultado de la consulta ejecutada
 	 * 
 	 * @author Hermann D. Schimpf
