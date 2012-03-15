@@ -105,6 +105,22 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	}
 
 	/**
+	 * Ejecuta una consulta SQL UPDATE
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Mar 15, 2012 14:19:13 AM
+	 * @param query Sentencia SQL UPDATE
+	 * @return Numero de actualizaciones, -1 si dio error
+	 */
+	public final int executeUpdate(final String query) {
+		// almacenamos la sentencia SQL
+		this.setQuery(query);
+		// ejecutamos la consulta SQL
+		return this.executeUpdate();
+	}
+
+	/**
 	 * Retorna el resultset
 	 * 
 	 * @author Hermann D. Schimpf
