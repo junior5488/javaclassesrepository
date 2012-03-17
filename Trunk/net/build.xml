@@ -16,7 +16,7 @@
 		<property name="compile.debug" value="true"/>
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
-			<fileset dir="../Data/builds/1.0.1">
+			<fileset dir="../Data/builds/current">
 				<include name="*.jar"/>
 			</fileset>
 			<fileset dir="/archivos/Software/JAVA">
@@ -26,29 +26,30 @@
 			</fileset>
 		</path>
    </target>
-	
+
    <target name="clean" depends="init">
 		<echo message="Eliminando fichero compilado anteriormente"/>
    	<delete file="${dir.jar}/${jar.file}"/>
 		<echo message="Eliminando directorio temporal"/>
    	<delete dir="${dir.tmp}"/>
    </target>
-   
+
 	<target name="prepare" depends="clean">
 		<echo message="Creando directorio temporal"/>
 		<mkdir dir="${dir.tmp}"/>
 		<echo message="Creando directorio para fichero compilado"/>
 		<mkdir dir="${dir.jar}"/>
 		<mkdir dir="${dir.jar}/${jar.version}"/>
+		<mkdir dir="${dir.jar}/current"/>
    </target>
-   
+
 	<target name="compile" depends="prepare">
 		<echo message="Compilando fuentes del proyecto"/>
 		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
 			<classpath refid="compile.classpath"/>
 		</javac>
    </target>
-   
+
 	<target name="make" depends="compile">
 		<echo message="Creando fichero Manifest"/>
 		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/></tstamp>
@@ -62,9 +63,11 @@
    	<jar destfile="${jar.file}" manifest="../Data/tmp/MANIFEST.MF">
 			<fileset dir="${dir.tmp}" includes="**/*.class"/>
 		</jar>
-		
+
 		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.version}/${jar.name}"/>
-   	
+		<symlink action="delete" link="${dir.jar}/current/${jar.start}-current.jar"/>
+		<symlink resource="${user.dir}/builds/${jar.version}/${jar.name}" link="${dir.jar}/current/${jar.start}-current.jar"/>
+
 		<delete dir="${dir.tmp}"/>
 		<delete file="../Data/tmp/MANIFEST.MF"/>
 	</target>
