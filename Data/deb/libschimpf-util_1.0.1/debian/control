@@ -1,0 +1,13 @@
+Source: libschimpf-util
+Section: libs
+Priority: extra
+Maintainer: Hermann D. Schimpf <hschimpf@gschimpf.com>
+Standards-Version: 3.8.0
+Build-Depends: debhelper (>= 5), oracle-java7-installer
+Homepage: http://lanparty.sytes.net/
+
+Package: libschimpf-util
+Architecture: all
+Depends: java7-runtime
+Description: Schimpf Util Library
+ Paquete Java de librerias Util

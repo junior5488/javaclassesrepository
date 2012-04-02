@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+build: clean build-stamp libraries binary post-clean
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	dh_clean
+
+build-stamp:
+	touch build-stamp
+
+libraries:
+	cp ../../builds/current/libschimpf-awt-current.jar debian/input/libschimpf-awt.jar
+
+binary:
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_install
+	dh_installchangelogs
+	dh_icons
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+post-clean:
+	dh_clean
+	rm -f build-stamp
+	rm -Rf debian/input/*
+	chown hschimpf:root ../libschimpf-awt_1.0.1_all.deb
