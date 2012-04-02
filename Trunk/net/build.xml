@@ -17,12 +17,12 @@
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/current">
-				<include name="*.jar"/>
+				<include name="libschimpf-java.jar"/>
+				<include name="libschimpf-util.jar"/>
 			</fileset>
-			<fileset dir="/archivos/Software/JAVA">
-				<include name="ssh-java.jar"/>
-				<include name="email/mailapi.jar"/>
-				<include name="email/smtp.jar"/>
+			<fileset dir="/usr/share/java">
+				<include name="trilead-ssh2.jar"/>
+				<include name="geronimo-javamail-1.4-spec.jar"/>
 			</fileset>
 		</path>
    </target>
