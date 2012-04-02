@@ -9,6 +9,6 @@ Homepage: http://lanparty.sytes.net/
 Package: libschimpf-awt
 Architecture: all
 Depends: java7-runtime
-Provides: libjava-window
+Provides: libschimpf-window-java
 Description: Schimpf AWT Library
  Paquete Java de librerias AWT
