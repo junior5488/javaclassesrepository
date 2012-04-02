@@ -3,6 +3,11 @@
 
 case "$1" in
 	remove)
+		# eliminamos el enlace existente
+		[ -e /usr/share/java/schimpf-ssh.jar ] && rm -f /usr/share/java/schimpf-ssh.jar
+		[ -e /usr/share/java/schimpf-email.jar ] && rm -f /usr/share/java/schimpf-email.jar
+		[ -e /usr/share/java/schimpf-sockets.jar ] && rm -f /usr/share/java/schimpf-sockets.jar.jar
+		[ -e /usr/share/java/schimpf-connection-data.jar ] && rm -f /usr/share/java/schimpf-connection-data.jar
 		;;
 	
 	upgrade)

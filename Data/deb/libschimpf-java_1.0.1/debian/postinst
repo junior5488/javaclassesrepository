@@ -3,6 +3,17 @@
 
 case "$1" in
 	configure)
+		# eliminamos el enlace existente
+		[ -e /usr/share/java/schimpf-tail-file.jar ] && rm -f /usr/share/java/schimpf-tail-file.jar
+		[ -e /usr/share/java/schimpf-threads-manager.jar ] && rm -f /usr/share/java/schimpf-threads-manager.jar
+		[ -e /usr/share/java/schimpf-compiler.jar ] && rm -f /usr/share/java/schimpf-compiler.jar
+		[ -e /usr/share/java/schimpf-jar-updater.jar ] && rm -f /usr/share/java/schimpf-jar-updater.jar
+		
+		# generamos los enlaces
+		ln -s /usr/lib/schimpf/libschimpf-java.jar /usr/share/java/schimpf-tail-file.jar
+		ln -s /usr/lib/schimpf/libschimpf-java.jar /usr/share/java/schimpf-threads-manager.jar
+		ln -s /usr/lib/schimpf/libschimpf-java.jar /usr/share/java/schimpf-compiler.jar
+		ln -s /usr/lib/schimpf/libschimpf-java.jar /usr/share/java/schimpf-jar-updater.jar
 		;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

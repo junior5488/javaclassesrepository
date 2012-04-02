@@ -3,6 +3,13 @@
 
 case "$1" in
 	configure)
+		# eliminamos el enlace existente
+		[ -e /usr/share/java/schimpf-mysql.jar ] && rm -f /usr/share/java/schimpf-mysql.jar
+		[ -e /usr/share/java/schimpf-postgresql.jar ] && rm -f /usr/share/java/schimpf-postgresql.jar
+		
+		# generamos el enlace
+		ln -s /usr/lib/schimpf/libschimpf-sql.jar /usr/share/java/schimpf-mysql.jar
+		ln -s /usr/lib/schimpf/libschimpf-sql.jar /usr/share/java/schimpf-postgresql.jar
 		;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

@@ -9,6 +9,6 @@ Homepage: http://lanparty.sytes.net/
 Package: libschimpf-java
 Architecture: all
 Depends: java7-runtime
-Provides: libjava-tail, libjava-threadsmanager, libjava-compiler, libjava-jar-updater
+Provides: libjava-tail-file, libjava-threads-manager, libjava-compiler, libjava-jar-updater
 Description: Schimpf Java Library
  Paquete Java de librerias Java

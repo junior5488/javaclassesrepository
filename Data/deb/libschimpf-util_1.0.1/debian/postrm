@@ -3,6 +3,12 @@
 
 case "$1" in
 	remove)
+		# eliminamos el enlace existente
+		[ -e /usr/share/java/schimpf-sortablelist.jar ] && rm -f /usr/share/java/schimpf-sortablelist.jar
+		[ -e /usr/share/java/schimpf-sortablelist-multithreaded.jar ] && rm -f /usr/share/java/schimpf-sortablelist-multithreaded.jar
+		[ -e /usr/share/java/schimpf-abrupt-crypter.jar ] && rm -f /usr/share/java/schimpf-abrupt-crypter.jar
+		[ -e /usr/share/java/schimpf-base64-crypter.jar ] && rm -f /usr/share/java/schimpf-base64-crypter.jar
+		[ -e /usr/share/java/schimpf-exceptions.jar ] && rm -f /usr/share/java/schimpf-exceptions.jar
 		;;
 	
 	upgrade)

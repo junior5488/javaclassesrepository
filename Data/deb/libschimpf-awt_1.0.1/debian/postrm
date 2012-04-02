@@ -3,6 +3,8 @@
 
 case "$1" in
 	remove)
+		# eliminamos el enlace existente
+		[ -e /usr/share/java/schimpf-window.jar ] && rm -f /usr/share/java/schimpf-window.jar
 		;;
 	
 	upgrade)
