@@ -34,4 +34,5 @@ post-clean:
 	rm -Rf debian/input/*
 	chown hschimpf:root ../libschimpf-sql_1.0.2_all.deb
 	mv ../libschimpf-sql_1.0.2_all.deb ../../builds/1.0.2/libschimpf-sql_1.0.2_all.deb
+	rm -f ../../builds/current/libschimpf-sql_current_all.deb
 	ln -s "`dirname ../../builds/1.0.2/libschimpf-sql_1.0.2_all.deb`"/libschimpf-sql_1.0.2_all.deb ../../builds/current/libschimpf-sql_current_all.deb
