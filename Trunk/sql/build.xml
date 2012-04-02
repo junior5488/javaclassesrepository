@@ -17,11 +17,12 @@
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/current">
-				<include name="*.jar"/>
+				<include name="libschimpf-net_current.jar"/>
+				<include name="libschimpf-util_current.jar"/>
 			</fileset>
-			<fileset dir="/archivos/Software/JAVA/">
-				<include name="mysql-connector-java.jar"/>
-				<include name="postgresql-connector-java.jar"/>
+			<fileset dir="/usr/share/java/">
+				<include name="mysql.jar"/>
+				<include name="postgresql.jar"/>
 			</fileset>
 		</path>
    </target>
