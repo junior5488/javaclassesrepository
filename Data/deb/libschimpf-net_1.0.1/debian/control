@@ -8,7 +8,7 @@ Homepage: http://lanparty.sytes.net/
 
 Package: libschimpf-net
 Architecture: all
-Depends: java7-runtime, libtrilead-ssh2-java
+Depends: java7-runtime, libtrilead-ssh2-java, libgeronimo-javamail-1.4-spec-java
 Provides: libjava-ssh, libjava-email, libjava-sockets, libjava-connection-data
 Description: Schimpf Net Library
  Paquete Java de librerias Net
