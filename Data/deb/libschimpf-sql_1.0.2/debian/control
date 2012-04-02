@@ -8,6 +8,6 @@ Homepage: http://lanparty.sytes.net/
 
 Package: libschimpf-sql
 Architecture: all
-Depends: java7-runtime
+Depends: java7-runtime, libmysql-java, libpg-java
 Description: Schimpf SQL Library
  Paquete Java de librerias SQL
