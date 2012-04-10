@@ -4,7 +4,7 @@
 case "$1" in
 	remove)
 		# eliminamos el enlace existente
-		[ -e /usr/share/java/org.schimpf.awt.jar ] && rm -f /usr/share/java/org.schimpf.awt.jar
+		rm -f /usr/share/java/org.schimpf.awt.jar
 		;;
 	
 	upgrade)
