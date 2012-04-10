@@ -1,0 +1,11 @@
+libschimpf-java (1.0.2) stable; urgency=low
+
+  * Generamos el enlace org.schimpf.java
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:34:43 -0300
+
+libschimpf-java (1.0.1) stable; urgency=low
+
+  * Creado el paquete para instalacion
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 02 Apr 2012 15:37:44 -0300
