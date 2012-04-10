@@ -4,8 +4,7 @@
 case "$1" in
 	remove)
 		# eliminamos el enlace existente
-		[ -e /usr/share/java/schimpf-mysql.jar ] && rm -f /usr/share/java/schimpf-mysql.jar
-		[ -e /usr/share/java/schimpf-postgresql.jar ] && rm -f /usr/share/java/schimpf-postgresql.jar
+		rm -f /usr/share/java/org.schimpf.sql.jar
 		;;
 	
 	upgrade)

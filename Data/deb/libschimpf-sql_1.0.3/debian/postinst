@@ -1,0 +1,20 @@
+#!/bin/sh -e
+# postinst script for Schimpf SQL Library
+
+case "$1" in
+	configure)
+		# eliminamos el enlace existente
+		rm -f /usr/share/java/org.schimpf.sql.jar
+		
+		# generamos el enlace
+		ln -s /usr/lib/schimpf/libschimpf-sql.jar /usr/share/java/org.schimpf.sql.jar
+		;;
+
+	abort-upgrade|abort-remove|abort-deconfigure)
+		;;
+
+	*)
+		echo "postinst called with unknown argument $1" >&2
+		exit 1
+		;;
+esac

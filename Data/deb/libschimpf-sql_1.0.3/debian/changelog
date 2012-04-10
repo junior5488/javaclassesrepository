@@ -1,0 +1,11 @@
+libschimpf-sql (1.0.3) stable; urgency=low
+
+  * Creamos el enlace org.schimpf.sql
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:38:28 -0300
+
+libschimpf-sql (1.0.2) stable; urgency=low
+
+  * Creado el paquete para instalacion
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 02 Apr 2012 15:37:44 -0300
