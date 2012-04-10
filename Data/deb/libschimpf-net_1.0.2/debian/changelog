@@ -1,0 +1,11 @@
+libschimpf-net (1.0.2) stable; urgency=low
+
+  * Generamos el enlace org.schimpf.net
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:37:05 -0300
+
+libschimpf-net (1.0.1) stable; urgency=low
+
+  * Creado el paquete para instalacion
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 02 Apr 2012 15:37:44 -0300
