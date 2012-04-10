@@ -1,0 +1,37 @@
+#!/usr/bin/make -f
+
+build: clean build-stamp binary post-clean
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	dh_clean
+
+build-stamp:
+	touch build-stamp
+
+
+binary:
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_install
+	dh_installchangelogs
+	dh_icons
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+post-clean:
+	dh_clean
+	rm -f build-stamp
+	rm -Rf debian/input/*
+	chown hschimpf:root ../libschimpf-all_1.0.0_all.deb
+	mkdir -p ../../builds/1.0.0
+	mv ../libschimpf-all_1.0.0_all.deb ../../builds/1.0.0/libschimpf-all_1.0.0_all.deb
+	rm -f ../../builds/current/libschimpf-all_current_all.deb
+	ln -s "`dirname ../../builds/1.0.0/libschimpf-all_1.0.0_all.deb`"/libschimpf-all_1.0.0_all.deb ../../builds/current/libschimpf-all_current_all.deb

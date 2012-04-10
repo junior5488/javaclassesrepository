@@ -1,0 +1,13 @@
+Source: libschimpf-all
+Section: libs
+Priority: extra
+Maintainer: Hermann D. Schimpf <hschimpf@gschimpf.com>
+Standards-Version: 3.8.0
+Build-Depends: debhelper (>= 5), oracle-java7-installer
+Homepage: http://lanparty.sytes.net/
+
+Package: libschimpf-all
+Architecture: all
+Depends: libschimpf-util, libschimpf-awt, libschimpf-java, libschimpf-net, libschimpf-sql
+Description: Schimpf All Libraries
+ Paquete Java de librerias Schimpf
