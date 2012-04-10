@@ -1,0 +1,11 @@
+libschimpf-awt (1.0.2) stable; urgency=low
+
+  * Generamos el enlace org.schimpf.awt
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:33:54 -0300
+
+libschimpf-awt (1.0.1) stable; urgency=low
+
+  * Creado el paquete para instalacion
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 02 Apr 2012 15:37:44 -0300

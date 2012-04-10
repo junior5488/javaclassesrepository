@@ -4,9 +4,9 @@
 case "$1" in
 	configure)
 		# eliminamos el enlace existente
-		[ -e /usr/share/java/schimpf-window.jar ] && rm -f /usr/share/java/schimpf-window.jar
+		[ -e /usr/share/java/org.schimpf.awt.jar ] && rm -f /usr/share/java/org.schimpf.awt.jar
 		# generamos el enlace
-		ln -s /usr/lib/schimpf/libschimpf-awt.jar /usr/share/java/schimpf-window.jar
+		ln -s /usr/lib/schimpf/libschimpf-awt.jar /usr/share/java/org.schimpf.awt.jar
 		;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)
