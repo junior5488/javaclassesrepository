@@ -53,6 +53,20 @@ public interface DBConnection {
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 11, 2012 8:49:23 AM
+	 * @param host Direccion del Servidor
+	 * @param port Puerto del Servidor
+	 * @param user Usuario de conexion
+	 * @param pass Contraseña del usuario
+	 * @param ddbb Nombre de la Base de Datos
+	 */
+	public void setConnectionData(final String host, final Integer port, final String user, final String pass, final String ddbb);
+
+	/**
+	 * Almacena los datos para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 5:10:59 PM
 	 * @param host Direccion del Servidor
 	 * @param user Usuario de conexion
@@ -90,6 +104,16 @@ public interface DBConnection {
 	 * @param pass Contraseña de la conexion
 	 */
 	public void setPass(final String pass);
+
+	/**
+	 * Almacena el puerto del servidor a conectar
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:08:49 PM
+	 * @param port Puerto del servidor a conectar
+	 */
+	public void setPort(final Integer port);
 
 	/**
 	 * Almacena el usuario para la conexion
