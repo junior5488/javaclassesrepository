@@ -51,6 +51,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	private String			pass;
 
 	/**
+	 * Puerto para la conexion
+	 * 
+	 * @version Apr 11, 2012 8:42:54 AM
+	 */
+	private Integer		port;
+
+	/**
 	 * Usuario para la conexion
 	 * 
 	 * @version Apr 15, 2011 4:46:47 PM
@@ -114,6 +121,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		this.setDDBB(ddbb);
 	}
 
+	public void setConnectionData(final String host, final Integer port, final String user, final String pass, final String ddbb) {
+		// almacenamos los datos de conexion
+		this.setConnectionData(host, user, pass, ddbb);
+		// almacenamos el puerto del servidor
+		this.setPort(port);
+	}
+
 	@Override
 	public final void setConnectionData(final String host, final String user, final String pass, final String ddbb) {
 		// almacenamos los datos de conexion
@@ -148,6 +162,14 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
+	public final void setPort(final Integer port) {
+		// verificamos si es null
+		this.throwIfNull(port, "El puerto del servidor no puede ser nulo");
+		// almacenamos el puero del servidor
+		this.port = port;
+	}
+
+	@Override
 	public final void setUser(final String user) {
 		// verificamos si es null
 		this.throwIfNull(user, "El usuario no puede ser nulo");
@@ -167,6 +189,17 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		// retornamos la conexion
 		return this.connection;
 	}
+
+	/**
+	 * Retorna el puerto por defecto de la conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Apr 11, 2012 8:48:25 AM
+	 * @return Puerto por defecto de la conexion
+	 */
+	protected abstract Integer getDefaultPort();
 
 	/**
 	 * Retorna el tipo de conexion para el driver.<br>
@@ -204,7 +237,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 */
 	private String getConnectionUrl() {
 		// retornamos el URL de conexion
-		return this.getDriverType() + "://" + this.getHost() + "/" + this.getDDBB();
+		return this.getDriverType() + "://" + this.getHost() + ":" + this.getPort() + "/" + this.getDDBB();
 	}
 
 	/**
@@ -244,6 +277,19 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	private String getPass() {
 		// retornamos la contraseña
 		return this.pass;
+	}
+
+	/**
+	 * Retorna el perto del servidor para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 11, 2012 8:47:11 AM
+	 * @return Puerto del servidor
+	 */
+	private Integer getPort() {
+		// retornamos el puerto del servidor
+		return this.port == null ? this.getDefaultPort() : this.port;
 	}
 
 	/**
@@ -320,6 +366,10 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	private boolean validateConnectionData() {
 		// verificamos si se espeficico el servidor
 		if (this.getHost() == null)
+			// retornamos false
+			return false;
+		// verificamos si se espeficico el puerto
+		if (this.getPort() == null)
 			// retornamos false
 			return false;
 		// verificamos si hay usuario y contraseña
