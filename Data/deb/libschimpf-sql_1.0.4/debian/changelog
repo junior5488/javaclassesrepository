@@ -1,3 +1,9 @@
+libschimpf-sql (1.0.4) stable; urgency=low
+
+  * Posibilitamos las conexiones sobre un puerto diferente
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Wed, 11 Apr 2012 08:55:45 -0300
+
 libschimpf-sql (1.0.3) stable; urgency=low
 
   * Creamos el enlace org.schimpf.sql
