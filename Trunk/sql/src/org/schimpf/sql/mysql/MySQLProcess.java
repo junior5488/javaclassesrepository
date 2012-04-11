@@ -38,6 +38,12 @@ public final class MySQLProcess extends SQLProcess {
 	}
 
 	@Override
+	protected Integer getDefaultPort() {
+		// retornamos el puerto MySQL
+		return 3306;
+	}
+
+	@Override
 	protected String getDriverType() {
 		// retornamos una conexion MySQL
 		return "jdbc:mysql";
