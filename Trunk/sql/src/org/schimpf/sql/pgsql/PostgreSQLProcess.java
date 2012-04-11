@@ -38,6 +38,12 @@ public final class PostgreSQLProcess extends SQLProcess {
 	}
 
 	@Override
+	protected Integer getDefaultPort() {
+		// retornamos el puerto PostgreSQL
+		return 5432;
+	}
+
+	@Override
 	protected String getDriverType() {
 		// retornamos una conexion PostgreSQL
 		return "jdbc:postgresql";
