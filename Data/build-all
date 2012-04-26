@@ -9,7 +9,7 @@ cd "$SAVED_DIR"
 sudo ls > /dev/null
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/util/build.xml
-cd "$DIR"/Data/deb/libschimpf-util_1.0.2 && sudo debian/rules
+cd "$DIR"/Data/deb/libschimpf-util_1.0.3 && sudo debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/awt/build.xml
 cd "$DIR"/Data/deb/libschimpf-awt_1.0.2 && sudo debian/rules
