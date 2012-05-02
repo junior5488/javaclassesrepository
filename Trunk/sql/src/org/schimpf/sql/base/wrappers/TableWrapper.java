@@ -21,6 +21,7 @@ package org.schimpf.sql.base.wrappers;
 import org.schimpf.sql.base.SQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Metodos para obtencion de datos de las tablas
@@ -40,21 +41,21 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 	 * 
 	 * @version Apr 26, 2012 7:20:49 PM
 	 */
-	private ArrayList<CType>	columns	= new ArrayList<CType>();
+	private final HashMap<String, CType>	columns	= new HashMap<String, CType>();
 
 	/**
 	 * Esquema al que pertenece la tabla
 	 * 
 	 * @version May 2, 2012 2:02:12 AM
 	 */
-	private final SType			schema;
+	private final SType							schema;
 
 	/**
 	 * Nombre fisico de la tabla
 	 * 
 	 * @version Apr 26, 2012 7:32:31 PM
 	 */
-	private final String			tableName;
+	private final String							tableName;
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -72,6 +73,21 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 		this.schema = schema;
 		// almacenamos el nombre de la tabla
 		this.tableName = tableName;
+	}
+
+	/**
+	 * Retorna una columna
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 10:34:48 AM
+	 * @param columnName Nombre de la columna
+	 * @return Columna o Null si no existe
+	 */
+	public final CType getColumn(final String columnName) {
+		// retornamos la columna
+		return this.columns.get(columnName);
 	}
 
 	/**
@@ -102,11 +118,16 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 	 */
 	public final ArrayList<CType> getColumns(final boolean reload) throws SQLException {
 		// verificamos si ya cargamos las columnas
-		if (this.columns.size() == 0 || reload)
-			// cargamos las columnas de la DB
-			this.columns = this.retrieveColumns(this.getTableName());
+		if (this.columns.size() == 0 || reload) {
+			// vaciamos la lista
+			this.columns.clear();
+			// recorremos las columnas
+			for (CType column: this.retrieveColumns(this.getTableName()))
+				// agregamos la columna de la tabla
+				this.columns.put(column.getColumnName(), column);
+		}
 		// retornamos las columnas
-		return this.columns;
+		return this.<CType> toArrayList(this.columns);
 	}
 
 	/**
