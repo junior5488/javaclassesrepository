@@ -30,8 +30,11 @@ import java.sql.SQLException;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:34:56 PM
  * @param <SQLConnector> Conector a la DB
+ * @param <SType> Tipo de esquema
+ * @param <TType> Tipo de tabla
+ * @param <CType> Tipo de columna
  */
-public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends BaseWrapper<SQLConnector> {
+public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
 	/**
 	 * Nombre fisico de la columna
 	 * 
@@ -61,18 +64,25 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	private Boolean		isNull;
 
 	/**
-	 * Tamaño de la columna
+	 * Bandera para identificar si la columna es clave primaria
 	 * 
-	 * @version May 1, 2012 10:58:44 PM
+	 * @version May 2, 2012 12:08:53 AM
 	 */
-	private Integer		length;
+	private Boolean		isPrimaryKey;
 
 	/**
-	 * Precision de la columna
+	 * Bandera para identificar si la columna es de valor unico
 	 * 
-	 * @version May 1, 2012 10:59:00 PM
+	 * @version May 2, 2012 1:53:48 AM
 	 */
-	private Integer		precision;
+	private Boolean		isUnique;
+
+	/**
+	 * Tabla a la cual pertenece la columna
+	 * 
+	 * @version May 2, 2012 12:31:54 AM
+	 */
+	private final TType	table;
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -80,11 +90,14 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:37:45 PM
 	 * @param sqlConnector Conexion a la DB
+	 * @param table Tabla a la que pertenece la columna
 	 * @param columnName Nombre de la columna en la DB
 	 */
-	protected ColumnWrapper(final SQLConnector sqlConnector, final String columnName) {
+	protected ColumnWrapper(final SQLConnector sqlConnector, final TType table, final String columnName) {
 		// enviamos el constructor
 		super(sqlConnector);
+		// almacenamos la tabla
+		this.table = table;
 		// almacenamos el nombre de la columna
 		this.columnName = columnName;
 	}
@@ -142,41 +155,17 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	}
 
 	/**
-	 * Retorna el tamaño de la columna
+	 * Retorna la tabla de la columna
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 10:59:18 PM
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return Tamaño de la columna
+	 * @version May 2, 2012 12:35:13 AM
+	 * @return Tabla
 	 */
-	public final Integer getLength() throws SQLException {
-		// verificamos si no tenemos valor
-		if (this.length == null)
-			// cargamos los datos
-			this.loadMetaData();
-		// retornamos el tamaño de la columna
-		return this.length;
-	}
-
-	/**
-	 * Retorna la precision de la columna
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 10:59:52 PM
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return Precision de la columna
-	 */
-	public final Integer getPrecision() throws SQLException {
-		// verificamos si no tenemos valor
-		if (this.precision == null)
-			// cargamos los datos
-			this.loadMetaData();
-		// retornamos la precision de la columna
-		return this.precision;
+	public final TType getTable() {
+		// retornamos la tabla
+		return this.table;
 	}
 
 	/**
@@ -196,6 +185,44 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 			this.loadMetaData();
 		// retornamos si es nulo
 		return this.isNull;
+	}
+
+	/**
+	 * Retorna si la columna es clave primaria de la tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 12:09:57 AM
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 * @return True si es clave primaria
+	 */
+	public final Boolean isPrimaryKey() throws SQLException {
+		// verificamos si no tenemos valor
+		if (this.isPrimaryKey == null)
+			// cargamos los datos
+			this.loadMetaData();
+		// retornamos si es clave primaria
+		return this.isPrimaryKey;
+	}
+
+	/**
+	 * Retorna si la columna debe tener valores unicos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 1, 2012 10:59:18 PM
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 * @return True si debe tener valores unicos
+	 */
+	public final Boolean isUnique() throws SQLException {
+		// verificamos si no tenemos valor
+		if (this.isUnique == null)
+			// cargamos los datos
+			this.loadMetaData();
+		// retornamos el tamaño de la columna
+		return this.isUnique;
 	}
 
 	/**
@@ -238,6 +265,19 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	protected abstract Boolean getIsNullFromMetadata(ResultSet metadata) throws SQLException;
 
 	/**
+	 * Retorna si la columna es clave primaria de la tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 12:10:55 AM
+	 * @param metadata Metadatos actuales
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 * @return True si es clave primaria
+	 */
+	protected abstract Boolean getIsPrimaryKeyFromMetadata(ResultSet metadata) throws SQLException;
+
+	/**
 	 * Retorna el tamaño de la columna desde los metadatos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -248,20 +288,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	 * @throws SQLException Si se produjo un error al cargar los metadatos
 	 * @return Tamaño de la columna
 	 */
-	protected abstract Integer getLengthFromMetadata(ResultSet metadata) throws SQLException;
-
-	/**
-	 * Retorna la precision de la columna desde los metadatos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 11:03:49 PM
-	 * @param metadata Metadatos actuales
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return Precision de la columna
-	 */
-	protected abstract Integer getPrecisionFromMetadata(ResultSet metadata) throws SQLException;
+	protected abstract Boolean getIsUniqueFromMetadata(ResultSet metadata) throws SQLException;
 
 	/**
 	 * Obtiene los metadatos de la columna
@@ -270,10 +297,12 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 1, 2012 10:47:59 PM
+	 * @param schema Esquema de la columna
+	 * @param table Tabla de la columna
 	 * @param columnName Nombre de la columna
 	 * @return ResultSet con los metadatos
 	 */
-	protected abstract boolean retrieveColumnMetadata(String columnName);
+	protected abstract boolean retrieveColumnMetadata(SType schema, TType table, String columnName);
 
 	/**
 	 * Carga los metadatos de la columna
@@ -286,13 +315,13 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess> extends Bas
 	 */
 	private void loadMetaData() throws SQLException {
 		// recorremos los metadatos
-		if (this.retrieveColumnMetadata(this.getColumnName()) && this.getSQLConnector().getResultSet().next()) {
+		if (this.retrieveColumnMetadata(this.getTable().getSchema(), this.getTable(), this.getColumnName()) && this.getSQLConnector().getResultSet().next()) {
 			// almacenamos el tipo de dato
 			this.dataType = this.getDataTypeFromMetadata(this.getSQLConnector().getResultSet());
-			// almacenamos el tamaño de la columna
-			this.length = this.getLengthFromMetadata(this.getSQLConnector().getResultSet());
-			// almacenamos la precision
-			this.precision = this.getPrecisionFromMetadata(this.getSQLConnector().getResultSet());
+			// almacenamos si es clave primaria
+			this.isPrimaryKey = this.getIsPrimaryKeyFromMetadata(this.getSQLConnector().getResultSet());
+			// almacenamos si es null
+			this.isUnique = this.getIsUniqueFromMetadata(this.getSQLConnector().getResultSet());
 			// almacenamos si es null
 			this.isNull = this.getIsNullFromMetadata(this.getSQLConnector().getResultSet());
 			// almacenamos el valor por defecto
