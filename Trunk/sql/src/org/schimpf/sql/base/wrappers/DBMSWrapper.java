@@ -21,6 +21,7 @@ package org.schimpf.sql.base.wrappers;
 import org.schimpf.sql.base.SQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Metodos para la obtencion de datos de un sistema de base de datos
@@ -41,14 +42,14 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 	 * 
 	 * @version May 1, 2012 9:26:57 PM
 	 */
-	private final ArrayList<DType>	databases	= new ArrayList<DType>();
+	private final HashMap<String, DType>	databases	= new HashMap<String, DType>();
 
 	/**
 	 * Nombre del sistema de bases de datos
 	 * 
 	 * @version May 1, 2012 9:25:36 PM
 	 */
-	private final String					dbmsName;
+	private final String							dbmsName;
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -63,6 +64,24 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 		super(connector);
 		// almacenamos el nombre del sistema
 		this.dbmsName = dbmsName;
+	}
+
+	/**
+	 * Retorna la base de datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 10:20:37 AM
+	 * @param databaseName Nombre de la base de datos
+	 * @throws SQLException Si se produjo un error al cargar la lista de las DBs
+	 * @return Base de Datos o Null si no existe
+	 */
+	public final DType getDataBase(final String databaseName) throws SQLException {
+		// cargamos las bases de datos
+		this.getDataBases();
+		// retornamos la bases de datos
+		return this.databases.get(databaseName);
 	}
 
 	/**
@@ -99,10 +118,10 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 			// recorremos las bases de datos
 			for (DType db: this.retrieveDataBases(this.getDBMSName()))
 				// agregamos la base de datos
-				this.databases.add(db);
+				this.databases.put(db.getDataBaseName(), db);
 		}
 		// retornamos las bases de datos
-		return this.databases;
+		return this.toArrayList(this.databases);
 	}
 
 	/**
@@ -131,4 +150,25 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 	 * @return Lista de bases de datos del sistema
 	 */
 	protected abstract ArrayList<DType> retrieveDataBases(String dbmsName) throws SQLException;
+
+	/**
+	 * Convierte un HashMap a ArrayList
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 10:16:34 AM
+	 * @param hashMap HashMap a convertir
+	 * @return ArrayList
+	 */
+	private ArrayList<DType> toArrayList(final HashMap<String, DType> hashMap) {
+		// creamos un arrayList
+		ArrayList<DType> arrayList = new ArrayList<DType>();
+		// recorremos los valores
+		for (DType value: hashMap.values())
+			// agregamos el valor al arrayList
+			arrayList.add(value);
+		// retornamos el arrayList
+		return arrayList;
+	}
 }
