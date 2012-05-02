@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 27, 2012 10:45:42 AM
  */
-public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGTable, PGColumn> {
+public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
@@ -50,11 +50,11 @@ public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGTable, PG
 		// armamos la lista de las tablas
 		ArrayList<PGTable> tables = new ArrayList<PGTable>();
 		// ejecutamos el SQL para obtener las tablas
-		this.getSQLConnector().executeSQL("SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') AND table_schema ILIKE '" + schemaName + "' ORDER BY table_name");
+		this.getSQLConnector().executeSQL("SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') AND table_type = 'BASE TABLE' AND table_schema ILIKE '" + schemaName + "' ORDER BY table_name");
 		// recorremos las tablas
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos una tabla
-			tables.add(new PGTable(this.getSQLConnector(), this.getSQLConnector().getResultSet().getString("table_name")));
+			tables.add(new PGTable(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("table_name")));
 		// retornamos las tablas
 		return tables;
 	}
