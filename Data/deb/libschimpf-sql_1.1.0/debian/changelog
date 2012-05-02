@@ -1,4 +1,4 @@
-libschimpf-sql (1.0.5) stable; urgency=low
+libschimpf-sql (1.1.0) stable; urgency=low
 
   * Agregamos las clases Wrapper para obtener metadatos de las bases de datos
   * Agregamos los wrappers para bases de datos postgresql
