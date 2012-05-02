@@ -58,7 +58,7 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	 * @param connector Conector a la DB
 	 * @param dbName Nombre de la DB
 	 */
-	public DataBaseWrapper(final SQLConnector connector, final String dbName) {
+	protected DataBaseWrapper(final SQLConnector connector, final String dbName) {
 		// enviamos el constructor
 		super(connector);
 		// almacenamos el nombre de la DB

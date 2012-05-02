@@ -58,7 +58,7 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	 * @param connector Conector SQL a la DB
 	 * @param schemaName Nombre del esquema
 	 */
-	public SchemaWrapper(final SQLConnector connector, final String schemaName) {
+	protected SchemaWrapper(final SQLConnector connector, final String schemaName) {
 		// envimos el constructor
 		super(connector);
 		// almacenamos el nombre del esquema
