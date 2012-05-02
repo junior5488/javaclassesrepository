@@ -37,11 +37,18 @@ import java.util.HashMap;
  */
 public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
 	/**
-	 * Columnas de la tablas
+	 * Columnas de la tabla
 	 * 
 	 * @version Apr 26, 2012 7:20:49 PM
 	 */
-	private final HashMap<String, CType>	columns	= new HashMap<String, CType>();
+	private final HashMap<String, CType>	columns		= new HashMap<String, CType>();
+
+	/**
+	 * Columnas Clave Primaria de la tabla
+	 * 
+	 * @version May 2, 2012 11:09:49 AM
+	 */
+	private final ArrayList<CType>			keyColumns	= new ArrayList<CType>();
 
 	/**
 	 * Esquema al que pertenece la tabla
@@ -128,6 +135,29 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 		}
 		// retornamos las columnas
 		return this.<CType> toArrayList(this.columns);
+	}
+
+	/**
+	 * Retorna las columnas clave primarias de la tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 11:11:40 AM
+	 * @throws SQLException Si se produce un error al identificar las columnas primarias
+	 * @return Lista de columnas Clave Primarias
+	 */
+	public final ArrayList<CType> getPrimaryKeys() throws SQLException {
+		// verificamos si tenemos la lista
+		if (this.keyColumns.size() == 0)
+			// recorremos las columnas
+			for (CType column: this.getColumns())
+				// verificamos si es PK
+				if (column.isPrimaryKey())
+					// agregamos la columna a la lista
+					this.keyColumns.add(column);
+		// retornamos las columnas PK
+		return this.keyColumns;
 	}
 
 	/**
