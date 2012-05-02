@@ -30,23 +30,24 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 8:13:18 PM
  * @param <SQLConnector> Conexion a la DB
+ * @param <SType> Tipo de Esquemas
  * @param <TType> Tipo de Tablas
  * @param <CType> Tipo de Columnas
  */
-public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, TType extends TableWrapper<SQLConnector, CType>, CType extends ColumnWrapper<SQLConnector>> extends BaseWrapper<SQLConnector> {
+public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, TType, CType>, TType extends TableWrapper<SQLConnector, CType>, CType extends ColumnWrapper<SQLConnector>> extends BaseWrapper<SQLConnector> {
 	/**
 	 * Nombre de la DB
 	 * 
 	 * @version Apr 26, 2012 8:20:28 PM
 	 */
-	private final String			dbName;
+	private final String					dbName;
 
 	/**
-	 * Tablas de la bases de datos
+	 * Esquemas de la base de datos
 	 * 
-	 * @version Apr 26, 2012 8:17:53 PM
+	 * @version Apr 27, 2012 10:18:44 AM
 	 */
-	private ArrayList<TType>	tables	= new ArrayList<TType>();
+	private final ArrayList<SType>	schemas	= new ArrayList<SType>();
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -78,49 +79,55 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, TType ext
 	}
 
 	/**
-	 * Retorna las tablas de la DB
+	 * Retorna los esquemas de la base de datos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Apr 26, 2012 8:18:27 PM
-	 * @return Lista de tablas de la DB
-	 * @throws SQLException Si se produce algun error al obtener las tablas
+	 * @version Apr 27, 2012 10:19:16 AM
+	 * @throws SQLException Si se produce un error al cargar la lista de los esquemas
+	 * @return Lista de esquemas
 	 */
-	public final ArrayList<TType> getTables() throws SQLException {
-		// retornamos las tablas de la DB
-		return this.getTables(false);
+	public final ArrayList<SType> getSchemas() throws SQLException {
+		// retornamos los esquemas
+		return this.getSchemas(false);
 	}
 
 	/**
-	 * Carga las tablas de la DB
+	 * Retorna los esquemas de la base de datos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Apr 26, 2012 8:21:19 PM
-	 * @return Lista de tablas de la DB
-	 * @throws SQLException Si se produce algun error al obtener las tablas
+	 * @version Apr 27, 2012 10:19:38 AM
+	 * @param reload True para recargar los esquemas
+	 * @throws SQLException Si se produce un error al cargar la lista de los esquemas
+	 * @return Lista de esquemas de la DB
 	 */
-	protected abstract ArrayList<TType> retrieveTables() throws SQLException;
+	public final ArrayList<SType> getSchemas(final boolean reload) throws SQLException {
+		// verifcamos si tenemos la lista de los esquemas
+		if (this.schemas.size() == 0 || reload) {
+			// vaciamos la lista
+			this.schemas.clear();
+			// recorremos los esquemas
+			for (SType schema: this.retrieveSchemas(this.getDataBaseName()))
+				// agregamos el esquema
+				this.schemas.add(schema);
+		}
+		// retornamos la lista de los esquemas
+		return this.schemas;
+	}
 
 	/**
-	 * Retorna las tablas de la DB
+	 * Obtiene los esquemas de la base de datos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Apr 26, 2012 8:19:12 PM
-	 * @param reload True para recargar la lista de las tablas
-	 * @return Lista de tablas de la DB
-	 * @throws SQLException Si se produce algun error al obtener las tablas
+	 * @version Apr 27, 2012 10:36:30 AM
+	 * @param dataBaseName Nombre de la base de datos
+	 * @throws SQLException Si se produce un error al cargar la lista de los esquemas
+	 * @return Lista de los esquemas de la DB
 	 */
-	private ArrayList<TType> getTables(final boolean reload) throws SQLException {
-		// verificamos si tenemos las tablas
-		if (this.tables.size() == 0 || reload)
-			// cargamos las tablas de la DB
-			this.tables = this.retrieveTables();
-		// retornamos las tablas
-		return this.tables;
-	}
+	protected abstract ArrayList<SType> retrieveSchemas(String dataBaseName) throws SQLException;
 }
