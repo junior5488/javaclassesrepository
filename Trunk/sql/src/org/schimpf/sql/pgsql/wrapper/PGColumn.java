@@ -31,25 +31,26 @@ import java.sql.SQLException;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:38:47 PM
  */
-public final class PGColumn extends ColumnWrapper<PostgreSQLProcess> {
+public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:54:35 PM
 	 * @param sqlConnector Conector PostgreSQL a la DB
+	 * @param table Tabla de la columna
 	 * @param columnName Nombre de la Columna
 	 */
-	public PGColumn(final PostgreSQLProcess sqlConnector, final String columnName) {
+	public PGColumn(final PostgreSQLProcess sqlConnector, final PGTable table, final String columnName) {
 		// enviamos el constructor
-		super(sqlConnector, columnName);
+		super(sqlConnector, table, columnName);
 	}
 
 	@Override
 	public String toString() {
 		try {
 			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.getLength() != null ? "(" + this.getLength() + (this.getPrecision() != null ? ", " + this.getPrecision() : "") + ")" : "") + (this.isNull() ? "" : "NOT ") + "NULL" + (this.getDefaultValue() != null ? "DEFAULT" + this.getDefaultValue() : "");
+			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNull() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " (PK)" : "");
 		} catch (SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
@@ -70,24 +71,24 @@ public final class PGColumn extends ColumnWrapper<PostgreSQLProcess> {
 	@Override
 	protected Boolean getIsNullFromMetadata(final ResultSet metadata) throws SQLException {
 		// retornamos si permite valores nulos
-		return metadata.getString("is_nullable").equals("YES") ? true : false;
+		return metadata.getString("is_notnull").equals("TRUE") ? false : true;
 	}
 
 	@Override
-	protected Integer getLengthFromMetadata(final ResultSet metadata) throws SQLException {
-		// retornamos el tamaño del campo
-		return this.getDataType().endsWith("char") ? metadata.getInt("srt_length") : metadata.getInt("num_length");
+	protected Boolean getIsPrimaryKeyFromMetadata(final ResultSet metadata) throws SQLException {
+		// retornamos si es clave primaria
+		return metadata.getString("is_primarykey").equals("TRUE") ? true : false;
 	}
 
 	@Override
-	protected Integer getPrecisionFromMetadata(final ResultSet metadata) throws SQLException {
-		// retornamos la presicion de la columna
-		return metadata.getInt("precision_dec");
+	protected Boolean getIsUniqueFromMetadata(final ResultSet metadata) throws SQLException {
+		// retornamos si es de valores unicos
+		return metadata.getString("is_unique").equals("TRUE") ? true : false;
 	}
 
 	@Override
-	protected boolean retrieveColumnMetadata(final String columnName) {
+	protected boolean retrieveColumnMetadata(final PGSchema schema, final PGTable table, final String columnName) {
 		// retornamos el resultado del SQL
-		return this.getSQLConnector().executeSQL("SELECT column_name, udt_name AS data_type, character_maximum_length AS str_length, numeric_precision AS num_length, numeric_precision_radix AS precision_dec, is_nullable, column_default AS default_value FROM information_schema.columns WHERE table_name ILIKE '" + columnName + "'");
+		return this.getSQLConnector().executeSQL("SELECT f.attname AS column_name, pg_catalog.format_type(f.atttypid,f.atttypmod) AS data_type, CASE WHEN f.attnotnull = 't' THEN 'TRUE' ELSE 'FALSE' END AS is_notnull, CASE WHEN p.contype = 'p' THEN 'TRUE' ELSE 'FALSE' END AS is_primarykey, CASE WHEN p.contype = 'u' THEN 'TRUE' ELSE 'FALSE' END AS is_unique, CASE WHEN f.atthasdef = 't' THEN d.adsrc END AS default_value FROM pg_attribute f JOIN pg_class c ON c.oid = f.attrelid JOIN pg_type t ON t.oid = f.atttypid LEFT JOIN pg_attrdef d ON d.adrelid = c.oid AND d.adnum = f.attnum LEFT JOIN pg_namespace n ON n.oid = c.relnamespace LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) WHERE c.relkind = 'r'::char AND n.nspname ILIKE '" + schema.getSchemaName() + "' AND c.relname ILIKE '" + table.getTableName() + "' AND f.attname ILIKE '" + columnName + "' AND f.attnum > 0 ORDER BY f.attnum, is_primarykey DESC LIMIT 1");
 	}
 }
