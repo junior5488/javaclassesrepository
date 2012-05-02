@@ -21,6 +21,7 @@ package org.schimpf.sql.base.wrappers;
 import org.schimpf.sql.base.SQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Metodos para la obtencion de datos de la DB
@@ -40,14 +41,14 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	 * 
 	 * @version Apr 26, 2012 8:20:28 PM
 	 */
-	private final String					dbName;
+	private final String							dbName;
 
 	/**
 	 * Esquemas de la base de datos
 	 * 
 	 * @version Apr 27, 2012 10:18:44 AM
 	 */
-	private final ArrayList<SType>	schemas	= new ArrayList<SType>();
+	private final HashMap<String, SType>	schemas	= new HashMap<String, SType>();
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -76,6 +77,21 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	public final String getDataBaseName() {
 		// retornamos el nombre de la DB
 		return this.dbName;
+	}
+
+	/**
+	 * Retorna el esquema
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 10:28:57 AM
+	 * @param schemaName Nombre del esquema
+	 * @return Esquema o Null si no existe
+	 */
+	public final SType getSchema(final String schemaName) {
+		// retornamos el esquema
+		return this.schemas.get(schemaName);
 	}
 
 	/**
@@ -112,10 +128,10 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 			// recorremos los esquemas
 			for (SType schema: this.retrieveSchemas(this.getDataBaseName()))
 				// agregamos el esquema
-				this.schemas.add(schema);
+				this.schemas.put(schema.getSchemaName(), schema);
 		}
 		// retornamos la lista de los esquemas
-		return this.schemas;
+		return this.<SType> toArrayList(this.schemas);
 	}
 
 	/**
