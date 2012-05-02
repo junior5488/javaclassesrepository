@@ -30,10 +30,11 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 27, 2012 10:04:45 AM
  * @param <SQLConnector> Conector a la DB
+ * @param <SType> Tipo de esquema
  * @param <TType> Tipo de las Tablas
  * @param <CType> Tipo de las Columnas
  */
-public abstract class SchemaWrapper<SQLConnector extends SQLProcess, TType extends TableWrapper<SQLConnector, CType>, CType extends ColumnWrapper<SQLConnector>> extends BaseWrapper<SQLConnector> {
+public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
 	/**
 	 * Nombre del esquema
 	 * 
