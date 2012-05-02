@@ -34,7 +34,7 @@ import java.util.ArrayList;
  * @param <TType> Tipo de Tablas
  * @param <CType> Tipo de Columnas
  */
-public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, TType, CType>, TType extends TableWrapper<SQLConnector, CType>, CType extends ColumnWrapper<SQLConnector>> extends BaseWrapper<SQLConnector> {
+public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
 	/**
 	 * Nombre de la DB
 	 * 
