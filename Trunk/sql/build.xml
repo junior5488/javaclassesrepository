@@ -9,7 +9,7 @@
 		<!-- Valores de informacion del programa -->
 		<buildnumber file="Trunk/sql/build.number"/>
 		<property name="jar.start" value="libschimpf-sql"/>
-		<property name="jar.version" value="1.0.4"/>
+		<property name="jar.version" value="1.0.5"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
