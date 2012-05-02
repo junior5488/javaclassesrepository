@@ -1,3 +1,9 @@
+libschimpf-sql (1.1.1) stable; urgency=low
+
+  * Agregamos los wrappers para bases de datos MySQL
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Wed, 02 May 2012 18:29:53 -0300
+
 libschimpf-sql (1.1.0) stable; urgency=low
 
   * Agregamos las clases Wrapper para obtener metadatos de las bases de datos
