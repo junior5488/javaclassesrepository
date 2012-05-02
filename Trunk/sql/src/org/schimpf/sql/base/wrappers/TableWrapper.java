@@ -30,15 +30,24 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:18:00 PM
  * @param <SQLConnector> Tipo de conexion SQL
- * @param <CType> Columna
+ * @param <SType> Tipo de esquema
+ * @param <TType> Tipo de tabla
+ * @param <CType> Tipo de columnas
  */
-public abstract class TableWrapper<SQLConnector extends SQLProcess, CType extends ColumnWrapper<SQLConnector>> extends BaseWrapper<SQLConnector> {
+public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
 	/**
 	 * Columnas de la tablas
 	 * 
 	 * @version Apr 26, 2012 7:20:49 PM
 	 */
 	private ArrayList<CType>	columns	= new ArrayList<CType>();
+
+	/**
+	 * Esquema al que pertenece la tabla
+	 * 
+	 * @version May 2, 2012 2:02:12 AM
+	 */
+	private final SType			schema;
 
 	/**
 	 * Nombre fisico de la tabla
@@ -53,11 +62,14 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, CType extend
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:33:20 PM
 	 * @param sqlConnector Conector SQL a la DB
+	 * @param schema Esquema de la tabla
 	 * @param tableName Nombre de la tabla
 	 */
-	protected TableWrapper(final SQLConnector sqlConnector, final String tableName) {
+	protected TableWrapper(final SQLConnector sqlConnector, final SType schema, final String tableName) {
 		// enviamos el conector SQL
 		super(sqlConnector);
+		// almacenamos el esquema
+		this.schema = schema;
 		// almacenamos el nombre de la tabla
 		this.tableName = tableName;
 	}
@@ -95,6 +107,20 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, CType extend
 			this.columns = this.retrieveColumns(this.getTableName());
 		// retornamos las columnas
 		return this.columns;
+	}
+
+	/**
+	 * Retorna el esquema al que pertenece la tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 2:02:30 AM
+	 * @return Esquema de la tabla
+	 */
+	public final SType getSchema() {
+		// retornamos el esquema
+		return this.schema;
 	}
 
 	/**
