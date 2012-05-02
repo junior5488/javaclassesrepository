@@ -131,7 +131,7 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 				this.tables.put(table.getTableName(), table);
 		}
 		// retornamos las tablas
-		return this.toArrayList(this.tables);
+		return this.<TType> toArrayList(this.tables);
 	}
 
 	/**
