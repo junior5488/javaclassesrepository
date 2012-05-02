@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Metodos para obtener los datos del DBMS
+ * Datos del DBMS PostgreSQL
  * 
  * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
