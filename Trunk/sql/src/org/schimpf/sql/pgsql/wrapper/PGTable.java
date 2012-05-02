@@ -31,18 +31,19 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:17:09 PM
  */
-public class PGTable extends TableWrapper<PostgreSQLProcess, PGColumn> {
+public class PGTable extends TableWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:56:14 PM
 	 * @param sqlConnector Conector PostgreSQL a la DB
+	 * @param schema Esquema al que pertenece la tabla
 	 * @param tableName Nombre de la tabla
 	 */
-	public PGTable(final PostgreSQLProcess sqlConnector, final String tableName) {
+	public PGTable(final PostgreSQLProcess sqlConnector, final PGSchema schema, final String tableName) {
 		// enviamos el constructor
-		super(sqlConnector, tableName);
+		super(sqlConnector, schema, tableName);
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGColumn> {
 		// recorremos las columnas
 		while (this.getSQLConnector().getResultSet().next())
 			// aregamos la columna a la lista
-			columns.add(new PGColumn(this.getSQLConnector(), this.getSQLConnector().getResultSet().getString("column_name")));
+			columns.add(new PGColumn(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("column_name")));
 		// retornamos la lista de las columnas
 		return columns;
 	}
