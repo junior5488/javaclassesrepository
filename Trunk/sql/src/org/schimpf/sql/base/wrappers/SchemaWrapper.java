@@ -21,6 +21,7 @@ package org.schimpf.sql.base.wrappers;
 import org.schimpf.sql.base.SQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Metodos para la obtencion de datos de los esquemas
@@ -40,14 +41,14 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	 * 
 	 * @version Apr 27, 2012 10:17:00 AM
 	 */
-	private final String					schemaName;
+	private final String							schemaName;
 
 	/**
 	 * Tablas de la bases de datos
 	 * 
 	 * @version Apr 26, 2012 8:17:53 PM
 	 */
-	private final ArrayList<TType>	tables	= new ArrayList<TType>();
+	private final HashMap<String, TType>	tables	= new HashMap<String, TType>();
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -79,6 +80,21 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	}
 
 	/**
+	 * Retorna una tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 10:31:12 AM
+	 * @param tableName Nombre de la tabla
+	 * @return Tabla o Null si no existe
+	 */
+	public final TType getTable(final String tableName) {
+		// retornamos la tabla
+		return this.tables.get(tableName);
+	}
+
+	/**
 	 * Retorna las tablas de la DB
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -104,7 +120,7 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	 * @throws SQLException Si se produce algun error al obtener las tablas
 	 * @return Lista de tablas de la DB
 	 */
-	public ArrayList<TType> getTables(final boolean reload) throws SQLException {
+	public final ArrayList<TType> getTables(final boolean reload) throws SQLException {
 		// verificamos si tenemos las tablas
 		if (this.tables.size() == 0 || reload) {
 			// vaciamos la lista
@@ -112,10 +128,10 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 			// recorremos las tablas
 			for (TType table: this.retrieveTables(this.getSchemaName()))
 				// agregamos la tabla de la DB
-				this.tables.add(table);
+				this.tables.put(table.getTableName(), table);
 		}
 		// retornamos las tablas
-		return this.tables;
+		return this.toArrayList(this.tables);
 	}
 
 	/**
