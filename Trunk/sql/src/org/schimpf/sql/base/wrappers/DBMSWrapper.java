@@ -121,7 +121,7 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 				this.databases.put(db.getDataBaseName(), db);
 		}
 		// retornamos las bases de datos
-		return this.toArrayList(this.databases);
+		return this.<DType> toArrayList(this.databases);
 	}
 
 	/**
@@ -150,25 +150,4 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 	 * @return Lista de bases de datos del sistema
 	 */
 	protected abstract ArrayList<DType> retrieveDataBases(String dbmsName) throws SQLException;
-
-	/**
-	 * Convierte un HashMap a ArrayList
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 2, 2012 10:16:34 AM
-	 * @param hashMap HashMap a convertir
-	 * @return ArrayList
-	 */
-	private ArrayList<DType> toArrayList(final HashMap<String, DType> hashMap) {
-		// creamos un arrayList
-		ArrayList<DType> arrayList = new ArrayList<DType>();
-		// recorremos los valores
-		for (DType value: hashMap.values())
-			// agregamos el valor al arrayList
-			arrayList.add(value);
-		// retornamos el arrayList
-		return arrayList;
-	}
 }

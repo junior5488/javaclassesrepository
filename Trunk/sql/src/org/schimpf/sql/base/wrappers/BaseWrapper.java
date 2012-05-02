@@ -19,6 +19,8 @@
 package org.schimpf.sql.base.wrappers;
 
 import org.schimpf.sql.base.SQLProcess;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Metodos comunes entre los wrappers
@@ -61,5 +63,27 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 	protected final SQLConnector getSQLConnector() {
 		// retornamos la conexion a la DB
 		return this.sqlConnector;
+	}
+
+	/**
+	 * Convierte un HashMap a ArrayList
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 2, 2012 10:16:34 AM
+	 * @param <AType> Tipo de valores del HashMap
+	 * @param hashMap HashMap a convertir
+	 * @return ArrayList
+	 */
+	protected final <AType> ArrayList<AType> toArrayList(final HashMap<String, AType> hashMap) {
+		// creamos un arrayList
+		ArrayList<AType> arrayList = new ArrayList<AType>();
+		// recorremos los valores
+		for (AType value: hashMap.values())
+			// agregamos el valor al arrayList
+			arrayList.add(value);
+		// retornamos el arrayList
+		return arrayList;
 	}
 }
