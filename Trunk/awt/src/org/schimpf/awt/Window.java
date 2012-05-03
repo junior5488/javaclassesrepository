@@ -192,8 +192,8 @@ public final class Window {
 	 * @version May 3, 2012 4:21:18 PM
 	 */
 	public void maximize() {
-		// maximizamos la ventana
-		this.getWindow().setExtendedState(this.getWindow().getExtendedState() | Frame.MAXIMIZED_BOTH);
+		// seteamos la ventana como maximizada
+		this.setIsMaximized(true);
 		// mostramos la ventana
 		this.focus();
 	}
@@ -235,6 +235,20 @@ public final class Window {
 	public void setIconImage(final ImageIcon imageIcon) {
 		// moficamos el icono
 		this.getWindow().setIconImage(imageIcon.getImage());
+	}
+
+	/**
+	 * Especifica si la ventana debe estar maximizada
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:32:46 PM
+	 * @param maximized Bandera para maximizar la ventana
+	 */
+	public void setIsMaximized(final boolean maximized) {
+		// maximizamos la ventana
+		this.getWindow().setExtendedState(maximized ? this.getWindow().getExtendedState() | Frame.MAXIMIZED_BOTH : Frame.NORMAL);
 	}
 
 	/**
