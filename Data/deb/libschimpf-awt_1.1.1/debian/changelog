@@ -1,9 +1,15 @@
+libschimpf-awt (1.1.1) stable; urgency=low
+
+  * Window: Agregamos el metodo para setear el foco en la ventana
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Thu, 03 May 2012 16:11:49 -0300
+
 libschimpf-awt (1.1.0) stable; urgency=low
 
   * FIX: Eliminamos el listener que finalizaba el proceso
   * Agregamos el seteo de listeners personalizados para la ventana
 
- -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:33:54 -0300
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Thu, 03 May 2012 15:42:19 -0300
 
 libschimpf-awt (1.0.2) stable; urgency=low
 
