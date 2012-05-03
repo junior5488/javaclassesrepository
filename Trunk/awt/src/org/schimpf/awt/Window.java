@@ -155,6 +155,19 @@ public final class Window {
 	}
 
 	/**
+	 * Setea el foco en la ventana y la envia al frente
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:07:15 PM
+	 */
+	public void focus() {
+		// enviamos la ventana al frente
+		this.getWindow().toFront();
+	}
+
+	/**
 	 * Retorna el panel para el contenido de la ventana
 	 * 
 	 * @author Hermann D. Schimpf
