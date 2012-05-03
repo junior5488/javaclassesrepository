@@ -24,7 +24,6 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -40,6 +39,13 @@ import javax.swing.border.EtchedBorder;
  * @version Jun 13, 2011 4:01:40 PM
  */
 public final class Window {
+	/**
+	 * Tamaño por defecto para la ventana
+	 * 
+	 * @version Jun 16, 2011 3:04:40 PM
+	 */
+	public static final Dimension	DEFAULT_SIZE	= new Dimension(600, 400);
+
 	/**
 	 * Panel para el contenido de la ventana
 	 * 
@@ -60,13 +66,6 @@ public final class Window {
 	 * @version Jun 14, 2011 12:18:18 PM
 	 */
 	private JFrame						window;
-
-	/**
-	 * Tamaño por defecto para la ventana
-	 * 
-	 * @version Jun 16, 2011 3:04:40 PM
-	 */
-	public static final Dimension	DEFAULT_SIZE	= new Dimension(600, 400);
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -110,6 +109,20 @@ public final class Window {
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
 		this.initWindow();
+	}
+
+	/**
+	 * Agrega un listener a la ventana
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 3:34:11 PM
+	 * @param listener Listener
+	 */
+	public void addWindowListener(final WindowAdapter listener) {
+		// agregamos el capturador al cerrar la ventana
+		this.getWindow().addWindowListener(listener);
 	}
 
 	/**
@@ -274,24 +287,6 @@ public final class Window {
 	protected void roundCorners() {}
 
 	/**
-	 * Setea los listeners de la ventana
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 13, 2011 4:57:50 PM
-	 */
-	private void addListeners() {
-		// agregamos el capturador al cerrar la ventana
-		this.getWindow().addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(final WindowEvent e) {
-				// salimos
-				System.exit(0);
-			}
-		});
-	}
-
-	/**
 	 * Retorna la barra de estado de la ventana
 	 * 
 	 * @author Hermann D. Schimpf
@@ -331,8 +326,6 @@ public final class Window {
 		// seteamos el color de fondo
 		this.getContentPanel().setBackground(new Color(210, 210, 210));
 		this.makeStatusBar(this.getContentPanel());
-		// agregamos los listeners
-		this.addListeners();
 		// verificamos si tiene un tamaño
 		if (this.getWindow().getSize().width == 0)
 			// seteamos el tamaño por defecto
