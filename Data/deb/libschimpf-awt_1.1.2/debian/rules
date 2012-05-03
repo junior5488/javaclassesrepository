@@ -32,7 +32,7 @@ post-clean:
 	dh_clean
 	rm -f build-stamp
 	rm -Rf debian/input/*
-	chown hschimpf:root ../libschimpf-awt_1.1.1_all.deb
-	mv ../libschimpf-awt_1.1.1_all.deb ../../builds/1.1.1/libschimpf-awt_1.1.1_all.deb
+	chown hschimpf:root ../libschimpf-awt_1.1.2_all.deb
+	mv ../libschimpf-awt_1.1.2_all.deb ../../builds/1.1.2/libschimpf-awt_1.1.2_all.deb
 	rm -f ../../builds/current/libschimpf-awt_current_all.deb
-	ln -s "`dirname ../../builds/1.1.1/libschimpf-awt_1.1.1_all.deb`"/libschimpf-awt_1.1.1_all.deb ../../builds/current/libschimpf-awt_current_all.deb
+	ln -s "`dirname ../../builds/1.1.2/libschimpf-awt_1.1.2_all.deb`"/libschimpf-awt_1.1.2_all.deb ../../builds/current/libschimpf-awt_current_all.deb

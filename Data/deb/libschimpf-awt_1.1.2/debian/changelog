@@ -1,3 +1,9 @@
+libschimpf-awt (1.1.2) stable; urgency=low
+
+  * Window: Agregamos los metodos para maximizar y minimizar la ventana
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Thu, 03 May 2012 16:23:38 -0300
+
 libschimpf-awt (1.1.1) stable; urgency=low
 
   * Window: Agregamos el metodo para setear el foco en la ventana
