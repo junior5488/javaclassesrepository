@@ -20,6 +20,7 @@ package org.schimpf.awt;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -180,6 +181,34 @@ public final class Window {
 	public JPanel getContentPanel() {
 		// retornamos el panel del contenido
 		return this.contentPanel;
+	}
+
+	/**
+	 * Maximiza la ventana
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:21:18 PM
+	 */
+	public void maximize() {
+		// mostramos la ventana
+		this.focus();
+		// maximizamos la ventana
+		this.getWindow().setExtendedState(this.getWindow().getExtendedState() | Frame.MAXIMIZED_BOTH);
+	}
+
+	/**
+	 * Minimiza la ventana
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:22:39 PM
+	 */
+	public void minimize() {
+		// minimizamos la ventana
+		this.getWindow().setState(Frame.ICONIFIED);
 	}
 
 	/**
