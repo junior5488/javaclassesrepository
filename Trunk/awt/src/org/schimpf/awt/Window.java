@@ -192,10 +192,10 @@ public final class Window {
 	 * @version May 3, 2012 4:21:18 PM
 	 */
 	public void maximize() {
-		// mostramos la ventana
-		this.focus();
 		// maximizamos la ventana
 		this.getWindow().setExtendedState(this.getWindow().getExtendedState() | Frame.MAXIMIZED_BOTH);
+		// mostramos la ventana
+		this.focus();
 	}
 
 	/**
