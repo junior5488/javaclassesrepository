@@ -1,3 +1,10 @@
+libschimpf-awt (1.1.0) stable; urgency=low
+
+  * FIX: Eliminamos el listener que finalizaba el proceso
+  * Agregamos el seteo de listeners personalizados para la ventana
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:33:54 -0300
+
 libschimpf-awt (1.0.2) stable; urgency=low
 
   * Generamos el enlace org.schimpf.awt
