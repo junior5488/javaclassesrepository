@@ -82,6 +82,21 @@ public final class Window {
 	}
 
 	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:38:19 PM
+	 * @param gc GraphicsConfiguration
+	 * @param maximized Estado inicial de la ventana
+	 */
+	public Window(final GraphicsConfiguration gc, final boolean maximized) {
+		// enviamos el constructor
+		this(gc);
+		// seteamos el estado de la ventana
+		this.setIsMaximized(maximized);
+	}
+
+	/**
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 13, 2011 4:01:40 PM
@@ -94,6 +109,21 @@ public final class Window {
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
 		this.initWindow();
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:37:00 PM
+	 * @param title Titulo de la ventana
+	 * @param maximized Estado inicial de la ventana
+	 */
+	public Window(final String title, final boolean maximized) {
+		// enviamos el constructor
+		this(title);
+		// seteamos el estado inicial
+		this.setIsMaximized(maximized);
 	}
 
 	/**
@@ -110,6 +140,22 @@ public final class Window {
 		this.setTitle(title);
 		// seteamos las propiedades de la ventana
 		this.initWindow();
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version May 3, 2012 4:39:13 PM
+	 * @param title Titulo de la ventana
+	 * @param gc GraphicsConfiguration
+	 * @param maximized Estado inicial de la ventana
+	 */
+	public Window(final String title, final GraphicsConfiguration gc, final boolean maximized) {
+		// enviamos el constructor
+		this(title, gc);
+		// seteamos el estado inicial
+		this.setIsMaximized(maximized);
 	}
 
 	/**
