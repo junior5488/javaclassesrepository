@@ -163,6 +163,8 @@ public final class Window {
 	 * @version May 3, 2012 4:07:15 PM
 	 */
 	public void focus() {
+		// mostramos la ventana
+		this.setVisible(true);
 		// enviamos la ventana al frente
 		this.getWindow().toFront();
 	}
