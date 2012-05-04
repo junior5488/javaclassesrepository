@@ -131,7 +131,7 @@ public abstract class Thread extends java.lang.Thread {
 	 * @version Aug 2, 2011 5:31:11 PM
 	 * @return Estado del thread
 	 */
-	protected boolean isRunning() {
+	protected final boolean isRunning() {
 		// retornamos la bandera
 		return this.running;
 	}
