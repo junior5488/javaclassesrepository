@@ -225,6 +225,12 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType exten
 		return this.isUnique;
 	}
 
+	@Override
+	public String toString() {
+		// retornamos el nombre de la columna
+		return this.getColumnName();
+	}
+
 	/**
 	 * Retorna el tipo de dato de la columna desde los metadatos
 	 * 

@@ -137,6 +137,12 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 		return this.<TType> toArrayList(this.tables);
 	}
 
+	@Override
+	public String toString() {
+		// retornamos el nombre del esquema
+		return this.getSchemaName();
+	}
+
 	/**
 	 * Carga las tablas de la DB
 	 * 

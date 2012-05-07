@@ -138,6 +138,12 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 		return this.dbmsName;
 	}
 
+	@Override
+	public String toString() {
+		// retornamos el nombre del sistema
+		return this.getDBMSName();
+	}
+
 	/**
 	 * Retorna la lista de las bases de datos del sistema
 	 * 

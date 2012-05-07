@@ -191,6 +191,12 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 		return this.tableName;
 	}
 
+	@Override
+	public String toString() {
+		// retornamos el nombre de la tabla
+		return this.getTableName();
+	}
+
 	/**
 	 * Carga las columnas de la tabla
 	 * 

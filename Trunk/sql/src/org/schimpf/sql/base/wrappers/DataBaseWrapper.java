@@ -137,6 +137,12 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 		return this.<SType> toArrayList(this.schemas);
 	}
 
+	@Override
+	public String toString() {
+		// retornamos el nombre de la base de datos
+		return this.getDataBaseName();
+	}
+
 	/**
 	 * Obtiene los esquemas de la base de datos
 	 * 
