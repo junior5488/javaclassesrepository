@@ -88,8 +88,11 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	 * @version May 2, 2012 10:31:12 AM
 	 * @param tableName Nombre de la tabla
 	 * @return Tabla o Null si no existe
+	 * @throws SQLException Si se produce un error al cargar la tabla
 	 */
-	public final TType getTable(final String tableName) {
+	public final TType getTable(final String tableName) throws SQLException {
+		// cargamos las tablas
+		this.getTables();
 		// retornamos la tabla
 		return this.tables.get(tableName);
 	}

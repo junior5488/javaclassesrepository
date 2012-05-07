@@ -91,8 +91,11 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 	 * @version May 2, 2012 10:34:48 AM
 	 * @param columnName Nombre de la columna
 	 * @return Columna o Null si no existe
+	 * @throws SQLException Si se produce un error al cargar la columna
 	 */
-	public final CType getColumn(final String columnName) {
+	public final CType getColumn(final String columnName) throws SQLException {
+		// cargamos las columnas
+		this.getColumns();
 		// retornamos la columna
 		return this.columns.get(columnName);
 	}

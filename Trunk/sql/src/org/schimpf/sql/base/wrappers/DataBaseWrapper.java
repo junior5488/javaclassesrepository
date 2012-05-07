@@ -88,8 +88,11 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	 * @version May 2, 2012 10:28:57 AM
 	 * @param schemaName Nombre del esquema
 	 * @return Esquema o Null si no existe
+	 * @throws SQLException Si se produce un error al obtener el esquema
 	 */
-	public final SType getSchema(final String schemaName) {
+	public final SType getSchema(final String schemaName) throws SQLException {
+		// cargamos los esquemas
+		this.getSchemas();
 		// retornamos el esquema
 		return this.schemas.get(schemaName);
 	}
