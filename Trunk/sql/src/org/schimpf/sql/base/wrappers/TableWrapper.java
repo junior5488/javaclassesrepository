@@ -21,7 +21,7 @@ package org.schimpf.sql.base.wrappers;
 import org.schimpf.sql.base.SQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Metodos para obtencion de datos de las tablas
@@ -41,7 +41,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 	 * 
 	 * @version Apr 26, 2012 7:20:49 PM
 	 */
-	private final HashMap<String, CType>	columns		= new HashMap<String, CType>();
+	private final TreeMap<String, CType>	columns		= new TreeMap<String, CType>();
 
 	/**
 	 * Columnas Clave Primaria de la tabla

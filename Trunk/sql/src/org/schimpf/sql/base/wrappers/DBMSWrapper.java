@@ -21,7 +21,7 @@ package org.schimpf.sql.base.wrappers;
 import org.schimpf.sql.base.SQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Metodos para la obtencion de datos de un sistema de base de datos
@@ -42,7 +42,7 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 	 * 
 	 * @version May 1, 2012 9:26:57 PM
 	 */
-	private final HashMap<String, DType>	databases	= new HashMap<String, DType>();
+	private final TreeMap<String, DType>	databases	= new TreeMap<String, DType>();
 
 	/**
 	 * Nombre del sistema de bases de datos
