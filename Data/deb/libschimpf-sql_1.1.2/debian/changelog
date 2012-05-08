@@ -1,3 +1,11 @@
+libschimpf-sql (1.1.2) stable; urgency=low
+
+  * %Wrapper: FIX: Cargamos las listas antes de retornar el valor
+  * %Wrapper: Agregamos los metodos toString() en cada clase
+  * %Wrapper: Utilizamos TreeMap para que se mantenga el orden de las listas
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Tue, 08 May 2012 08:39:32 -0300
+
 libschimpf-sql (1.1.1) stable; urgency=low
 
   * Agregamos los wrappers para bases de datos MySQL
