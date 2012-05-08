@@ -9,6 +9,6 @@ Homepage: http://lanparty.sytes.net/
 Package: libschimpf-util
 Architecture: all
 Depends: java7-runtime
-Provides: libschimpf-sortablelist-java, libschimpf-sortablelist-multithreaded-java, libschimpf-abrupt-crypter-java, libschimpf-base64-crypter-java, libschimpf-exceptions-java, libschimpf-params-manager-java
+Provides: libschimpf-multikeymap-java, libschimpf-sortablelist-java, libschimpf-sortablelist-multithreaded-java, libschimpf-abrupt-crypter-java, libschimpf-base64-crypter-java, libschimpf-exceptions-java, libschimpf-params-manager-java
 Description: Schimpf Util Library
  Paquete Java de librerias Util

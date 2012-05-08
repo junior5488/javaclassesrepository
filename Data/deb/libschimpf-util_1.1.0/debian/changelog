@@ -1,3 +1,9 @@
+libschimpf-util (1.1.0) stable; urgency=low
+
+  * Agregamos la clase org.schimpf.util.arrays.MultiKeyMap
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Tue, 08 May 2012 08:28:40 -0300
+
 libschimpf-util (1.0.3) stable; urgency=low
 
   * Agregamos la clase org.schimpf.util.managers.ParamsManager
