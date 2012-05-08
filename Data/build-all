@@ -24,3 +24,6 @@ ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sql/build.xml
 cd "$DIR"/Data/deb/libschimpf-sql_1.1.2 && sudo debian/rules
 
 cd "$DIR"/Data/deb/libschimpf-all_1.0.0 && sudo debian/rules
+
+sudo chown -R hschimpf:root "$DIR"/Data/builds
+sudo chmod -R a-wx,u+wx,a+r "$DIR"/Data/builds
