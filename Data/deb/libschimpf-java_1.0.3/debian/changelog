@@ -1,3 +1,9 @@
+libschimpf-java (1.0.3) stable; urgency=low
+
+  * Thread: FIX: Metodo protected Thread.isRunning() no puede ser sobrecargado
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Tue, 08 May 2012 08:37:46 -0300
+
 libschimpf-java (1.0.2) stable; urgency=low
 
   * Generamos el enlace org.schimpf.java
