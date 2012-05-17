@@ -123,7 +123,7 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	 * @throws SQLException Si se produce algun error al obtener las tablas
 	 * @return Lista de tablas de la DB
 	 */
-	public final ArrayList<TType> getTables(final boolean reload) throws SQLException {
+	public synchronized final ArrayList<TType> getTables(final boolean reload) throws SQLException {
 		// verificamos si tenemos las tablas
 		if (this.tables.size() == 0 || reload) {
 			// vaciamos la lista

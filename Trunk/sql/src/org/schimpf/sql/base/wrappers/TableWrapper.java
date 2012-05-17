@@ -126,7 +126,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 	 * @return Lista de columnas de la tabla
 	 * @throws SQLException Si no se pueden obtener las columnas de la tabla
 	 */
-	public final ArrayList<CType> getColumns(final boolean reload) throws SQLException {
+	public synchronized final ArrayList<CType> getColumns(final boolean reload) throws SQLException {
 		// verificamos si ya cargamos las columnas
 		if (this.columns.size() == 0 || reload) {
 			// vaciamos la lista
@@ -150,7 +150,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 	 * @throws SQLException Si se produce un error al identificar las columnas primarias
 	 * @return Lista de columnas Clave Primarias
 	 */
-	public final ArrayList<CType> getPrimaryKeys() throws SQLException {
+	public synchronized final ArrayList<CType> getPrimaryKeys() throws SQLException {
 		// verificamos si tenemos la lista
 		if (this.keyColumns.size() == 0)
 			// recorremos las columnas

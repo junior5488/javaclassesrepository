@@ -319,7 +319,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType exten
 	 * @version May 1, 2012 10:49:12 PM
 	 * @throws SQLException Si se produjo un error al cargar los metadatos
 	 */
-	private void loadMetaData() throws SQLException {
+	private synchronized void loadMetaData() throws SQLException {
 		// recorremos los metadatos
 		if (this.retrieveColumnMetadata(this.getTable().getSchema(), this.getTable(), this.getColumnName()) && this.getSQLConnector().getResultSet().next()) {
 			// almacenamos el tipo de dato

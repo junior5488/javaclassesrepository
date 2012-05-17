@@ -123,7 +123,7 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	 * @throws SQLException Si se produce un error al cargar la lista de los esquemas
 	 * @return Lista de esquemas de la DB
 	 */
-	public final ArrayList<SType> getSchemas(final boolean reload) throws SQLException {
+	public synchronized final ArrayList<SType> getSchemas(final boolean reload) throws SQLException {
 		// verifcamos si tenemos la lista de los esquemas
 		if (this.schemas.size() == 0 || reload) {
 			// vaciamos la lista

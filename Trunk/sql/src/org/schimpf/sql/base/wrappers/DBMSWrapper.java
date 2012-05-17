@@ -110,7 +110,7 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 	 * @throws SQLException Si se produjo un error al cargar la lista de las DBs
 	 * @return Lista de bases de datos del sistema
 	 */
-	public final ArrayList<DType> getDataBases(final boolean reload) throws SQLException {
+	public synchronized final ArrayList<DType> getDataBases(final boolean reload) throws SQLException {
 		// verificamos si cargamos la lista
 		if (this.databases.size() == 0 || reload) {
 			// vaciamos la lista
