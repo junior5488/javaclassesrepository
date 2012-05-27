@@ -230,6 +230,13 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @version Feb 10, 2011 2:23:37 PM
 	 */
 	private void generateThreads() {
+		// verificamos si tenemos menos de 200 elementos
+		if (this.size() <= 200) {
+			// agregamos un solo thread
+			this.addThread(new SortThread(this.arrayData, "Thread" + this.THREADNO++));
+			// continuamos
+			return;
+		}
 		// creamos una lista con las particiones
 		ArrayList<SortableList<Type>> partitions = new ArrayList<SortableList<Type>>();
 		// agregamos la lista actual
