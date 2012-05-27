@@ -17,6 +17,23 @@ import java.util.ArrayList;
  */
 public final class SortableListMultithreaded<Type extends Comparable<? super Type>> extends ArrayList<Type> {
 	/**
+	 * Cantidad maxima de threads a crear
+	 * Se obtiene desde la cantidad de procesadores
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:26:02 PM
+	 */
+	private static final int				MAX_THREADS			= Runtime.getRuntime().availableProcessors();
+
+	/**
+	 * Version de la clase
+	 * 
+	 * @version Sep 13, 2011 10:28:04 PM
+	 */
+	private static final long				serialVersionUID	= 1L;
+
+	/**
 	 * Listado de los elementos a ordenar
 	 * 
 	 * @author Hermann D. Schimpf
@@ -52,23 +69,6 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @version Feb 10, 2011 2:25:31 PM
 	 */
 	private final ArrayList<SortThread>	threads				= new ArrayList<SortThread>();
-
-	/**
-	 * Cantidad maxima de threads a crear
-	 * Se obtiene desde la cantidad de procesadores
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Feb 10, 2011 2:26:02 PM
-	 */
-	private static final int				MAX_THREADS			= Runtime.getRuntime().availableProcessors();
-
-	/**
-	 * Version de la clase
-	 * 
-	 * @version Sep 13, 2011 10:28:04 PM
-	 */
-	private static final long				serialVersionUID	= 1L;
 
 	/**
 	 * Thread utilizado para ordenar la lista de elementos
@@ -230,33 +230,27 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 	 * @version Feb 10, 2011 2:23:37 PM
 	 */
 	private void generateThreads() {
-		// dividimos y recorremos las sublistas
-		for (final SortableList<Type> list: this.divideList(this.arrayData))
-			// generamos los threads
-			this.generateThreads(list, SortableListMultithreaded.MAX_THREADS / 2);
-	}
-
-	/**
-	 * Genera cada thread con su parte a ordenar
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Feb 10, 2011 2:23:37 PM
-	 * @param list Lista a ordenar
-	 * @param subThreads Cantidad maxima de subThreads
-	 */
-	private void generateThreads(final SortableList<Type> list, final int subThreads) {
-		// recorremos la cantidad de threads disponibles
-		for (int thread = 1; thread <= subThreads; thread++)
-			// dividimos y recorremos las listas
-			for (final SortableList<Type> subList: this.divideList(list))
-				// verificamos si estamos en la cantidad maxima de threads
-				if (subThreads == 1)
-					// generamos el thread con la lista
-					this.addThread(new SortThread(subList, "Thread" + this.THREADNO++));
-				else
-					// redividimos la lista
-					this.generateThreads(subList, subThreads / 2);
+		// creamos una lista con las particiones
+		ArrayList<SortableList<Type>> partitions = new ArrayList<SortableList<Type>>();
+		// agregamos la lista actual
+		partitions.add(this.arrayData);
+		// recorremos mientras las partes sean menores a la cantidad de treads
+		while (partitions.size() < SortableListMultithreaded.MAX_THREADS) {
+			// generamos una lista temporal
+			ArrayList<SortableList<Type>> temp = new ArrayList<SortableList<Type>>();
+			// recorremos los elementos
+			for (SortableList<Type> list: partitions)
+				// dividimos y recorremos las sublistas
+				for (final SortableList<Type> sublist: this.divideList(list))
+					// agregamos la lista dividida
+					temp.add(sublist);
+			// sobreescribimos la lista actual
+			partitions = temp;
+		}
+		// recorremos las partes obtenidas
+		for (final SortableList<Type> list: partitions)
+			// generamos el thead
+			this.addThread(new SortThread(list, "Thread" + this.THREADNO++));
 	}
 
 	/**
