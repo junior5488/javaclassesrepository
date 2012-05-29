@@ -3,7 +3,7 @@
 Descripción de la clase ...
 =Definición=
 {{{
-org.schimpf.xxxxx
+package org.schimpf.xxxxx
 class XXXXXXXXXXXXXXXXXXXXXX {
    public void xxxxxxxxxxx(String where)
    ...
