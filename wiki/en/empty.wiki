@@ -10,6 +10,7 @@ class XXXXXXXXXXXXXXXXXXXXXX {
 }
 }}}
 || *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/xxxxxx/src/org/schimpf/xxxxx/XXXXXXXXXXXXX.java latest] ||
+=Usage=
 
 [http://code.google.com/p/javaclassesrepository/ back to index]
 ----
