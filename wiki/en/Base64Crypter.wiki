@@ -42,6 +42,7 @@ public class Usage {
 		// shot the decripted text
 		System.out.println(crypter.decrypt(text));
 	}
+}
 }}}
 
 [http://code.google.com/p/javaclassesrepository/ back to index]

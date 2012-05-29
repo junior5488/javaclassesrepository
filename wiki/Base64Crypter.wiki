@@ -42,6 +42,7 @@ public class Utilizacion {
 		// mostramos la cadena desifrada
 		System.out.println(crypter.decrypt(texto));
 	}
+}
 }}}
 
 [http://code.google.com/p/javaclassesrepository/ Volver al inicio]
