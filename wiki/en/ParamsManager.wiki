@@ -1,9 +1,9 @@
 <wiki:toc/>
 =Introduction=
-Class description ...
+Abstract administrator of parameters for applications
 =Definition=
 {{{
-org.schimpf.util.managers
+package org.schimpf.util.managers
 public abstract class ParamsManager {
 	/**
 	 * Load the parameters list passed to the app
