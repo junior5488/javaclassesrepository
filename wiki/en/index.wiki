@@ -53,8 +53,14 @@
 || [PGTable org.schimpf.sql.pgsql.wrapper.PGTable] || Class to retrieve data from PostgreSQL Tables (_Columns, primary keys, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java latest] ||
 || [PGColumn org.schimpf.sql.pgsql.wrapper.PGColumn] || Class to retrieve data from PostgreSQL Columns (_Data type, length, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java latest] ||
 
-=Repositories (Debian / Ubuntu)=
-==Repository Installation==
+=Descarga de paquetes=
+==Desde Google Code==
+You can download the _JAR_ packages directly from [http://code.google.com/p/javaclassesrepository/downloads/list Downloads Directory].
+
+==Repositories (Debian / Ubuntu)==
+The libraries can be installed from a Debian / Ubuntu package repository.
+
+===Repository Installation===
 _Repository APT:_
 {{{
 deb http://lanparty.sytes.net/ubuntu schimpf java
@@ -63,32 +69,32 @@ _GPG key installation:_
 {{{
 wget -q http://lanparty.sytes.net/schimpf.gpg.key -O - | apt-key add -
 }}}
-==Available Packages==
-===libschimpf-all-java===
+===Available Packages===
+====libschimpf-all-java====
 Depends on the 5 (five) Schimpf library packages.
 
-===libschimpf-util-java===
+====libschimpf-util-java====
 Package with the classes on _*org.schimpf.util.`*`*_
 
-===libschimpf-awt-java===
+====libschimpf-awt-java====
 Package with the classes on _*org.schimpf.awt.`*`*_
 
-===libschimpf-java-java===
+====libschimpf-java-java====
 Package with the classes on .schimpf.java.`*`*_
 
-===libschimpf-net-java===
+====libschimpf-net-java====
 Package with the classes on _*org.schimpf.net.`*`*_
 
-Depends on:
+_*Depends on*_:
  * libtrilead-ssh2-java
  * libgeronimo-javamail-1.4-spec-java
  * _libschimpf-util-java_
  * _libschimpf-java-java_
 
-===libschimpf-sql-java===
+====libschimpf-sql-java====
 Package with the classes on _*org.schimpf.sql.`*`*_
 
-Depends on:
+_*Depends on*_:
  * libmysql-java
  * libpg-java
  * _libschimpf-util-java_

@@ -53,9 +53,15 @@
 || [PGTable org.schimpf.sql.pgsql.wrapper.PGTable] || Clase para obtener datos de tablas PostgreSQL (_Columnas, claves primarias, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java último] ||
 || [PGColumn org.schimpf.sql.pgsql.wrapper.PGColumn] || Clase para obtener datos de columnas PostgreSQL (_Tipo de datos, longitud, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java último] ||
 
-=Repositorios (Debian / Ubuntu)=
-==Instalacion de los repositorios==
-_Direccion del repositorio:_
+=Descarga de paquetes=
+==Desde Google Code==
+Puede descargar los paquetes _JAR_ directamente desde el [http://code.google.com/p/javaclassesrepository/downloads/list Directorio de Descargas].
+
+==Repositorios (Debian / Ubuntu)==
+Las librerias pueden ser instaladas desde un repositorio de paquetes Debian / Ubuntu.
+
+===Instalacion de los repositorios===
+_Direccion APT del repositorio:_
 {{{
 deb http://lanparty.sytes.net/ubuntu schimpf java
 }}}
@@ -63,32 +69,32 @@ _Instalacion de la clave GPG:_
 {{{
 wget -q http://lanparty.sytes.net/schimpf.gpg.key -O - | apt-key add -
 }}}
-==Paquetes disponibles==
-===libschimpf-all-java===
+===Paquetes disponibles===
+====libschimpf-all-java====
 Depende de los 5 (cinco) paquetes de librerias java Schimpf.
 
-===libschimpf-util-java===
+====libschimpf-util-java====
 Paquete con las clases contenidas en _*org.schimpf.util.`*`*_
 
-===libschimpf-awt-java===
+====libschimpf-awt-java====
 Paquete con las clases contenidas en _*org.schimpf.awt.`*`*_
 
-===libschimpf-java-java===
+====libschimpf-java-java====
 Paquete con las clases contenidas en _*org.schimpf.java.`*`*_
 
-===libschimpf-net-java===
+====libschimpf-net-java====
 Paquete con las clases contenidas en _*org.schimpf.net.`*`*_
 
-Depende de:
+_*Depende de*_:
  * libtrilead-ssh2-java
  * libgeronimo-javamail-1.4-spec-java
  * _libschimpf-util-java_
  * _libschimpf-java-java_
 
-===libschimpf-sql-java===
+====libschimpf-sql-java====
 Paquete con las clases contenidas en _*org.schimpf.sql.`*`*_
 
-Depende de:
+_*Depende de*_:
  * libmysql-java
  * libpg-java
  * _libschimpf-util-java_
