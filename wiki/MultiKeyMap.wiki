@@ -1,6 +1,6 @@
 <wiki:toc/>
 =Introducción=
-Descripción de la clase ...
+Esta clase funciona de la misma forma que la clase [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] pero permite utilizar una clave multiple para almacenar los valores
 =Definición=
 {{{
 package org.schimpf.util.arrays
@@ -84,6 +84,23 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 || *Fuentes* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java último] ||
 
 =Utilización=
+{{{
+public class Utilizacion {
+	public static void main(final String[] args) {
+		// se especifican los tipos de datos para las claves y los valores
+		MultiKeyMap<Integer, String> map = new MultiKeyMap<Integer, String>();
+		// almacenamos unos valores de prueba
+		map.put("VALOR1", 1, 2);
+		map.put("VALOR2", 1, 2, 3, 4);
+		// mostramos los valores
+		System.out.println(map.get(1, 2, 3)); // retorna null porque la clave {1,2,3} no existe
+		System.out.println(map.get(1, 2, 3, 4)); // muestra VALOR2
+		System.out.println(map.get(1, 2)); // muestra VALOR1
+		System.out.println(map.put("VALOR3", 1, 2)); // muestra VALOR1
+		System.out.println(map.get(1, 2)); // muestra VALOR3
+	}
+}
+}}}
 
 [http://code.google.com/p/javaclassesrepository/ Volver al inicio]
 ----

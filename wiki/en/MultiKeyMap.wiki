@@ -84,6 +84,23 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 || *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java last] ||
 
 =Usage=
+{{{
+public class Usage {
+	public static void main(final String[] args) {
+		// specify data types for keys and values
+		MultiKeyMap<Integer, String> map = new MultiKeyMap<Integer, String>();
+		// store some test values
+		map.put("VALUE1", 1, 2);
+		map.put("VALUE2", 1, 2, 3, 4);
+		// show the values
+		System.out.println(map.get(1, 2, 3)); // shows null because the key {1,2,3} does not exist
+		System.out.println(map.get(1, 2, 3, 4)); // shows VALUE2
+		System.out.println(map.get(1, 2)); // shows VALUE1
+		System.out.println(map.put("VALUE3", 1, 2)); // shows VALUE1
+		System.out.println(map.get(1, 2)); // shows VALUE3
+	}
+}
+}}}
 
 [http://code.google.com/p/javaclassesrepository/ Back to index]
 ----
