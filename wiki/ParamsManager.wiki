@@ -1,4 +1,4 @@
-*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/ParasManager?tm=6&wl=en ingles]
+*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/ParamsManager?tm=6&wl=en ingles]
 <wiki:toc/>
 =Introducción=
 Administrador abstracto de parametros para aplicaciones

@@ -1,4 +1,4 @@
-*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/SortaleList?tm=6&wl=en ingles]
+*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/SortableList?tm=6&wl=en ingles]
 <wiki:toc/>
 =Introducción=
 Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] ordenable por medio de la comparacion de los elementos en la lista
