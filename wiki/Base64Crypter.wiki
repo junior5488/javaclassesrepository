@@ -2,6 +2,7 @@
 =Introducción=
 Descripción de la clase ...
 =Definición=
+{{{
 package org.schimpf.util.crypt
 public class Base64Crypter {
 	/**
@@ -25,6 +26,7 @@ public class Base64Crypter {
 	 */
 	public String encrypt(String string)
 }
+}}}
 || *Fuentes* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
 
 =Utilización=
