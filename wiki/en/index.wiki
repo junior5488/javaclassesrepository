@@ -21,7 +21,7 @@
 || [Thread org.schimpf.java.threads.Thread] || Abstract implementation of [http://docs.oracle.com/javase/6/docs/api/java/lang/Thread.html java.lang.Thread] with internal controls || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/threads/Thread.java latest] ||
 || [ThreadsManager org.schimpf.java.threads.ThreadsManager] || Execution administador of threads with execution control, status and detention thereof || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/threads/ThreadsManager.java latest] ||
 || || || ||
-|| [TailFile org.schimpf.java.sys.TailFile] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/io/File.html java.io.File] with function of [http://en.wikipedia.org/wiki/Tail_28Unix%29%tail (* unix)] || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/sys/TailFile.java latest] ||
+|| [TailFile org.schimpf.java.sys.TailFile] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/io/File.html java.io.File] with function of [http://en.wikipedia.org/wiki/Tail_%28Unix%29 tail (*unix)] || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/sys/TailFile.java latest] ||
 || [Compiler org.schimpf.java.Compiler] || Simple complilator of .java files || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/Compiler.java latest] ||
 || [Updater org.schimpf.java.Updater] || Simple updater of .jar packages to add new files to the package || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/Updater.java latest] ||
 
