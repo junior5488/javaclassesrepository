@@ -37,6 +37,13 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Base64Crypter {
 	/**
+	 * Instancias de los Crypters
+	 * 
+	 * @version Nov 8, 2011 10:59:44 PM
+	 */
+	private static final HashMap<SecretKey, Base64Crypter>	instances	= new HashMap<SecretKey, Base64Crypter>();
+
+	/**
 	 * Desencriptador
 	 * 
 	 * @version Nov 8, 2011 10:59:59 PM
@@ -49,13 +56,6 @@ public class Base64Crypter {
 	 * @version Nov 8, 2011 10:59:51 PM
 	 */
 	private Cipher															ecipher;
-
-	/**
-	 * Instancias de los Crypters
-	 * 
-	 * @version Nov 8, 2011 10:59:44 PM
-	 */
-	private static final HashMap<SecretKey, Base64Crypter>	instances	= new HashMap<SecretKey, Base64Crypter>();
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
