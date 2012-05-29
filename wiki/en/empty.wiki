@@ -1,0 +1,21 @@
+<wiki:toc/>
+=Package=
+{{{
+org.schimpf.xxxxx
+}}}
+=Introduction=
+Class description ...
+=Definition=
+{{{
+class XXXXXXXXXXXXXXXXXXXXXX {
+   public void xxxxxxxxxxx(String where)
+   ...
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/xxxxxx/src/org/schimpf/xxxxx/XXXXXXXXXXXXX.java latest] ||
+
+[http://code.google.com/p/javaclassesrepository/ back to index]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@gschimpf.com_
+ * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
