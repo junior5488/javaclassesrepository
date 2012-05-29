@@ -1,0 +1,51 @@
+<wiki:toc/>
+=Introduction=
+Class description ...
+=Definition=
+{{{
+package org.schimpf.util.crypt
+public class Base64Crypter {
+	/**
+	 * Return a instance of this crypter with the secret key
+	 * @param secretKey Secret key to use
+	 * @return Crypter with the key
+	 */
+	public static Base64Crypter getInstance(String secretKey)
+
+	/**
+	 * Descrypt a string
+	 * @param string String to decrypt
+	 * @return Decrypted string
+	 */
+	public String decrypt(String string)
+
+	/**
+	 * Encrypt a string
+	 * @param string String to crypt
+	 * @return Encrypted string
+	 */
+	public String encrypt(String string)
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java latest] ||
+
+=Usage=
+{{{
+public class Usage {
+	public static void main(String[] args) {
+		// get the de/crypter
+		Base64Crypter crypter = Base64Crypter.getInstance("password");
+		// crypt the string
+		String text = crypter.encrypt("Test Message");
+		// show the crypted text
+		System.out.println(text);
+		// shot the decripted text
+		System.out.println(crypter.decrypt(text));
+	}
+}}}
+
+[http://code.google.com/p/javaclassesrepository/ back to index]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@gschimpf.com_
+ * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
