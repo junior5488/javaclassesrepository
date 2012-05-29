@@ -1,6 +1,6 @@
 <wiki:toc/>
 =Introduction=
-Class description ...
+This class works the same way that the class [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] but allows to store a value with multiples keys
 =Definition=
 {{{
 package org.schimpf.util.arrays
