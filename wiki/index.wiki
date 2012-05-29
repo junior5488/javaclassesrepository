@@ -1,4 +1,6 @@
-=Paquete _org.schimpf.util_=
+<wiki:toc/>
+=Lista de Paquetes=
+==Paquete _org.schimpf.util_==
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [MultiKeyMap org.schimpf.util.arrays.MultiKeyMap] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] con claves multiples || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java último] ||
 || [SortableList org.schimpf.util.arrays.SortableList] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] ordenable por medio de la comparacion de los elementos en la lista || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableList.java último] ||
@@ -9,14 +11,14 @@
 || [Base64Crypter org.schimpf.util.crypt.Base64Crypter] || Clase para cifrar cadenas de texto en cifrado DES-BASE64 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
 || [AbruptCrypter org.schimpf.util.crypt.AbruptCrypter] || Implementacion de Base64Crypter con cifrado mas complejo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java último] ||
 
-=Paquete _org.schimpf.awt_=
+==Paquete _org.schimpf.awt_==
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [JImagePanel org.schimpf.awt.image.JImagePanel] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/javax/swing/JPanel.html javax.swing.JPanel] como contenedor de imagen con posibilidades de posicionamiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JImagePanel.java último] ||
 || [JAnimatedImagePanel org.schimpf.awt.image.JAnimatedImagePanel] || Implementacion de JImagePanel con efectos de movimiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JAnimatedImagePanel.java último] ||
 || || || ||
 || [Window org.schimpf.awt.Window] || Ventana base con el area principal de contenido y una barra de estado || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/Window.java último] ||
 
-=Paquete _org.schimpf.java_=
+==Paquete _org.schimpf.java_==
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [Thread org.schimpf.java.threads.Thread] || Implementacion abstracta de [http://docs.oracle.com/javase/6/docs/api/java/lang/Thread.html java.lang.Thread] con controles internos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/threads/Thread.java último] ||
 || [ThreadsManager org.schimpf.java.threads.ThreadsManager] || Administador de ejecucion de threads con controles de ejecucion, estado y detencion de los mismos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/threads/ThreadsManager.java último] ||
@@ -25,7 +27,7 @@
 || [Compiler org.schimpf.java.Compiler] || Simple complilador de ficheros .java || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/Compiler.java último] ||
 || [Updater org.schimpf.java.Updater] || Simple actualizador de paquetes .jar para agregar nuevos ficheros al paquete || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/Updater.java último] ||
 
-=Paquete _org.schimpf.net_=
+==Paquete _org.schimpf.net_==
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [AbstractClientSocket org.schimpf.net.socket.AbstractClientSocket] || Implementacion abstracta de socket cliente con posibilidad de autenticacion|| [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/socket/AbstractClientSocket.java último] ||
 || [AbstractServerSocket org.schimpf.net.socket.AbstractServerSocket] || Implementacion abstracta de socket servidor con posibilidad de autenticacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/socket/AbstractServerSocket.java último] ||
@@ -35,7 +37,7 @@
 || || || ||
 || [SSH org.schimpf.net.SSH] || Implementacion de la libreria [http://github.com/jenkinsci/trilead-ssh2 Trilead SSH2] para conexion y ejecucion de comandos por medio de [http://en.wikipedia.org/wiki/Secure_Shell SSH] || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/SSH.java último] ||
 
-=Paquete _org.schimpf.sql_=
+==Paquete _org.schimpf.sql_==
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [MySQLProcess org.schimpf.sql.mysql.MySQLProcess] || Clase para ejecutar consultas SQL en servidores de Bases de Datos MySQL || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/MySQLProcess.java último] ||
 || [MySQLDBMS org.schimpf.sql.mysql.wrapper.MySQLDBMS] || Clase para obtener datos de servidores MySQL (_Bases de datos, esquemas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/wrapper/MySQLDBMS.java último] ||
@@ -50,6 +52,47 @@
 || [PGSchema org.schimpf.sql.pgsql.wrapper.PGSchema] || Clase para obtener datos de esquemas PostgreSQL (_tablas, columnas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGSchema.java último] ||
 || [PGTable org.schimpf.sql.pgsql.wrapper.PGTable] || Clase para obtener datos de tablas PostgreSQL (_Columnas, claves primarias, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java último] ||
 || [PGColumn org.schimpf.sql.pgsql.wrapper.PGColumn] || Clase para obtener datos de columnas PostgreSQL (_Tipo de datos, longitud, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java último] ||
+
+=Repositorios (Debian / Ubuntu)=
+==Instalacion de los repositorios==
+_Direccion del repositorio:_
+{{{
+deb http://lanparty.sytes.net/ubuntu schimpf java
+}}}
+_Instalacion de la clave GPG:_
+{{{
+wget -q http://lanparty.sytes.net/schimpf.gpg.key -O - | apt-key add -
+}}}
+==Paquetes disponibles==
+===libschimpf-all-java===
+Depende de los 5 (cinco) paquetes de librerias java Schimpf.
+
+===libschimpf-util-java===
+Paquete con las clases contenidas en _*org.schimpf.util.`*`*_
+
+===libschimpf-awt-java===
+Paquete con las clases contenidas en _*org.schimpf.awt.`*`*_
+
+===libschimpf-java-java===
+Paquete con las clases contenidas en _*org.schimpf.java.`*`*_
+
+===libschimpf-net-java===
+Paquete con las clases contenidas en _*org.schimpf.net.`*`*_
+
+Depende de:
+ * libtrilead-ssh2-java
+ * libgeronimo-javamail-1.4-spec-java
+ * _libschimpf-util-java_
+ * _libschimpf-java-java_
+
+===libschimpf-sql-java===
+Paquete con las clases contenidas en _*org.schimpf.sql.`*`*_
+
+Depende de:
+ * libmysql-java
+ * libpg-java
+ * _libschimpf-util-java_
+ * _libschimpf-net-java_
 
 ----
  * *Hermann D. Schimpf*
