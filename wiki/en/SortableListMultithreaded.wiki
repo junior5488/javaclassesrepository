@@ -1,7 +1,7 @@
 <wiki:toc/>
 =Introduction=
 Implementation of SortableList but for the use of multiple threads to the ordering of items
-=Definición=
+=Definition=
 {{{
 package org.schimpf.util.arrays
 /**

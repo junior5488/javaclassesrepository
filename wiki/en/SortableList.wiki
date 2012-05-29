@@ -1,7 +1,7 @@
 <wiki:toc/>
 =Introduction=
 Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] sortable through the comparison of the items in the list
-=Definición=
+=Definition=
 {{{
 package org.schimpf.util.arrays
 /**
