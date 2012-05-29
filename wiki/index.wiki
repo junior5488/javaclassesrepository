@@ -12,7 +12,7 @@
 =Paquete _org.schimpf.awt_=
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [JImagePanel org.schimpf.awt.image.JImagePanel] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/javax/swing/JPanel.html javax.swing.JPanel] como contenedor de imagen con posibilidades de posicionamiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JImagePanel.java último] ||
-|| [JAnimatedImagePanel org.schimpf.awt.image.JAnimatedImagePanel] || Implementacion de [org.schimpf.awt.image.JImagePanel JImagePanel] con efectos de movimiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JAnimatedImagePanel.java último] ||
+|| [JAnimatedImagePanel org.schimpf.awt.image.JAnimatedImagePanel] || Implementacion de JImagePanel con efectos de movimiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JAnimatedImagePanel.java último] ||
 || || || ||
 || [Window org.schimpf.awt.Window] || Ventana base con el area principal de contenido y una barra de estado || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/Window.java último] ||
 
