@@ -15,46 +15,46 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	/**
 	 * Removes all of the mappings from this map
 	 */
-   public void clear()
+	public void clear()
 
 	/**
 	 * Returns true if this map contains a mapping for the specified key
 	 * @param key The key to be tested
 	 * @return True if the specified key exists
 	 */
-   public boolean containsKey(final KType... key)
+	public boolean containsKey(final KType... key)
 
 	/**
 	 * Returns true if this map contains a key for the specified value
 	 * @param value Value to be tested
 	 * @return True if the specified value exists
 	 */
-   public boolean containsValue(final Object value)
+	public boolean containsValue(final Object value)
 
 	/**
 	 * Returns a Set view of the mappings contained in this map
 	 * @return a set view of key-value
 	 */
-   public Set<Entry<ArrayList<KType>, VType>> entrySet()
+	public Set<Entry<ArrayList<KType>, VType>> entrySet()
 
 	/**
 	 * Returns the value of the specified key
 	 * @param key Key
 	 * @return Value of specified key
 	 */
-   public VType get(final KType... key)
+	public VType get(final KType... key)
 
 	/**
 	 * Returns true if this map of key-value is empty
 	 * @return True if is empty
 	 */
-   public boolean isEmpty()
+	public boolean isEmpty()
 
 	/**
 	 * Returns the list of keys of this map
 	 * @return List of keys
 	 */
-   public Set<ArrayList<KType>> keySet()
+	public Set<ArrayList<KType>> keySet()
 
 	/**
 	 * Add a value mapped with a key to the map
@@ -62,26 +62,26 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param keys Keys of the value
 	 * @return Previous value associated with the key or null if is a new key
 	 */
-   public VType put(final VType value, final KType... keys)
+	public VType put(final VType value, final KType... keys)
 
 	/**
 	 * Removes the value of the specified key if present
 	 * @param keys Keys
 	 * @return Value of the associed key or null if the key don't exists
 	 */
-   public VType remove(final KType... keys)
+	public VType remove(final KType... keys)
 
 	/**
 	 * Return the size of this map
 	 * @return Size of this map
 	 */
-   public int size()
+	public int size()
 
 	/**
 	 * Return a collection of values stored in this map
 	 * @return collection of values stored in this map
 	 */
-   public Collection<VType> values()
+	public Collection<VType> values()
 }
 }}}
 || *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java last] ||
