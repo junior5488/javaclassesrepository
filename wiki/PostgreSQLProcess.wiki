@@ -4,7 +4,7 @@
 
 _Gracias por su comprension_
 
-a[http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=es Volver a la lista de paquetes]
+[http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=es Volver a la lista de paquetes]
 ----
  * *Hermann D. Schimpf*
  * _hschimpf@gschimpf.com_
