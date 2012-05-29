@@ -1,12 +1,9 @@
 <wiki:toc/>
-=Package=
-{{{
-org.schimpf.xxxxx
-}}}
 =Introduction=
 Class description ...
 =Definition=
 {{{
+org.schimpf.xxxxx
 class XXXXXXXXXXXXXXXXXXXXXX {
    public void xxxxxxxxxxx(String where)
    ...
