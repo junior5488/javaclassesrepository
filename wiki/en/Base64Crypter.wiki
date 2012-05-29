@@ -46,7 +46,7 @@ public class Usage {
 }
 }}}
 
-[http://code.google.com/p/javaclassesrepository/ back to index]
+[http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=en back to index]
 ----
  * *Hermann D. Schimpf*
  * _hschimpf@gschimpf.com_

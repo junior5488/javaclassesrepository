@@ -14,7 +14,7 @@ class XXXXXXXXXXXXXXXXXXXXXX {
 
 =Utilización=
 
-[http://code.google.com/p/javaclassesrepository/ Volver al inicio]
+[http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=es Volver al inicio]
 ----
  * *Hermann D. Schimpf*
  * _hschimpf@gschimpf.com_
