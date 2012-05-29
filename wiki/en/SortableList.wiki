@@ -1,0 +1,69 @@
+<wiki:toc/>
+=Introduction=
+Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] sortable through the comparison of the items in the list
+=Definición=
+{{{
+package org.schimpf.util.arrays
+/**
+ * @param <Type> Type of the values
+ */
+public final class SortableList<Type extends Comparable<? super Type>> extends ArrayList<Type> {
+	/**
+	 * Sort the list ascending
+	 */
+	public void sort()
+
+	/**
+	 * Sort the list
+	 * @param asc True to sort ascending
+	 */
+	public void sort(final boolean asc)
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableList.java latest] ||
+
+=Usage=
+{{{
+public class Usage {
+	public static main(String[] args) {
+		// make the sortable list
+		SortableList<String> list = new SortableList<String>();
+		// add some elements
+		list.add("Text");
+		list.add("Value");
+		list.add("Tree");
+		// sort the list
+		list.sort();
+		// we search the list
+		for (String value: list)
+			// show the value
+			System.out.println(value);
+		// result:
+		// Text
+		// Tree
+		// Value
+		
+		// add more elements
+		list.add("Dog");
+		list.add("Home");
+		// sort descending
+		list.sort(false);
+		// we seaarh the list
+		for (String value: list)
+			// show the value
+			System.out.println(value);
+		// result:
+		// Value
+		// Tree
+		// Text
+		// Home
+		// Dog
+	}
+}
+}}}
+
+[http://code.google.com/p/javaclassesrepository/ Back to index]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@gschimpf.com_
+ * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
