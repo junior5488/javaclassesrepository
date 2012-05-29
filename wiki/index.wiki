@@ -1,3 +1,4 @@
+*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=en ingles]
 <wiki:toc/>
 =Lista de Paquetes=
 ==Paquete _org.schimpf.util_==

@@ -1,3 +1,4 @@
+*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/SSH?tm=6&wl=en ingles]
 *_En breve se actualizará el wiki de la clase SSH_*
 
 _Gracias por su comprension_

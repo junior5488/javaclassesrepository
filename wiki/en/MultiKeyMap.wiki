@@ -1,3 +1,4 @@
+*See in: * [http://code.google.com/p/javaclassesrepository/wiki/MultiKeyMap?tm=6&wl=es spanish] | _english_
 <wiki:toc/>
 =Introduction=
 This class works the same way that the class [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] but allows to store a value with multiples keys

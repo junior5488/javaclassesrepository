@@ -1,3 +1,4 @@
+*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/AbruptCrypter?tm=6&wl=en ingles]
 <wiki:toc/>
 =Introducción=
 Implementacion de Base64Crypter con cifrado mas complejo
