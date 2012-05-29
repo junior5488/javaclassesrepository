@@ -1,6 +1,6 @@
 =Package _org.schimpf.util_=
 || *Class* || *Description* || *Sources* ||
-|| [org.schimpf.util.arrays.MultiKeyMap] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] with multiple keys || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java latest] ||
+|| [MultiKeyMap org.schimpf.util.arrays.MultiKeyMap] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] with multiple keys || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java latest] ||
 || [org.schimpf.util.arrays.SortableList] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] sortable through the comparison of the items in the list || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableList.java latest] ||
 || [org.schimpf.util.arrays.SortableListMultithreaded] || Implementation of [org.schimpf.util.arrays.SortableList SortableList] but for the use of multiple threads to the ordering of items || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableListMultithreaded.java latest] ||
 
