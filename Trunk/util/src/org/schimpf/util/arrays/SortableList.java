@@ -17,6 +17,13 @@ import java.util.ArrayList;
  */
 public final class SortableList<Type extends Comparable<? super Type>> extends ArrayList<Type> {
 	/**
+	 * Version de la clase
+	 * 
+	 * @version Sep 13, 2011 10:27:44 PM
+	 */
+	private static final long	serialVersionUID	= 1L;
+
+	/**
 	 * Lista de elementos a ordenar
 	 * 
 	 * @author Hermann D. Schimpf
@@ -33,38 +40,6 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	 * @version Feb 10, 2011 2:44:01 PM
 	 */
 	private ArrayList<Type>		sortedList;
-
-	/**
-	 * Version de la clase
-	 * 
-	 * @version Sep 13, 2011 10:27:44 PM
-	 */
-	private static final long	serialVersionUID	= 1L;
-
-	/**
-	 * Limpia la lista a ordenar
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Feb 10, 2011 2:46:51 PM
-	 */
-	public void cleanListToSort() {
-		// limpiamos la lista a ordenar
-		this.listToSort = new ArrayList<Type>();
-	}
-
-	/**
-	 * Retorna la lista a ordenar
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Feb 10, 2011 2:46:51 PM
-	 * @return Lista a ordenar
-	 */
-	public ArrayList<Type> getListToSort() {
-		// retornamos la lista a ordenar
-		return this.listToSort;
-	}
 
 	/**
 	 * Ordena la lista de forma ascendente
@@ -113,6 +88,18 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	}
 
 	/**
+	 * Limpia la lista a ordenar
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:46:51 PM
+	 */
+	private void cleanListToSort() {
+		// limpiamos la lista a ordenar
+		this.listToSort = new ArrayList<Type>();
+	}
+
+	/**
 	 * Limpia la lista ordenada
 	 * 
 	 * @author Hermann D. Schimpf
@@ -122,6 +109,19 @@ public final class SortableList<Type extends Comparable<? super Type>> extends A
 	private void cleanSortedList() {
 		// set the value of this.sortedList
 		this.sortedList = new ArrayList<Type>();
+	}
+
+	/**
+	 * Retorna la lista a ordenar
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Feb 10, 2011 2:46:51 PM
+	 * @return Lista a ordenar
+	 */
+	private ArrayList<Type> getListToSort() {
+		// retornamos la lista a ordenar
+		return this.listToSort;
 	}
 
 	/**
