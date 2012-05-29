@@ -1,4 +1,5 @@
 *Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/ConnectionData?tm=6&wl=en ingles]
+
 *_En breve se actualizará el wiki de la clase ConnectionData_*
 
 _Gracias por su comprension_
