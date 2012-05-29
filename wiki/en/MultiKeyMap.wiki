@@ -1,12 +1,9 @@
 <wiki:toc/>
-=Package=
-{{{
-org.schimpf.util.arrays
-}}}
 =Introduction=
 Class description ...
 =Definition=
 {{{
+package org.schimpf.util.arrays;
 /**
  * @param <KType> the type of keys maintained by this map
  * @param <VType> the type of mapped values

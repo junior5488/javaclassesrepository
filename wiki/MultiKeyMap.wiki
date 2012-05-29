@@ -1,12 +1,9 @@
 <wiki:toc/>
-=Paquete=
-{{{
-org.schimpf.util.arrays
-}}}
 =Introducción=
 Descripción de la clase ...
 =Definición=
 {{{
+package org.schimpf.util.arrays;
 /**
  * @param <KType> Tipo de valor para las claves
  * @param <VType> Tipo de valor a almacenar
