@@ -1,0 +1,81 @@
+<wiki:toc/>
+=Introduction=
+Implementation of more complex encryption Base64Crypter
+=Definition=
+{{{
+package org.schimpf.util.crypter
+public final class AbruptCrypter extends Base64Crypter {
+	/**
+	 * Crypt Force
+	 */
+	public enum Strength {
+		/**
+		 * Use Brutal force
+		 */
+		BRUTAL,
+		/**
+		 * Use High force
+		 */
+		HIGH,
+		/**
+		 * Use Normal force
+		 */
+		NORMAL,
+		/**
+		 * Use Low force
+		 */
+		LOW;
+	}
+	/**
+	 * Return the instance of crypter with the secret key
+	 * @param secretKey Secret key to use
+	 * @return Crypter with the key
+	 */
+	public static AbruptCrypter getInstance(String secretKey)
+
+	/**
+	 * Return the instance of crpter with the secret key
+	 * @param secretKey Secret key to use
+	 * @param strength Crypt strength force
+	 * @return Crypter with the key
+	 */
+	public static AbruptCrypter getInstance(String secretKey, Strength strength)
+
+	/**
+	 * Descrypt a string
+	 * @param string String to decrypt
+	 * @return Decrypted string
+	 */
+	public String decrypt(String string)
+
+	/**
+	 * Encrypt a string
+	 * @param string String to crypt
+	 * @return Encrypted string
+	 */
+	public String encrypt(String string)
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java latest] ||
+
+=Usage=
+{{{
+public class Usage {
+	public static void main(String[] args) {
+		// get the de/crypter with HIGH crypt strength
+		AbruptCrypter crypter = AbruptCrypter.getInstance("password", Strength.HIGH);
+		// crypt the string
+		String text = crypter.encrypt("Test Message");
+		// show the crypted text
+		System.out.println(text);
+		// shot the decripted text
+		System.out.println(crypter.decrypt(text));
+	}
+}
+}}}
+
+[http://code.google.com/p/javaclassesrepository/ back to index]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@gschimpf.com_
+ * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
