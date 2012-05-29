@@ -2,7 +2,7 @@
 || *Class* || *Description* || *Sources* ||
 || [MultiKeyMap org.schimpf.util.arrays.MultiKeyMap] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] with multiple keys || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java latest] ||
 || [SortableList org.schimpf.util.arrays.SortableList] || Implementation of [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] sortable through the comparison of the items in the list || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableList.java latest] ||
-|| [SortableListMultithreaded org.schimpf.util.arrays.SortableListMultithreaded] || Implementation of [org.schimpf.util.arrays.SortableList SortableList] but for the use of multiple threads to the ordering of items || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableListMultithreaded.java latest] ||
+|| [SortableListMultithreaded org.schimpf.util.arrays.SortableListMultithreaded] || Implementation of SortableList but for the use of multiple threads to the ordering of items || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableListMultithreaded.java latest] ||
 || || || ||
 || [ParamsManager org.schimpf.util.managers.ParamsManager] || Abstract dministrator of parameters for applications || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/managers/ParamsManager.java latest] ||
 || || || ||
