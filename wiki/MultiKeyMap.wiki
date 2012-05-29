@@ -2,7 +2,7 @@
 =Introducción=
 Esta clase funciona de la misma forma que la clase [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] pero permite utilizar una clave multiple para almacenar los valores
 =Definición=
-{{{
+<code language="java">
 package org.schimpf.util.arrays
 /**
  * @param <KType> Tipo de valor para las claves
@@ -80,7 +80,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 */
 	public Collection<VType> values()
 }
-}}}
+</code>
 || *Fuentes* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java último] ||
 
 =Utilización=
