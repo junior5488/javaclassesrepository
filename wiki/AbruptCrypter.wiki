@@ -76,7 +76,7 @@ public class Utilizacion {
 }
 }}}
 
-[http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=es Volver al inicio]
+[http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=es Volver a la lista de paquetes]
 ----
  * *Hermann D. Schimpf*
  * _hschimpf@gschimpf.com_

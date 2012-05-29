@@ -103,7 +103,7 @@ public class Usage {
 }
 }}}
 
-[http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=en back to index]
+[http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=en back to packages list]
 ----
  * *Hermann D. Schimpf*
  * _hschimpf@gschimpf.com_
