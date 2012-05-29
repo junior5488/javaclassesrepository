@@ -26,6 +26,7 @@ public final class AbruptCrypter extends Base64Crypter {
 		 */
 		LOW;
 	}
+
 	/**
 	 * Retorna la instancia del crypter con la clave secreta
 	 * @param secretKey Clave secreta a utilizar
@@ -63,7 +64,7 @@ public final class AbruptCrypter extends Base64Crypter {
 public class Utilizacion {
 	public static void main(String[] args) {
 		// obtenemos el des/encriptador con fuerta alta
-		Base64Crypter crypter = Base64Crypter.getInstance("contraseña", Strength.HIGH);
+		AbruptCrypter crypter = AbruptCrypter.getInstance("contraseña", Strength.HIGH);
 		// ciframos una cadena
 		String texto = crypter.encrypt("Mensaje de Prueba");
 		// mostramos la cadena cifrada

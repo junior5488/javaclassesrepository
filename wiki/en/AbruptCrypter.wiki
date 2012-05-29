@@ -26,6 +26,7 @@ public final class AbruptCrypter extends Base64Crypter {
 		 */
 		LOW;
 	}
+
 	/**
 	 * Return the instance of crypter with the secret key
 	 * @param secretKey Secret key to use
