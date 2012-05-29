@@ -1,0 +1,61 @@
+*Ver en: * _español_ | [http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=en ingles]
+<wiki:toc/>
+=Lista de Paquetes=
+==Paquete _org.schimpf.util_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MultiKeyMap?tm=6&wl=es org.schimpf.util.arrays.MultiKeyMap] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] con claves multiples || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/SortableList?tm=6&wl=es org.schimpf.util.arrays.SortableList] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] ordenable por medio de la comparacion de los elementos en la lista || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableList.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/SortableListMultithreaded?tm=6&wl=es org.schimpf.util.arrays.SortableListMultithreaded] || Implementacion de SortableList pero para el uso de varios threads para la ordenacion de los elementos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableListMultithreaded.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/ParamsManager?tm=6&wl=es org.schimpf.util.managers.ParamsManager] || Administrador abstracto de parametros para aplicaciones || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/managers/ParamsManager.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Base64Crypter?tm=6&wl=es org.schimpf.util.crypt.Base64Crypter] || Clase para cifrar cadenas de texto en cifrado DES-BASE64 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/AbruptCrypter?tm=6&wl=es org.schimpf.util.crypt.AbruptCrypter] || Implementacion de Base64Crypter con cifrado mas complejo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java último] ||
+
+==Paquete _org.schimpf.awt_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/JImagePanel?tm=6&wl=es org.schimpf.awt.image.JImagePanel] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/javax/swing/JPanel.html javax.swing.JPanel] como contenedor de imagen con posibilidades de posicionamiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JImagePanel.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/JAnimatedImagePanel?tm=6&wl=es org.schimpf.awt.image.JAnimatedImagePanel] || Implementacion de JImagePanel con efectos de movimiento y rotacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JAnimatedImagePanel.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Window?tm=6&wl=es org.schimpf.awt.Window] || Ventana base con el area principal de contenido y una barra de estado || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/Window.java último] ||
+
+==Paquete _org.schimpf.java_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Thread?tm=6&wl=es org.schimpf.java.threads.Thread] || Implementacion abstracta de [http://docs.oracle.com/javase/6/docs/api/java/lang/Thread.html java.lang.Thread] con controles internos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/threads/Thread.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/ThreadsManager?tm=6&wl=es org.schimpf.java.threads.ThreadsManager] || Administador de ejecucion de threads con controles de ejecucion, estado y detencion de los mismos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/threads/ThreadsManager.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/TailFile?tm=6&wl=es org.schimpf.java.sys.TailFile] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/io/File.html java.io.File] con la funcion de [http://en.wikipedia.org/wiki/Tail_%28Unix%29 tail (*unix)] || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/sys/TailFile.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Compiler?tm=6&wl=es org.schimpf.java.Compiler] || Simple complilador de ficheros .java || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/Compiler.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Updater?tm=6&wl=es org.schimpf.java.Updater] || Simple actualizador de paquetes .jar para agregar nuevos ficheros al paquete || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/java/src/org/schimpf/java/Updater.java último] ||
+
+==Paquete _org.schimpf.net_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/AbstractClientSocket?tm=6&wl=es org.schimpf.net.socket.AbstractClientSocket] || Implementacion abstracta de socket cliente con posibilidad de autenticacion|| [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/socket/AbstractClientSocket.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/AbstractServerSocket?tm=6&wl=es org.schimpf.net.socket.AbstractServerSocket] || Implementacion abstracta de socket servidor con posibilidad de autenticacion || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/socket/AbstractServerSocket.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/ConnectionData?tm=6&wl=es org.schimpf.net.utils.ConnectionData] || Clase para administrar datos de conexion (_Host, Usuario, Contraseña, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/utils/ConnectionData.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/EmailSender?tm=6&wl=es org.schimpf.net.email.EmailSender] || Clase para enviar correos electronicos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/email/EmailSender.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/SSH?tm=6&wl=es org.schimpf.net.SSH] || Implementacion de la libreria [http://github.com/jenkinsci/trilead-ssh2 Trilead SSH2] para conexion y ejecucion de comandos por medio de [http://en.wikipedia.org/wiki/Secure_Shell SSH] || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/net/src/org/schimpf/net/SSH.java último] ||
+
+==Paquete _org.schimpf.sql_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MySQLProcess?tm=6&wl=es org.schimpf.sql.mysql.MySQLProcess] || Clase para ejecutar consultas SQL en servidores de Bases de Datos MySQL || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/MySQLProcess.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MySQLDBMS?tm=6&wl=es org.schimpf.sql.mysql.wrapper.MySQLDBMS] || Clase para obtener datos de servidores MySQL (_Bases de datos, esquemas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/wrapper/MySQLDBMS.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MySQLDataBase?tm=6&wl=es org.schimpf.sql.mysql.wrapper.MySQLDataBase] || Clase para obtener datos de bases de datos MySQL (_Esquemas, tablas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/wrapper/MySQLDataBase.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MySQLSchema?tm=6&wl=es org.schimpf.sql.mysql.wrapper.MySQLSchema] || Clase para obtener datos de esquemas MySQL (_tablas, columnas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/wrapper/MySQLSchema.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MySQLTable?tm=6&wl=es org.schimpf.sql.mysql.wrapper.MySQLTable] || Clase para obtener datos de tablas MySQL (_Columnas, claves primarias, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/wrapper/MySQLTable.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/MySQLColumn?tm=6&wl=es org.schimpf.sql.mysql.wrapper.MySQLColumn] || Clase para obtener datos de columnas MySQL (_Tipo de datos, longitud, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/mysql/wrapper/MySQLColumn.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/PostgreSQLProcess?tm=6&wl=es org.schimpf.sql.pgsql.PostgreSQLProcess] || Clase para ejecutar consultas SQL en servidores de Bases de Datos PostgreSQL || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/PostgreSQLProcess.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/PGDBMS?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGDBMS] || Clase para obtener datos de servidores PostgreSQL (_Definicion de esquemas, bases de datos, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGDBMS.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/PGDataBase?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGDataBase] || Clase para obtener datos de bases de datos PostgreSQL (_Esquemas, tablas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGDataBase.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/PGSchema?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGSchema] || Clase para obtener datos de esquemas PostgreSQL (_tablas, columnas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGSchema.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/PGTable?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGTable] || Clase para obtener datos de tablas PostgreSQL (_Columnas, claves primarias, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java último] ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/PGColumn?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGColumn] || Clase para obtener datos de columnas PostgreSQL (_Tipo de datos, longitud, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java último] ||
+
+[http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=es Volver al inicio]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@gschimpf.com_
+ * *[http://gschimpf.com SCHIMPF]* - _Sistemas de Información y Gestión_
