@@ -1,0 +1,61 @@
+<wiki:toc/>
+=Introduction=
+Class description ...
+=Definition=
+{{{
+org.schimpf.util.managers
+public abstract class ParamsManager {
+	/**
+	 * Load the parameters list passed to the app
+	 * @param params Parameters list
+	 */
+	public final void loadParams(final String[] params)
+
+	/**
+	 * Returns a Parameter of the app
+	 * @param paramID Parameter ID
+	 * @return Parameter value
+	 */
+	protected final Object getParam(final String paramID)
+
+	/**
+	 * Add a personalized parameter
+	 * @param paramID Parameter ID
+	 * @param param Parameter Value
+	 */
+	protected final void setParam(final String paramID, final Object param)
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/maagers/ParamsManager.java latest] ||
+
+=Usage=
+{{{
+public class UsageExample {
+	public class UsageParams extends ParamsManager {
+		public String getName() {
+			// returns the parameter NAME
+			return (String)this.getParam("NAME");
+		}
+	}
+	
+	private UsageParams params = new UsageParams();
+	
+	public static void main(String[] args) {
+		// save the parameter on the administer
+		this.params.loadParams(args);
+		// check if the name is specified
+		if (this.params.getName() != null)
+			// show the name
+			System.out.prinln(this.params.getName());
+		else
+			// show the usaje
+			System.err.println("Usage: java UsageExample --name 'Josh'");
+	}
+}
+}}}
+
+[http://code.google.com/p/javaclassesrepository/ back to index]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@gschimpf.com_
+ * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
