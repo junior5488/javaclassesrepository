@@ -1,6 +1,6 @@
 <wiki:toc/>
 =Introduction=
-Class description ...
+Class to encrypt strings in DES-BASE64
 =Definition=
 {{{
 package org.schimpf.util.crypt

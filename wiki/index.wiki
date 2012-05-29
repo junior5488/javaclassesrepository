@@ -6,7 +6,7 @@
 || || || ||
 || [ParamsManager org.schimpf.util.managers.ParamsManager] || Administrador abstracto de parametros para aplicaciones || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/managers/ParamsManager.java último] ||
 || || || ||
-|| [Base64Crypter org.schimpf.util.crypt.Base64Crypter] || Clase para cifrar cadenas de texto en cifrado DES-BASE54 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
+|| [Base64Crypter org.schimpf.util.crypt.Base64Crypter] || Clase para cifrar cadenas de texto en cifrado DES-BASE64 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
 || [AbruptCrypter org.schimpf.util.crypt.AbruptCrypter] || Implementacion de Base64Crypter con cifrado mas complejo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java último] ||
 
 =Paquete _org.schimpf.awt_=

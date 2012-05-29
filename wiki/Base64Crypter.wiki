@@ -1,6 +1,6 @@
 <wiki:toc/>
 =Introducción=
-Descripción de la clase ...
+Clase para cifrar cadenas de texto en cifrado DES-BASE64
 =Definición=
 {{{
 package org.schimpf.util.crypt
