@@ -35,7 +35,7 @@ import java.util.TreeMap;
  * @param <TType> Tipo de tabla
  * @param <CType> Tipo de columnas
  */
-public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
+public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<TType> {
 	/**
 	 * Columnas de la tabla
 	 * 
@@ -80,6 +80,12 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extend
 		this.schema = schema;
 		// almacenamos el nombre de la tabla
 		this.tableName = tableName;
+	}
+
+	@Override
+	public int compareTo(final TType table) {
+		// retornamos si es el mismo esquema y la misma tabla
+		return this.getSchema().compareTo(table.getSchema()) == 0 && this.getTableName().equals(table.getTableName()) ? 0 : 1;
 	}
 
 	/**

@@ -34,7 +34,7 @@ import java.sql.SQLException;
  * @param <TType> Tipo de tabla
  * @param <CType> Tipo de columna
  */
-public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
+public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<CType> {
 	/**
 	 * Nombre fisico de la columna
 	 * 
@@ -100,6 +100,12 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType exten
 		this.table = table;
 		// almacenamos el nombre de la columna
 		this.columnName = columnName;
+	}
+
+	@Override
+	public int compareTo(final CType column) {
+		// retornamos si es la misma columna
+		return this.getTable().compareTo(column.getTable()) == 0 && this.getColumnName().equals(column.getColumnName()) ? 0 : 1;
 	}
 
 	/**

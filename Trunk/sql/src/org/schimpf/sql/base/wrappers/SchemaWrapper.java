@@ -35,7 +35,7 @@ import java.util.TreeMap;
  * @param <TType> Tipo de las Tablas
  * @param <CType> Tipo de las Columnas
  */
-public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
+public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<SType> {
 	/**
 	 * Nombre del esquema
 	 * 
@@ -63,6 +63,12 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 		super(connector);
 		// almacenamos el nombre del esquema
 		this.schemaName = schemaName;
+	}
+
+	@Override
+	public int compareTo(final SType schema) {
+		// retornamos si es el mismo esquema
+		return this.getSchemaName().compareTo(schema.getSchemaName());
 	}
 
 	/**
