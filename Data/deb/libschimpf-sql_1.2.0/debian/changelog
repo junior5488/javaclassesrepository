@@ -1,3 +1,10 @@
+libschimpf-sql (1.2.0) stable; urgency=low
+
+  * Agregamos la interfaz comparable a las clases
+  * Todas las clases estan relacionadas
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Tue, 26 Jun 2012 19:40:21 -0300
+
 libschimpf-sql (1.1.3) stable; urgency=low
 
   * %Wrapper: FIX: Agregamos sinchronized a los metodos para evitar duplicacion de datos cuando se utilizan threads
