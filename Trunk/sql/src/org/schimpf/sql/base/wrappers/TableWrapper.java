@@ -31,11 +31,13 @@ import java.util.TreeMap;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:18:00 PM
  * @param <SQLConnector> Tipo de conexion SQL
+ * @param <MType> Tipo de Sistema de Base de Datos
+ * @param <DType> Tipo de Base de Datos
  * @param <SType> Tipo de esquema
  * @param <TType> Tipo de tabla
  * @param <CType> Tipo de columnas
  */
-public abstract class TableWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<TType> {
+public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<TType> {
 	/**
 	 * Columnas de la tabla
 	 * 

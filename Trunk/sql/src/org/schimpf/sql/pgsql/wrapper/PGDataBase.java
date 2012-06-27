@@ -31,18 +31,19 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 8:21:58 PM
  */
-public final class PGDataBase extends DataBaseWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
+public final class PGDataBase extends DataBaseWrapper<PostgreSQLProcess, PGDBMS, PGDataBase, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 8:24:15 PM
 	 * @param connector Conector a la DB
+	 * @param dbms Sistema de Base de Datos al que pertenece la base de datos
 	 * @param dbName Nombre de la DB
 	 */
-	public PGDataBase(final PostgreSQLProcess connector, final String dbName) {
+	public PGDataBase(final PostgreSQLProcess connector, final PGDBMS dbms, final String dbName) {
 		// enviamos el constructor
-		super(connector, dbName);
+		super(connector, dbms, dbName);
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public final class PGDataBase extends DataBaseWrapper<PostgreSQLProcess, PGSchem
 		// recorremos los esquemas
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos el esquema
-			schemas.add(new PGSchema(this.getSQLConnector(), this.getSQLConnector().getResultSet().getString("schema_name")));
+			schemas.add(new PGSchema(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("schema_name")));
 		// retornamos los esquemas
 		return schemas;
 	}

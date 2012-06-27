@@ -31,18 +31,19 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 27, 2012 10:45:42 AM
  */
-public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
+public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGDBMS, PGDataBase, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 27, 2012 10:47:16 AM
 	 * @param connector Conector a la DB
+	 * @param dataBase Base de Datos a la que pertenece el esquema
 	 * @param schemaName Nombre del esquema
 	 */
-	public PGSchema(final PostgreSQLProcess connector, final String schemaName) {
+	public PGSchema(final PostgreSQLProcess connector, final PGDataBase dataBase, final String schemaName) {
 		// enviamos el constructor
-		super(connector, schemaName);
+		super(connector, dataBase, schemaName);
 	}
 
 	@Override

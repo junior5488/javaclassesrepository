@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version May 2, 2012 5:20:47 PM
  */
-public final class MySQLDBMS extends DBMSWrapper<MySQLProcess, MySQLDataBase, MySQLSchema, MySQLTable, MySQLColumn> {
+public final class MySQLDBMS extends DBMSWrapper<MySQLProcess, MySQLDBMS, MySQLDataBase, MySQLSchema, MySQLTable, MySQLColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
@@ -54,7 +54,7 @@ public final class MySQLDBMS extends DBMSWrapper<MySQLProcess, MySQLDataBase, My
 		// recorremos las bases de datos
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos la base de datos a la lista
-			databases.add(new MySQLDataBase(this.getSQLConnector(), this.getSQLConnector().getResultSet().getString("database_name")));
+			databases.add(new MySQLDataBase(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("database_name")));
 		// retornamos las bases de datos
 		return databases;
 	}

@@ -31,7 +31,7 @@ import java.sql.SQLException;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:38:47 PM
  */
-public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
+public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGDBMS, PGDataBase, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>

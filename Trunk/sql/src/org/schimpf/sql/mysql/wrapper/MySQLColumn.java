@@ -31,7 +31,7 @@ import java.sql.SQLException;
  * @author <B>Schimpf.NET</B>
  * @version May 2, 2012 5:15:27 PM
  */
-public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLSchema, MySQLTable, MySQLColumn> {
+public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLDBMS, MySQLDataBase, MySQLSchema, MySQLTable, MySQLColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>

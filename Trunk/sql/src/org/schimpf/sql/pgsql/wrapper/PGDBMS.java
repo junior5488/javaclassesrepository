@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version May 1, 2012 9:31:27 PM
  */
-public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDataBase, PGSchema, PGTable, PGColumn> {
+public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDBMS, PGDataBase, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
@@ -54,7 +54,7 @@ public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDataBase, PGS
 		// recorremos las bases de datos
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos la base de datos
-			dbs.add(new PGDataBase(this.getSQLConnector(), this.getSQLConnector().getResultSet().getString("database_name")));
+			dbs.add(new PGDataBase(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("database_name")));
 		// retornamos las bases de datos
 		return dbs;
 	}

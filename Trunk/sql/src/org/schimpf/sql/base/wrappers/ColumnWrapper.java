@@ -30,11 +30,13 @@ import java.sql.SQLException;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:34:56 PM
  * @param <SQLConnector> Conector a la DB
+ * @param <MType> Tipo de Sistema de Base de Datos
+ * @param <DType> Tipo de Base de Datos
  * @param <SType> Tipo de esquema
  * @param <TType> Tipo de tabla
  * @param <CType> Tipo de columna
  */
-public abstract class ColumnWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<CType> {
+public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<CType> {
 	/**
 	 * Nombre fisico de la columna
 	 * 

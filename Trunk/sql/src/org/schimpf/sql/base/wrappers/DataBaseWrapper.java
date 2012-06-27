@@ -31,11 +31,20 @@ import java.util.TreeMap;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 8:13:18 PM
  * @param <SQLConnector> Conexion a la DB
+ * @param <MType> Tipo de Sistema de Base de Datos
+ * @param <DType> Tipo de Base de Datos
  * @param <SType> Tipo de Esquemas
  * @param <TType> Tipo de Tablas
  * @param <CType> Tipo de Columnas
  */
-public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
+public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<DType> {
+	/**
+	 * Sistema de Base de Datos al que pertenece la base de datos
+	 * 
+	 * @version Jun 26, 2012 8:21:40 PM
+	 */
+	private final MType							dbms;
+
 	/**
 	 * Nombre de la DB
 	 * 
@@ -56,13 +65,22 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 8:13:18 PM
 	 * @param connector Conector a la DB
+	 * @param dbms Sistema de Base de Datos al que pertenece la base de datos
 	 * @param dbName Nombre de la DB
 	 */
-	protected DataBaseWrapper(final SQLConnector connector, final String dbName) {
+	protected DataBaseWrapper(final SQLConnector connector, final MType dbms, final String dbName) {
 		// enviamos el constructor
 		super(connector);
+		// almacenamos el sistema al que pertenece la base de datos
+		this.dbms = dbms;
 		// almacenamos el nombre de la DB
 		this.dbName = dbName;
+	}
+
+	@Override
+	public final int compareTo(final DType dataBase) {
+		// retornamos si es la misma base de datos
+		return this.getDBMS().compareTo(dataBase.getDBMS()) == 0 && this.getDataBaseName().equals(dataBase.getDataBaseName()) ? 0 : 1;
 	}
 
 	/**
@@ -77,6 +95,20 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, SType ext
 	public final String getDataBaseName() {
 		// retornamos el nombre de la DB
 		return this.dbName;
+	}
+
+	/**
+	 * Retorna el Sistema de Base de Datos al que pertenece la base de datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jun 26, 2012 8:22:03 PM
+	 * @return Sistema de Base de Datos
+	 */
+	public final MType getDBMS() {
+		// retornamos el sistema de base de datos
+		return this.dbms;
 	}
 
 	/**

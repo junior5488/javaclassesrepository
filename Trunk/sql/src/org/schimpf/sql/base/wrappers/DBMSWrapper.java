@@ -31,12 +31,13 @@ import java.util.TreeMap;
  * @author <B>Schimpf.NET</B>
  * @version May 1, 2012 9:18:37 PM
  * @param <SQLConnector> Tipo de conexion a la DB
+ * @param <MType> Tipo de Sistema de Base de Datos
  * @param <DType> Tipo de bases de datos
  * @param <SType> Tipo de esquemas
  * @param <TType> Tipo de Tablas
  * @param <CType> Tipo de Columnas
  */
-public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends DataBaseWrapper<SQLConnector, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> {
+public abstract class DBMSWrapper<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<MType> {
 	/**
 	 * Lista de bases de datos del sistema
 	 * 
@@ -64,6 +65,12 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, DType extends
 		super(connector);
 		// almacenamos el nombre del sistema
 		this.dbmsName = dbmsName;
+	}
+
+	@Override
+	public final int compareTo(final MType dbms) {
+		// retornamos si es el mismo sistema de base de datos
+		return this.getDBMSName().equals(dbms.getDBMSName()) ? 0 : 1;
 	}
 
 	/**

@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:17:09 PM
  */
-public class PGTable extends TableWrapper<PostgreSQLProcess, PGSchema, PGTable, PGColumn> {
+public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase, PGSchema, PGTable, PGColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>

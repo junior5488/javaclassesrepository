@@ -31,18 +31,19 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version May 2, 2012 5:18:15 PM
  */
-public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLSchema, MySQLTable, MySQLColumn> {
+public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, MySQLDataBase, MySQLSchema, MySQLTable, MySQLColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 2, 2012 5:18:52 PM
 	 * @param connector Conexion al servidor MySQL
+	 * @param dataBase Base de Datos a la que pertenece el esquema
 	 * @param schemaName Nombre del esquema
 	 */
-	public MySQLSchema(final MySQLProcess connector, final String schemaName) {
+	public MySQLSchema(final MySQLProcess connector, final MySQLDataBase dataBase, final String schemaName) {
 		// enviamos el constructor
-		super(connector, schemaName);
+		super(connector, dataBase, schemaName);
 	}
 
 	@Override

@@ -31,18 +31,19 @@ import java.util.ArrayList;
  * @author <B>Schimpf.NET</B>
  * @version May 2, 2012 5:19:38 PM
  */
-public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLSchema, MySQLTable, MySQLColumn> {
+public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLDBMS, MySQLDataBase, MySQLSchema, MySQLTable, MySQLColumn> {
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 2, 2012 5:20:08 PM
 	 * @param connector Conexion al servidor MySQL
+	 * @param dbms Sistema de Base de Datos al que pertenece la base de datos
 	 * @param dbName Nombre de la base de datos
 	 */
-	public MySQLDataBase(final MySQLProcess connector, final String dbName) {
+	public MySQLDataBase(final MySQLProcess connector, final MySQLDBMS dbms, final String dbName) {
 		// envamos el constructor
-		super(connector, dbName);
+		super(connector, dbms, dbName);
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLSche
 		// recorremos las bases de datos
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos la base de datos a la lista
-			schemas.add(new MySQLSchema(this.getSQLConnector(), this.getSQLConnector().getResultSet().getString("schema_name")));
+			schemas.add(new MySQLSchema(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("schema_name")));
 		// retornamos las bases de datos
 		return schemas;
 	}

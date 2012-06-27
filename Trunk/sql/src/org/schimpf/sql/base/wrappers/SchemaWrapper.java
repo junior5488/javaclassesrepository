@@ -31,11 +31,20 @@ import java.util.TreeMap;
  * @author <B>Schimpf.NET</B>
  * @version Apr 27, 2012 10:04:45 AM
  * @param <SQLConnector> Conector a la DB
+ * @param <MType> Tipo de Sistema de Base de Datos
+ * @param <DType> Tipo de Base de Datos
  * @param <SType> Tipo de esquema
  * @param <TType> Tipo de las Tablas
  * @param <CType> Tipo de las Columnas
  */
-public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType extends SchemaWrapper<SQLConnector, SType, TType, CType>, TType extends TableWrapper<SQLConnector, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<SType> {
+public abstract class SchemaWrapper<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>> extends BaseWrapper<SQLConnector> implements Comparable<SType> {
+	/**
+	 * Base de datos a la que pertenece el esquema
+	 * 
+	 * @version Jun 26, 2012 8:17:36 PM
+	 */
+	private final DType							dataBase;
+
 	/**
 	 * Nombre del esquema
 	 * 
@@ -56,19 +65,36 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, SType exten
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 27, 2012 10:05:42 AM
 	 * @param connector Conector SQL a la DB
+	 * @param dataBase Base de datos a la que pertenece el esquema
 	 * @param schemaName Nombre del esquema
 	 */
-	protected SchemaWrapper(final SQLConnector connector, final String schemaName) {
+	protected SchemaWrapper(final SQLConnector connector, final DType dataBase, final String schemaName) {
 		// envimos el constructor
 		super(connector);
+		// almacenamos la base de datos
+		this.dataBase = dataBase;
 		// almacenamos el nombre del esquema
 		this.schemaName = schemaName;
 	}
 
 	@Override
-	public int compareTo(final SType schema) {
+	public final int compareTo(final SType schema) {
 		// retornamos si es el mismo esquema
-		return this.getSchemaName().compareTo(schema.getSchemaName());
+		return this.getDataBase().compareTo(schema.getDataBase()) == 0 && this.getSchemaName().equals(schema.getSchemaName()) ? 0 : 1;
+	}
+
+	/**
+	 * Retorna la base de datos a la que pertenece el esquema
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jun 26, 2012 8:17:57 PM
+	 * @return Base de Datos
+	 */
+	public final DType getDataBase() {
+		// retornamos la base de datos
+		return this.dataBase;
 	}
 
 	/**
