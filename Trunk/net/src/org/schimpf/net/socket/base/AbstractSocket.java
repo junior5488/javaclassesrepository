@@ -43,7 +43,7 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	static {
 		try {
 			// cargamos el localhost
-			AbstractSingleSocket.HOST = InetAddress.getLocalHost();
+			AbstractSocket.HOST = InetAddress.getLocalHost();
 		} catch (final UnknownHostException ignored) {}
 	}
 

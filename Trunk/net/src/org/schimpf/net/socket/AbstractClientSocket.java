@@ -7,6 +7,7 @@
 package org.schimpf.net.socket;
 
 import org.schimpf.net.socket.base.AbstractSingleSocket;
+import org.schimpf.net.socket.base.AbstractSocket;
 import org.schimpf.net.socket.base.ClientSocket;
 import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.utils.Commands;
@@ -65,7 +66,7 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 	 */
 	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final Integer port) throws IOException {
 		// enviamos el constructor
-		this(name, AbstractSingleSocket.HOST, port);
+		this(name, AbstractSocket.HOST, port);
 	}
 
 	/**

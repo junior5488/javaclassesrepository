@@ -6,10 +6,7 @@
  */
 package org.schimpf.net.socket.base;
 
-import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,10 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 /**
  * Socket de comunicacion
@@ -30,20 +24,7 @@ import java.net.UnknownHostException;
  * @author Schimpf.NET
  * @version Aug 5, 2011 9:11:16 AM
  */
-public abstract class AbstractSingleSocket extends Thread implements SignalHandler {
-	/**
-	 * Host por defecto
-	 * 
-	 * @version Aug 22, 2011 3:42:35 PM
-	 */
-	public static InetAddress	HOST;
-	static {
-		try {
-			// cargamos el localhost
-			AbstractSingleSocket.HOST = InetAddress.getLocalHost();
-		} catch (final UnknownHostException ignored) {}
-	}
-
+public abstract class AbstractSingleSocket extends AbstractSocket {
 	/**
 	 * Fichero a enviar
 	 * 
@@ -73,13 +54,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	private ObjectInputStream	inputStream;
 
 	/**
-	 * Bandera para continuar con el puerto abierto
-	 * 
-	 * @version Oct 4, 2011 1:33:14 PM
-	 */
-	private boolean				isContinue	= true;
-
-	/**
 	 * Ultimo comando enviado
 	 * 
 	 * @version Oct 6, 2011 11:46:11 AM
@@ -98,42 +72,7 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	 * 
 	 * @version Oct 21, 2011 10:38:02 AM
 	 */
-	private Stage					stage			= Stage.INIT;
-
-	/**
-	 * Etapas de transmision de datos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 10:39:26 AM
-	 */
-	protected enum Stage {
-		/**
-		 * Etapa de autenticacion
-		 * 
-		 * @version Oct 21, 2011 10:40:49 AM
-		 */
-		AUTH,
-		/**
-		 * Etapa de transmision de ficheros
-		 * 
-		 * @version Oct 21, 2011 10:40:22 AM
-		 */
-		FILE,
-		/**
-		 * Etapa inicial
-		 * 
-		 * @version Oct 21, 2011 10:40:04 AM
-		 */
-		INIT,
-		/**
-		 * Etapa de proceso externo
-		 * 
-		 * @version Oct 21, 2011 10:40:38 AM
-		 */
-		POST;
-	}
+	private Stage					stage	= Stage.INIT;
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -145,15 +84,7 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	 */
 	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket> name, final Integer port) {
 		// enviamos el constructor
-		super(name, port.toString());
-	}
-
-	@Override
-	public final void handle(final Signal signal) {
-		// verificamos si la señal es salida desde consola
-		if (signal.getNumber() == 2 || signal.getNumber() == 15)
-			// realizamos el shutdown
-			this.shutdownRequest();
+		super(name, port);
 	}
 
 	/**
@@ -198,16 +129,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	}
 
 	/**
-	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Nov 1, 2011 11:04:59 AM
-	 */
-	public abstract void shutdownRequest();
-
-	/**
 	 * Cierra el socket
 	 * 
 	 * @author Hermann D. Schimpf
@@ -216,6 +137,7 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	 * @version Aug 5, 2011 10:40:53 AM
 	 * @param isContinue False para finalizar el thread
 	 */
+	@Override
 	protected final void close(final boolean isContinue) {
 		// modificamos la bandera
 		this.setIsContinue(isContinue);
@@ -340,17 +262,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	}
 
 	/**
-	 * Retorna el socket con la conexion abierta para el traslado de datos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:24:11 AM
-	 * @return Conexion para el traslado de datos
-	 */
-	protected abstract Socket getConnection();
-
-	/**
 	 * Retorna el ultimo comando
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -365,17 +276,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	}
 
 	/**
-	 * Retorna el socket principal
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 11:00:03 AM
-	 * @return Socket principal
-	 */
-	protected abstract MainSocket getSocket();
-
-	/**
 	 * Retorna la etapa actual
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -388,16 +288,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 		// retrnamos la etapa actual
 		return this.stage;
 	}
-
-	/**
-	 * Iniciador del socket
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 10:58:17 AM
-	 */
-	protected abstract void initConnection();
 
 	/**
 	 * Procesa los datos recibidos
@@ -576,20 +466,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	private ObjectOutputStream getOutputStream() {
 		// retornamos el stream de salida
 		return this.outputStream;
-	}
-
-	/**
-	 * Retorna la bandera para continuar el proceso
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 1:31:52 PM
-	 * @return Bandera para continuar
-	 */
-	private boolean isContinue() {
-		// retornamos la bandera
-		return this.isContinue;
 	}
 
 	/**
@@ -840,20 +716,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	private void setInputStream(final ObjectInputStream stream) {
 		// almacenamos el stream de entrada
 		this.inputStream = stream;
-	}
-
-	/**
-	 * Almacena la bandera para continuar
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 1:32:37 PM
-	 * @param isContinue Valor para la bandera
-	 */
-	private void setIsContinue(final boolean isContinue) {
-		// almacenamos la bandera
-		this.isContinue = isContinue;
 	}
 
 	/**
