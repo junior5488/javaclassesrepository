@@ -37,7 +37,6 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	 * @version Aug 22, 2011 3:42:35 PM
 	 */
 	public static InetAddress	HOST;
-
 	static {
 		try {
 			// cargamos el localhost
@@ -398,7 +397,7 @@ public abstract class AbstractSingleSocket extends Thread implements SignalHandl
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 10:58:17 AM
 	 */
-	protected void initConnection() {}
+	protected abstract void initConnection();
 
 	/**
 	 * Procesa los datos recibidos
