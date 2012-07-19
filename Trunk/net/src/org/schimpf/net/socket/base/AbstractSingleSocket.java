@@ -30,82 +30,76 @@ import java.net.UnknownHostException;
  * @author Schimpf.NET
  * @version Aug 5, 2011 9:11:16 AM
  */
-public abstract class AbstractSocket extends Thread implements SignalHandler {
+public abstract class AbstractSingleSocket extends Thread implements SignalHandler {
+	/**
+	 * Host por defecto
+	 * 
+	 * @version Aug 22, 2011 3:42:35 PM
+	 */
+	public static InetAddress	HOST;
+
+	static {
+		try {
+			// cargamos el localhost
+			AbstractSingleSocket.HOST = InetAddress.getLocalHost();
+		} catch (final UnknownHostException ignored) {}
+	}
+
 	/**
 	 * Fichero a enviar
 	 * 
 	 * @version Oct 14, 2011 1:29:46 PM
 	 */
-	private File						file;
+	private File					file;
 
 	/**
 	 * Nombre del fichero a recibir
 	 * 
 	 * @version Oct 14, 2011 1:18:59 PM
 	 */
-	private String						fileName;
+	private String					fileName;
 
 	/**
 	 * Tamano del fichero a recibir
 	 * 
 	 * @version Oct 14, 2011 1:19:54 PM
 	 */
-	private Long						fileSize;
+	private Long					fileSize;
 
 	/**
 	 * Stream de entrada de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:16:56 AM
 	 */
-	private ObjectInputStream		inputStream;
+	private ObjectInputStream	inputStream;
 
 	/**
 	 * Bandera para continuar con el puerto abierto
 	 * 
 	 * @version Oct 4, 2011 1:33:14 PM
 	 */
-	private boolean					isContinue	= true;
+	private boolean				isContinue	= true;
 
 	/**
 	 * Ultimo comando enviado
 	 * 
 	 * @version Oct 6, 2011 11:46:11 AM
 	 */
-	private Commands					lastCommand;
+	private Commands				lastCommand;
 
 	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
 	 */
-	private ObjectOutputStream		outputStream;
+	private ObjectOutputStream	outputStream;
 
 	/**
 	 * Etapa actual de datos
 	 * 
 	 * @version Oct 21, 2011 10:38:02 AM
 	 */
-	private Stage						stage			= Stage.INIT;
-
-	/**
-	 * Host por defecto
-	 * 
-	 * @version Aug 22, 2011 3:42:35 PM
-	 */
-	public static InetAddress		HOST;
-
-	/**
-	 * Puerto de conexion del programa
-	 * 
-	 * @version Aug 5, 2011 9:16:15 AM
-	 */
-	public static final Integer	PORT			= 3600;
-	static {
-		try {
-			// cargamos el localhost
-			AbstractSocket.HOST = InetAddress.getLocalHost();
-		} catch (final UnknownHostException ignored) {}
-	}
+	private Stage					stage			= Stage.INIT;
 
 	/**
 	 * Etapas de transmision de datos
@@ -146,23 +140,11 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:11:20 AM
-	 * @param name Nombre del thread
-	 */
-	public AbstractSocket(final Class<? extends AbstractSocket> name) {
-		// enviamos el constructor
-		this(name, AbstractSocket.PORT);
-	}
-
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 11:49:13 AM
 	 * @param name Nombre del thread
 	 * @param port Numero de puerto a conectar
 	 */
-	public AbstractSocket(final Class<? extends AbstractSocket> name, final Integer port) {
+	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket> name, final Integer port) {
 		// enviamos el constructor
 		super(name, port.toString());
 	}

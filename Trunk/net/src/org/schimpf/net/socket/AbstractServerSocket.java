@@ -6,7 +6,7 @@
  */
 package org.schimpf.net.socket;
 
-import org.schimpf.net.socket.base.AbstractSocket;
+import org.schimpf.net.socket.base.AbstractSingleSocket;
 import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.socket.base.ServerSocket;
 import org.schimpf.net.utils.Commands;
@@ -22,7 +22,7 @@ import java.net.Socket;
  * @author Schimpf.NET
  * @version Aug 5, 2011 10:56:08 AM
  */
-public abstract class AbstractServerSocket extends AbstractSocket {
+public abstract class AbstractServerSocket extends AbstractSingleSocket {
 	/**
 	 * Bandera de autenticacion correcta
 	 * 
@@ -43,28 +43,6 @@ public abstract class AbstractServerSocket extends AbstractSocket {
 	 * @version Aug 5, 2011 9:17:23 AM
 	 */
 	private ServerSocket	serverSocket;
-
-	/**
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 10:56:11 AM
-	 * @param name Nombre del thread
-	 * @throws IOException Si no se puede crear el socket
-	 */
-	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name) throws IOException {
-		// enviamos el constructor
-		super(name);
-		try {
-			// creamos el socket
-			this.serverSocket = new ServerSocket(AbstractSocket.PORT);
-		} catch (final IOException e) {
-			// finalizamos el thread
-			this.shutdown();
-			// relanzamos la excepcion
-			throw e;
-		}
-	}
 
 	/**
 	 * @author Hermann D. Schimpf

@@ -6,7 +6,7 @@
  */
 package org.schimpf.net.socket;
 
-import org.schimpf.net.socket.base.AbstractSocket;
+import org.schimpf.net.socket.base.AbstractSingleSocket;
 import org.schimpf.net.socket.base.ClientSocket;
 import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.utils.Commands;
@@ -22,35 +22,13 @@ import java.net.Socket;
  * @author <B>Schimpf.NET</B>
  * @version Aug 5, 2011 11:13:27 AM
  */
-public abstract class AbstractClientSocket extends AbstractSocket {
+public abstract class AbstractClientSocket extends AbstractSingleSocket {
 	/**
 	 * Socket principal de conexion
 	 * 
 	 * @version Aug 5, 2011 9:17:23 AM
 	 */
 	private ClientSocket	clientSocket;
-
-	/**
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 5, 2011 11:13:30 AM
-	 * @param name Nombre del thread
-	 * @throws IOException Si no se puede crear la conexion al socket
-	 */
-	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name) throws IOException {
-		// enviamos el constructor
-		super(name);
-		try {
-			// creamos el socket
-			this.clientSocket = new ClientSocket(AbstractSocket.HOST, AbstractSocket.PORT);
-		} catch (final IOException e) {
-			// finalizamos el thread
-			this.shutdown();
-			// relanzamos la excepcion
-			throw e;
-		}
-	}
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -87,16 +65,7 @@ public abstract class AbstractClientSocket extends AbstractSocket {
 	 */
 	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final Integer port) throws IOException {
 		// enviamos el constructor
-		super(name, port);
-		try {
-			// creamos el socket
-			this.clientSocket = new ClientSocket(AbstractSocket.HOST, port);
-		} catch (final IOException e) {
-			// finalizamos el thread
-			this.shutdown();
-			// relanzamos la excepcion
-			throw e;
-		}
+		this(name, AbstractSingleSocket.HOST, port);
 	}
 
 	/**
