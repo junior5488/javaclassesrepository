@@ -136,7 +136,7 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 				// verificamos si es la solicitud de datos
 				else if (Commands.get(data.toString()).equals(Commands.DATA))
 					// verificamos si no estamos autenticados
-					if (!this.isAutenticated()) {
+					if (!this.isAutenticated() && this.needsAuthentication()) {
 						// modificamos la etapa al proceso de autenticacion
 						this.setStage(Stage.AUTH);
 						// solicitamos autenticacion

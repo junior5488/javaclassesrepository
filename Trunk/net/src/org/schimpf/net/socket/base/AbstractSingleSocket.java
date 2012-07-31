@@ -396,6 +396,8 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	protected final void setStage(final Stage newStage) {
 		// almacenamos la nueva etapa
 		this.stage = newStage;
+		// mostramos un mensaje
+		this.log("Changing Stage to: " + this.getStage());
 	}
 
 	/**

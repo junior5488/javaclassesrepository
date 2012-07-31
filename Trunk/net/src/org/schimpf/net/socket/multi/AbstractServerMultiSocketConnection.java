@@ -418,7 +418,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				// verificamos si es la solicitud de datos
 				else if (Commands.get(data.toString()).equals(Commands.DATA))
 					// verificamos si no estamos autenticados
-					if (!this.isAutenticated()) {
+					if (!this.isAutenticated() && this.needsAuthentication()) {
 						// modificamos la etapa al proceso de autenticacion
 						this.setStage(Stage.AUTH);
 						// solicitamos autenticacion
@@ -561,6 +561,8 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	protected final void setStage(final Stage newStage) {
 		// almacenamos la nueva etapa
 		this.stage = newStage;
+		// mostramos un mensaje
+		this.log("Changing Stage to: " + this.getStage());
 	}
 
 	/**
