@@ -98,6 +98,20 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	}
 
 	/**
+	 * Retorna la cantidad de conexiones activas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 31, 2012 10:38:56 AM
+	 * @return Cantdad de conexiones activas
+	 */
+	public final int getActiveConnections() {
+		// retornamos la cantidad de conexiones activas
+		return this.getOpenConnections().size();
+	}
+
+	/**
 	 * Inicia el puerto y el thread
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
