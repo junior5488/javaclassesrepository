@@ -111,6 +111,20 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	}
 
 	/**
+	 * Retorna si la conexion del socket esta cerrada
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 31, 2012 10:56:50 AM
+	 * @return True si esta cerrada
+	 */
+	public final boolean isClosed() {
+		// retornamos si la conexion esta cerrada
+		return this.getConnection() != null && this.getConnection().isClosed();
+	}
+
+	/**
 	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
