@@ -51,10 +51,13 @@ public final class ConnectionData {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Jun 6, 2011 1:52:02 PM
 	 * @param username Nombre de usuario
+	 * @throws UnknownHostException Si no se pudo resolver localhost como address
 	 */
-	public ConnectionData(final String username) {
+	public ConnectionData(final String username) throws UnknownHostException {
 		// almacenamos el nombre de usuario
 		this.setUsername(username);
+		// seteamos el host en localhost
+		this.host = InetAddress.getLocalHost();
 	}
 
 	/**
@@ -63,8 +66,9 @@ public final class ConnectionData {
 	 * @version Jun 6, 2011 1:48:17 PM
 	 * @param username Nombre de usuario
 	 * @param password Contraseña del usuario
+	 * @throws UnknownHostException Si no se pudo resolver localhost como address
 	 */
-	public ConnectionData(final String username, final String password) {
+	public ConnectionData(final String username, final String password) throws UnknownHostException {
 		// almacenamos el nombre de usuario
 		this(username);
 		// almacenamos la contraseña
@@ -78,8 +82,9 @@ public final class ConnectionData {
 	 * @param username Nombre de usuario
 	 * @param password Contraseña del usuario
 	 * @param port Puerto de conexion
+	 * @throws UnknownHostException Si no se pudo resolver localhost como address
 	 */
-	public ConnectionData(final String username, final String password, final Integer port) {
+	public ConnectionData(final String username, final String password, final Integer port) throws UnknownHostException {
 		// almacenamos los datos
 		this(username, password);
 		// almacenamos el puerto
