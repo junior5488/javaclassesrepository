@@ -261,10 +261,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 					if (Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE))) {
 						// verificamos si el comando es transferencia de archivo
 						if (Commands.get(data.toString()).equals(Commands.FILE)) {
-							// cambiamos al modo transferencia
-							this.setStage(Stage.FILE);
 							// respondemos OK
 							this.send(Commands.ACK);
+							// cambiamos al modo transferencia
+							this.setStage(Stage.FILE);
 							// verificamos si el comando es transferencia de archivo
 						} else if (Commands.get(data.toString()).equals(Commands.BYE))
 							// modificamos la bandera
@@ -280,6 +280,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 						continuar = this.processData(data);
 				}
 		} while (continuar);
+		try {
+			// cerramos la conexion
+			this.getConnection().close();
+		} catch (IOException ignored) {}
 		// avisamos al padre que finalizamos
 		this.getParent().connectionFinished((CType) this);
 		// finalizamos la conexion abierta
@@ -424,10 +428,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 						// solicitamos autenticacion
 						this.send(Commands.AUTH);
 					} else {
-						// modificamos la etapa al proceso externo
-						this.setStage(Stage.POST);
 						// enviamos ok para aceptar datos
 						this.send(Commands.ACK);
+						// modificamos la etapa al proceso externo
+						this.setStage(Stage.POST);
 					}
 				// finalizamos la etapa
 				break;
@@ -458,13 +462,21 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				} else if (Commands.get(data.toString()).equals(Commands.DATA))
 					// verificamos si estamos autenticados
 					if (this.isAutenticated()) {
-						// cambiamos a la etapa externa
-						this.setStage(Stage.POST);
 						// retornamos ok
 						this.send(Commands.ACK);
+						// cambiamos a la etapa externa
+						this.setStage(Stage.POST);
 					} else
 						// retonamos false
 						this.send(Commands.NAK);
+				else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+					// modificamos la bandera
+					continuar = false;
+					try {
+						// finalizamos la conexion
+						this.getConnection().close();
+					} catch (IOException ignored) {}
+				}
 				// finalizamos la etapa
 				break;
 			// en cualquier otro caso
@@ -746,10 +758,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			this.send(Commands.DATA);
 			// obtenemos el fichero
 			final File receivedFile = this.receiveFile();
-			// modficamos la etapa
-			this.setStage(Stage.POST);
 			// retornamos ok
 			this.send(Commands.ACK);
+			// modficamos la etapa
+			this.setStage(Stage.POST);
 			// recibimos el fichero y lo procesamos
 			this.fileReceived(receivedFile);
 			// verificamos si es solicitud de datos del fichero
