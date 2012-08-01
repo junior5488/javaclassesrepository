@@ -142,10 +142,10 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 						// solicitamos autenticacion
 						this.send(Commands.AUTH);
 					} else {
-						// modificamos la etapa al proceso externo
-						this.setStage(Stage.POST);
 						// enviamos ok para aceptar datos
 						this.send(Commands.ACK);
+						// modificamos la etapa al proceso externo
+						this.setStage(Stage.POST);
 					}
 				// finalizamos la etapa
 				break;
@@ -176,13 +176,21 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 				} else if (Commands.get(data.toString()).equals(Commands.DATA))
 					// verificamos si estamos autenticados
 					if (this.isAutenticated()) {
-						// cambiamos a la etapa externa
-						this.setStage(Stage.POST);
 						// retornamos ok
 						this.send(Commands.ACK);
+						// cambiamos a la etapa externa
+						this.setStage(Stage.POST);
 					} else
 						// retonamos false
 						this.send(Commands.NAK);
+				else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+					// modificamos la bandera
+					continuar = false;
+					try {
+						// finalizamos la conexion
+						this.getConnection().close();
+					} catch (IOException ignored) {}
+				}
 				// finalizamos la etapa
 				break;
 			// en cualquier otro caso
