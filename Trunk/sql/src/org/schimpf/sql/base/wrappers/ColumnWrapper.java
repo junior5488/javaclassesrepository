@@ -63,7 +63,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * 
 	 * @version May 1, 2012 11:00:40 PM
 	 */
-	private Boolean		isNull;
+	private Boolean		isNullable;
 
 	/**
 	 * Bandera para identificar si la columna es clave primaria
@@ -186,13 +186,13 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @throws SQLException Si se produjo un error al cargar los metadatos
 	 * @return True si permite valores nulos
 	 */
-	public final Boolean isNull() throws SQLException {
+	public final Boolean isNullable() throws SQLException {
 		// verificamos si no tenemos valor
-		if (this.isNull == null)
+		if (this.isNullable == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos si es nulo
-		return this.isNull;
+		return this.isNullable;
 	}
 
 	/**
@@ -276,7 +276,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @throws SQLException Si se produjo un error al cargar los metadatos
 	 * @return True si permite valores nulos
 	 */
-	protected abstract Boolean getIsNullFromMetadata(ResultSet metadata) throws SQLException;
+	protected abstract Boolean getIsNullableFromMetadata(ResultSet metadata) throws SQLException;
 
 	/**
 	 * Retorna si la columna es clave primaria de la tabla
@@ -334,10 +334,10 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			this.dataType = this.getDataTypeFromMetadata(this.getSQLConnector().getResultSet());
 			// almacenamos si es clave primaria
 			this.isPrimaryKey = this.getIsPrimaryKeyFromMetadata(this.getSQLConnector().getResultSet());
-			// almacenamos si es null
+			// almacenamos si es unique
 			this.isUnique = this.getIsUniqueFromMetadata(this.getSQLConnector().getResultSet());
-			// almacenamos si es null
-			this.isNull = this.getIsNullFromMetadata(this.getSQLConnector().getResultSet());
+			// almacenamos si es nullable
+			this.isNullable = this.getIsNullableFromMetadata(this.getSQLConnector().getResultSet());
 			// almacenamos el valor por defecto
 			this.defaultValue = this.getDefaultValueFromMetadata(this.getSQLConnector().getResultSet());
 		}
