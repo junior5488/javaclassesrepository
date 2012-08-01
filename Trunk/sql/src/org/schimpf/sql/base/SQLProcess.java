@@ -51,6 +51,35 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 		super(driver);
 	}
 
+	/**
+	 * Finaliza la transaccion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 3:08:12 PM
+	 * @return True si se pudo finalizar la transaccion
+	 */
+	public final boolean commitTransaction() {
+		try {
+			// verificamos si hay una conexion abierta
+			if (this.getConnection() == null)
+				// salimos con una excepcion
+				throw new SQLException("No existe una conexion abierta");
+			// finalizamos la transaccion
+			this.getConnection().commit();
+			// deshabilitamos las transacciones
+			this.getConnection().setAutoCommit(true);
+		} catch (final SQLException e) {
+			// mostramos el detalle de la excepcion
+			this.SQLException(e);
+			// retornamos false
+			return false;
+		}
+		// retornamos true
+		return true;
+	}
+
 	public final boolean executeSQL() {
 		try {
 			// verificamos si hay una conexion abierta
@@ -177,6 +206,62 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 			// retornamos null
 			return false;
 		}
+	}
+
+	/**
+	 * Cancela la transaccion en curso
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 3:09:23 PM
+	 * @return True si se cancelo
+	 */
+	public final boolean rollbackTransaction() {
+		try {
+			// verificamos si hay una conexion abierta
+			if (this.getConnection() == null)
+				// salimos con una excepcion
+				throw new SQLException("No existe una conexion abierta");
+			// anulamos la transaccion
+			this.getConnection().rollback();
+			// deshabilitamos las transacciones
+			this.getConnection().setAutoCommit(true);
+		} catch (final SQLException e) {
+			// mostramos el detalle de la excepcion
+			this.SQLException(e);
+			// retornamos false
+			return false;
+		}
+		// retornamos true
+		return true;
+	}
+
+	/**
+	 * Inicia una transaccion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 3:07:06 PM
+	 * @return True si se inicio la transaccion
+	 */
+	public final boolean startTransaction() {
+		try {
+			// verificamos si hay una conexion abierta
+			if (this.getConnection() == null)
+				// salimos con una excepcion
+				throw new SQLException("No existe una conexion abierta");
+			// iniciamos una transaccion
+			this.getConnection().setAutoCommit(false);
+		} catch (final SQLException e) {
+			// mostramos el detalle de la excepcion
+			this.SQLException(e);
+			// retornamos false
+			return false;
+		}
+		// retornamos true
+		return true;
 	}
 
 	/**
