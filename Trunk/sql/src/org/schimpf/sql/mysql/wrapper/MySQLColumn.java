@@ -50,7 +50,7 @@ public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLDBMS, My
 	public String toString() {
 		try {
 			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNull() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " (PK)" : "");
+			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " (PK)" : "");
 		} catch (SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
@@ -69,7 +69,7 @@ public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLDBMS, My
 	}
 
 	@Override
-	protected Boolean getIsNullFromMetadata(final ResultSet metadata) throws SQLException {
+	protected Boolean getIsNullableFromMetadata(final ResultSet metadata) throws SQLException {
 		// retornamos si permite valores nulos
 		return metadata.getBoolean("is_nullable");
 	}
