@@ -340,7 +340,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	 * @param overWrite Mensaje para sobreescribir
 	 * @return True si se envio correctamente
 	 */
-	protected final boolean send(final Object data, final Commands overWrite) {
+	protected final synchronized boolean send(final Object data, final Commands overWrite) {
 		try {
 			// verificamos si la conexion esta cerrada
 			if (this.getConnection().isClosed())

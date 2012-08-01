@@ -517,7 +517,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	 * @param overWrite Mensaje para sobreescribir
 	 * @return True si se envio correctamente
 	 */
-	protected final boolean send(final Object data, final Commands overWrite) {
+	protected final synchronized boolean send(final Object data, final Commands overWrite) {
 		try {
 			// verificamos si la conexion esta cerrada
 			if (this.getConnection().isClosed())
