@@ -9,6 +9,7 @@ import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Clase para ejecutar consultas SQL en servidores de Bases de Datos
@@ -93,7 +94,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 				// salimos con una excepcion
 				throw new SQLException("No existe una conexion abierta");
 			// creamos la consulta SQL
-			this.setStatement(this.getConnection().prepareStatement(this.getQuery()));
+			this.setStatement(this.getConnection().prepareStatement(this.getQuery(), Statement.RETURN_GENERATED_KEYS));
 			// ejecutamos el update
 			return this.getStatement().executeUpdate();
 		} catch (final SQLException e) {
@@ -147,6 +148,33 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 			// mostramos el error SQL
 			this.SQLException(e);
 			// retornamos false
+			return false;
+		}
+	}
+
+	/**
+	 * Obtiene las claves generadas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 31, 2012 6:22:00 PM
+	 * @return true si se pudo obtener las claves
+	 */
+	public final boolean loadGeneratedKeys() {
+		try {
+			// verificamos si hay una conexion abierta
+			if (this.getConnection() == null)
+				// salimos con una excepcion
+				throw new SQLException("No existe una conexion abierta");
+			// retornamos las claves generadas
+			this.setResultSet(this.getStatement().getGeneratedKeys());
+			// retornamos true
+			return true;
+		} catch (final SQLException e) {
+			// mostramos el detalle de la excepcion
+			this.SQLException(e);
+			// retornamos null
 			return false;
 		}
 	}
