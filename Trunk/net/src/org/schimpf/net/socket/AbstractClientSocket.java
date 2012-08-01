@@ -83,6 +83,16 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 		return null;
 	}
 
+	/**
+	 * Proceso a ejecutar cuando la autenticacion no se acepto
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 4:34:55 PM
+	 */
+	protected void autenticationRejected() {}
+
 	@Override
 	protected final Object firstData() {
 		// retornamos el comando de saludo
@@ -147,8 +157,10 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 					continuar = false;
 					// enviamos bye
 					this.send(Commands.BYE);
-					// finalizamos el puerto
-					this.close(continuar);
+					// finalizamos la ejecucion
+					this.setIsContinue(false);
+					// ejecutamos el proceso de autenticacion rechazada
+					this.autenticationRejected();
 					// verificamos si recibimos autenticacion correcta
 				} else if (Commands.get(data.toString()).equals(Commands.ACK))
 					// verificamos si el comando anterior fue datos de autenticacion
