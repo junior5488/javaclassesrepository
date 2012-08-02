@@ -312,9 +312,9 @@ public class JImagePanel extends JPanel {
 	 */
 	private void initRotate(final float angle) {
 		// generamos una nueva imagen
-		BufferedImage rotatedImage = new BufferedImage(this.getOriginalImage().getWidth(), this.getOriginalImage().getHeight(), this.getOriginalImage().getType());
+		final BufferedImage rotatedImage = new BufferedImage(this.getOriginalImage().getWidth(), this.getOriginalImage().getHeight(), this.getOriginalImage().getType());
 		// creamos el render para rotar la imagen
-		Graphics2D render = rotatedImage.createGraphics();
+		final Graphics2D render = rotatedImage.createGraphics();
 		// habilitamos el antialiasing
 		render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		// rotamos la imagen

@@ -140,7 +140,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 			// vaciamos la lista
 			this.columns.clear();
 			// recorremos las columnas
-			for (CType column: this.retrieveColumns(this.getTableName()))
+			for (final CType column: this.retrieveColumns(this.getTableName()))
 				// agregamos la columna de la tabla
 				this.columns.put(column.getColumnName(), column);
 		}
@@ -162,7 +162,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		// verificamos si tenemos la lista
 		if (this.keyColumns.size() == 0)
 			// recorremos las columnas
-			for (CType column: this.getColumns())
+			for (final CType column: this.getColumns())
 				// verificamos si es PK
 				if (column.isPrimaryKey())
 					// agregamos la columna a la lista

@@ -163,7 +163,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 */
 	public VType put(final VType value, final KType... keys) {
 		// obtenemos el valor de la clave
-		VType oldValue = this.getValue(keys);
+		final VType oldValue = this.getValue(keys);
 		// agregamos la tupla claves-valor a la lista
 		this.getValues().put(this.getKey(keys), value);
 		// retonamos el valor anterior
@@ -225,9 +225,9 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 */
 	private ArrayList<KType> getKey(final KType... keys) {
 		// armamos una lista
-		ArrayList<KType> result = new ArrayList<KType>();
+		final ArrayList<KType> result = new ArrayList<KType>();
 		// recorremos las claves
-		for (KType k: keys)
+		for (final KType k: keys)
 			// agregamos la clave a la lista
 			result.add(k);
 		// retornamos las claves

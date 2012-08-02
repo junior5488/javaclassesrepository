@@ -146,7 +146,7 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	@Override
 	public final void shutdownRequest() {
 		// recorremos las conexiones existentes
-		for (CType connection: this.getOpenConnections())
+		for (final CType connection: this.getOpenConnections())
 			// finalizamos la conexion
 			connection.shutdownRequest();
 	}
@@ -202,7 +202,7 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 		// iniciamos las conexiones
 		this.initConnection();
 		// creamos una nueva conexion
-		CType newConnection = this.makeNewConnection((SType) this, this.getConnection(), (ServerSocket) this.getSocket());
+		final CType newConnection = this.makeNewConnection((SType) this, this.getConnection(), (ServerSocket) this.getSocket());
 		// agregamos la conexion a las existentes
 		this.getOpenConnections().add(newConnection);
 		// iniciamos la conexion

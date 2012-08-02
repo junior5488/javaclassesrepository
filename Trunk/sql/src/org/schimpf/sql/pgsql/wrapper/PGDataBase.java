@@ -49,7 +49,7 @@ public final class PGDataBase extends DataBaseWrapper<PostgreSQLProcess, PGDBMS,
 	@Override
 	protected ArrayList<PGSchema> retrieveSchemas(final String dataBaseName) throws SQLException {
 		// armamos la lista para los esquemas
-		ArrayList<PGSchema> schemas = new ArrayList<PGSchema>();
+		final ArrayList<PGSchema> schemas = new ArrayList<PGSchema>();
 		// ejecutamos el SQL para obtener los esquemas
 		this.getSQLConnector().executeSQL("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT ILIKE 'pg_%' AND schema_name <> 'information_schema' AND catalog_name ILIKE '" + dataBaseName + "' ORDER BY schema_name");
 		// recorremos los esquemas

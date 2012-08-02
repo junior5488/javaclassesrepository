@@ -347,7 +347,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el mensaje
-		String log = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + " [" + level.name() + "] " + message;
+		final String log = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + " [" + level.name() + "] " + message;
 		// verificamos si mostramos en consola
 		if (level.isEnabled(this.consoleLevel))
 			// verificamos si es >= ERROR
@@ -361,7 +361,7 @@ public final class Logger {
 		if (level.isEnabled(this.fileLevel) && this.logToFile)
 			try {
 				// abrimos el fichero log
-				BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
+				final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
 				// agregamos el log
 				output.write(log);
 				// agregamos una linea
@@ -370,7 +370,7 @@ public final class Logger {
 				output.flush();
 				// cerramos el fichero
 				output.close();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				// mostramos un log en consola
 				this.debug("Log can't be save on file. Reason: " + e.getMessage());
 			}

@@ -32,18 +32,18 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class AbruptCrypter extends Base64Crypter {
 	/**
-	 * Tamano de la contrasena de la instancia
-	 * 
-	 * @version Nov 9, 2011 12:06:04 AM
-	 */
-	private int																strength;
-
-	/**
 	 * Instancias de los Crypters
 	 * 
 	 * @version Nov 8, 2011 10:59:44 PM
 	 */
 	private static final HashMap<SecretKey, AbruptCrypter>	instances	= new HashMap<SecretKey, AbruptCrypter>();
+
+	/**
+	 * Tamano de la contrasena de la instancia
+	 * 
+	 * @version Nov 9, 2011 12:06:04 AM
+	 */
+	private int																strength;
 
 	/**
 	 * Fuerza del cifrado

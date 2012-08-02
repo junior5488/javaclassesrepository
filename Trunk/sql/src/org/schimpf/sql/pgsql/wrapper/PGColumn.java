@@ -51,7 +51,7 @@ public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGDBMS, PGD
 		try {
 			// retornamos la definicion de la columna
 			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " (PK)" : "");
-		} catch (SQLException e) {}
+		} catch (final SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
 	}

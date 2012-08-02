@@ -78,9 +78,9 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 	 */
 	protected final <AType> ArrayList<AType> toArrayList(final TreeMap<String, AType> hashMap) {
 		// creamos un arrayList
-		ArrayList<AType> arrayList = new ArrayList<AType>();
+		final ArrayList<AType> arrayList = new ArrayList<AType>();
 		// recorremos los valores
-		for (AType value: hashMap.values())
+		for (final AType value: hashMap.values())
 			// agregamos el valor al arrayList
 			arrayList.add(value);
 		// retornamos el arrayList

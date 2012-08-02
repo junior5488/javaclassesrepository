@@ -210,19 +210,19 @@ public class JAnimatedImagePanel extends JImagePanel {
 				// recorremos mientras no estemos en la posicion final
 				while (directionX == 1 && JAnimatedImagePanel.this.getCurrentX() < JAnimatedImagePanel.this.destinationX || directionX == -1 && JAnimatedImagePanel.this.getCurrentX() > JAnimatedImagePanel.this.destinationX || directionY == 1 && JAnimatedImagePanel.this.getCurrentY() < JAnimatedImagePanel.this.destinationY || directionY == -1 && JAnimatedImagePanel.this.getCurrentY() > JAnimatedImagePanel.this.destinationY) {
 					// calculamos cuanto movemos pos segundo
-					float pixelsToMove = speed / JAnimatedImagePanel.this.FPS;
+					final float pixelsToMove = speed / JAnimatedImagePanel.this.FPS;
 					// calculamos la distancia a cada punto
-					float distanceX = Math.abs(JAnimatedImagePanel.this.getCurrentX() - JAnimatedImagePanel.this.destinationX);
-					float distanceY = Math.abs(JAnimatedImagePanel.this.getCurrentY() - JAnimatedImagePanel.this.destinationY);
+					final float distanceX = Math.abs(JAnimatedImagePanel.this.getCurrentX() - JAnimatedImagePanel.this.destinationX);
+					final float distanceY = Math.abs(JAnimatedImagePanel.this.getCurrentY() - JAnimatedImagePanel.this.destinationY);
 					// canculamos el movimiento hacia cada lado
-					float pixelsToMoveX = pixelsToMove / (distanceX + distanceY) * distanceX;
-					float pixelsToMoveY = pixelsToMove / (distanceX + distanceY) * distanceY;
+					final float pixelsToMoveX = pixelsToMove / (distanceX + distanceY) * distanceX;
+					final float pixelsToMoveY = pixelsToMove / (distanceX + distanceY) * distanceY;
 					// movemos la imagen
 					JAnimatedImagePanel.super.positionate((JAnimatedImagePanel.this.getCurrentX() + pixelsToMoveX * directionX), (JAnimatedImagePanel.this.getCurrentY() + pixelsToMoveY * directionY));
 					try {
 						// esperamos
 						Thread.sleep(1000 / JAnimatedImagePanel.this.FPS);
-					} catch (InterruptedException e) {}
+					} catch (final InterruptedException e) {}
 				}
 				// seteamos la posicion final
 				JAnimatedImagePanel.super.positionate(JAnimatedImagePanel.this.destinationX, JAnimatedImagePanel.this.destinationY);
@@ -270,13 +270,13 @@ public class JAnimatedImagePanel extends JImagePanel {
 				// recorremos mientras el angulo actual sea menor al angulo destino
 				while (direction == 1 && JAnimatedImagePanel.this.getCurrentAngle() < JAnimatedImagePanel.this.destinationAngle || direction == -1 && JAnimatedImagePanel.this.getCurrentAngle() > JAnimatedImagePanel.this.destinationAngle) {
 					// calculamos cuanto rotamos
-					float degreesToRotate = speed / JAnimatedImagePanel.this.FPS;
+					final float degreesToRotate = speed / JAnimatedImagePanel.this.FPS;
 					// rotamos la imagen
 					JAnimatedImagePanel.super.rotate(JAnimatedImagePanel.this.getCurrentAngle() + degreesToRotate * direction);
 					try {
 						// esperamos
 						Thread.sleep(1000 / JAnimatedImagePanel.this.FPS);
-					} catch (InterruptedException e) {}
+					} catch (final InterruptedException e) {}
 				}
 				// actualizamos la poicion si es menor a 0
 				while (JAnimatedImagePanel.this.destinationAngle < 0f)

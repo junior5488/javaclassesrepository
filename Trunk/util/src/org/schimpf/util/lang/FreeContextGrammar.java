@@ -110,7 +110,7 @@ public final class FreeContextGrammar<Symbol> {
 			// salimos con una excepcion
 			throw new IllegalArgumentException("El simbolo no terminal '" + noTerminalSymbol + "' no existe en el lenguaje");
 		// recorremos la producion
-		for (Object pValue: production)
+		for (final Object pValue: production)
 			// verificamos que el valor sea terminal o no terminal
 			if (!this.getNonTerminalSymbols().contains(pValue) && !this.getTerminalSymbols().contains(pValue))
 				// salimos con un mensaje de error
@@ -141,7 +141,7 @@ public final class FreeContextGrammar<Symbol> {
 			// salimos con un mensaje de error
 			throw new IllegalAccessException("This class is under development");
 		// generamos una lista local
-		Symbol[] group = (Symbol[]) new Object[symbols.length];
+		final Symbol[] group = (Symbol[]) new Object[symbols.length];
 		// agregamos el simbolo inicial
 		group[0] = this.getStartSymbol();
 		// recorremos los simbolos a verificar
@@ -149,7 +149,7 @@ public final class FreeContextGrammar<Symbol> {
 			// verificamos si la posicion actual es un simbolo no terminal
 			if (this.getNonTerminalSymbols().contains(group[index]))
 				// recorremos las producciones para el simbolo
-				for (Symbol[] production: this.getProductions(group[index]))
+				for (final Symbol[] production: this.getProductions(group[index]))
 					// buscamos con la produccion actual
 					if (this.searchValid(symbols, this.insert(group, index, production)))
 						// retornamos true
@@ -161,13 +161,13 @@ public final class FreeContextGrammar<Symbol> {
 	@Override
 	public String toString() {
 		// generamos un string
-		StringBuffer grammar = new StringBuffer();
+		final StringBuffer grammar = new StringBuffer();
 		// agregamos la definicion base de la gramatca
 		grammar.append("G = <Vt, Vn, P, " + this.getStartSymbol() + ">\n");
 		// iniciamos la lista de los simbolos terminales
 		grammar.append("\tVt = {");
 		// recorremos los simbolos terminales
-		for (Symbol tSymbol: this.getTerminalSymbols())
+		for (final Symbol tSymbol: this.getTerminalSymbols())
 			// agregamos el simbolo terminal
 			grammar.append((grammar.toString().endsWith("{") ? "" : ", ") + tSymbol);
 		// finalizamos la lista de los simbolos terminales
@@ -175,7 +175,7 @@ public final class FreeContextGrammar<Symbol> {
 		// iniciamos la lista de los simbolos no terminales
 		grammar.append("\tVn = {");
 		// recorremos los simbolos terminales
-		for (Symbol ntSymbol: this.getNonTerminalSymbols())
+		for (final Symbol ntSymbol: this.getNonTerminalSymbols())
 			// agregamos el simbolo no terminal
 			grammar.append((grammar.toString().endsWith("{") ? "" : ", ") + ntSymbol);
 		// finalizamos la lista de los simbolos no terminales
@@ -183,17 +183,17 @@ public final class FreeContextGrammar<Symbol> {
 		// iniciamos la lista de las producciones
 		grammar.append("\tP  = {");
 		// obtenemos el iteratos
-		Iterator<Entry<Symbol, ArrayList<Symbol[]>>> productions = this.getProductions().entrySet().iterator();
+		final Iterator<Entry<Symbol, ArrayList<Symbol[]>>> productions = this.getProductions().entrySet().iterator();
 		// recorremos las producciones
 		while (productions.hasNext()) {
 			// obtenemos las producciones del simbolo
-			Entry<Symbol, ArrayList<Symbol[]>> prod = productions.next();
+			final Entry<Symbol, ArrayList<Symbol[]>> prod = productions.next();
 			// recorremos las producciones del simbolo
-			for (Symbol[] symbolProductions: prod.getValue()) {
+			for (final Symbol[] symbolProductions: prod.getValue()) {
 				// agregamos el identificador de la produccion
 				grammar.append((grammar.toString().endsWith("{") ? "" : ", ") + prod.getKey() + " -> ");
 				// recorremos los simbolos de la produccion
-				for (Symbol pSymbol: symbolProductions)
+				for (final Symbol pSymbol: symbolProductions)
 					// agregamos la produccion
 					grammar.append(pSymbol);
 			}
@@ -304,15 +304,15 @@ public final class FreeContextGrammar<Symbol> {
 	@SuppressWarnings("unchecked")
 	private Symbol[] insert(final Symbol[] group, final int index, final Symbol[] production) {
 		// generamos el grupo final
-		Symbol[] result = (Symbol[]) new Object[group.length];
+		final Symbol[] result = (Symbol[]) new Object[group.length];
 		// posicion actual
 		int pos = 0, i = 0;
 		// recorremos el grupo de simbolos
-		for (Symbol symbol: group) {
+		for (final Symbol symbol: group) {
 			// verificamos si estamos en la posicion
 			if (pos == index) {
 				// recorremos la produccion
-				for (Symbol pSymbol: production)
+				for (final Symbol pSymbol: production)
 					// verificamos si hay espacio
 					if (i < result.length)
 						// agregamos el simbolo
@@ -420,7 +420,7 @@ public final class FreeContextGrammar<Symbol> {
 			// verificamos si la posicion actual es un simbolo no terminal
 			if (this.getNonTerminalSymbols().contains(group[index])) {
 				// recorremos las producciones para el simbolo
-				for (Symbol[] production: this.getProductions(group[index]))
+				for (final Symbol[] production: this.getProductions(group[index]))
 					// buscamos con la produccion actual
 					if (!this.isTested(production, group[index], index, group) && this.searchValid(symbols, this.insert(group, index, production)))
 						// retornamos true

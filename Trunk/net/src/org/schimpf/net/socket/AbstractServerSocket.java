@@ -186,7 +186,7 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 					try {
 						// finalizamos la conexion
 						this.getConnection().close();
-					} catch (IOException ignored) {}
+					} catch (final IOException ignored) {}
 				}
 				// finalizamos la etapa
 				break;

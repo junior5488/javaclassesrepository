@@ -49,7 +49,7 @@ public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLDBMS
 	@Override
 	protected ArrayList<MySQLSchema> retrieveSchemas(final String dataBaseName) throws SQLException {
 		// armamos una lista
-		ArrayList<MySQLSchema> schemas = new ArrayList<MySQLSchema>();
+		final ArrayList<MySQLSchema> schemas = new ArrayList<MySQLSchema>();
 		// ejecutamos la consulta
 		this.getSQLConnector().executeSQL("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'mysql') AND schema_name LIKE '" + dataBaseName + "'");
 		// recorremos las bases de datos

@@ -48,7 +48,7 @@ public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDBMS, PGDataB
 	@Override
 	protected ArrayList<PGDataBase> retrieveDataBases(final String dbmsName) throws SQLException {
 		// armamos una lista para las bases de datos
-		ArrayList<PGDataBase> dbs = new ArrayList<PGDataBase>();
+		final ArrayList<PGDataBase> dbs = new ArrayList<PGDataBase>();
 		// ejecutamos el SQL para obtener las bases de datos
 		this.getSQLConnector().executeSQL("SELECT datname AS database_name FROM pg_database WHERE datname NOT ILIKE 'template%' ORDER BY datname");
 		// recorremos las bases de datos

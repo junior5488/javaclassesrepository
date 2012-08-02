@@ -291,7 +291,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		try {
 			// cerramos la conexion
 			this.getConnection().close();
-		} catch (IOException ignored) {}
+		} catch (final IOException ignored) {}
 		// avisamos al padre que finalizamos
 		this.getParent().connectionFinished((CType) this);
 		// finalizamos la conexion abierta
@@ -483,7 +483,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 					try {
 						// finalizamos la conexion
 						this.getConnection().close();
-					} catch (IOException ignored) {}
+					} catch (final IOException ignored) {}
 				}
 				// finalizamos la etapa
 				break;

@@ -49,7 +49,7 @@ public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, My
 	@Override
 	protected ArrayList<MySQLTable> retrieveTables(final String schemaName) throws SQLException {
 		// armamos una lista
-		ArrayList<MySQLTable> tables = new ArrayList<MySQLTable>();
+		final ArrayList<MySQLTable> tables = new ArrayList<MySQLTable>();
 		// ejecutamos la consulta
 		this.getSQLConnector().executeSQL("SELECT table_name FROM information_schema.tables WHERE table_schema LIKE '" + schemaName + "';");
 		// recorremos las bases de datos

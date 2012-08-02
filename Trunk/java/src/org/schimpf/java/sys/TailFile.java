@@ -22,6 +22,13 @@ import java.io.IOException;
  */
 public final class TailFile extends File implements Runnable {
 	/**
+	 * Version de la clase
+	 * 
+	 * @version Sep 20, 2011 3:25:22 PM
+	 */
+	private static final long	serialVersionUID	= 1L;
+
+	/**
 	 * Bandera para finalizar el proceso
 	 * 
 	 * @version Sep 19, 2011 11:35:33 PM
@@ -34,13 +41,6 @@ public final class TailFile extends File implements Runnable {
 	 * @version Sep 19, 2011 11:27:13 PM
 	 */
 	private TailListener			listener;
-
-	/**
-	 * Version de la clase
-	 * 
-	 * @version Sep 20, 2011 3:25:22 PM
-	 */
-	private static final long	serialVersionUID	= 1L;
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>

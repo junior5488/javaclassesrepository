@@ -140,11 +140,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	public final boolean delete() throws Exception {
 		// armamos el SQL para eliminar el registro
-		StringBuffer delete = new StringBuffer("DELETE FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
+		final StringBuffer delete = new StringBuffer("DELETE FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
 		// agregamos el where
 		delete.append(" WHERE " + this.getPKsFilter() + ";");
 		// ejecutamos el SQL
-		boolean saveOk = this.getConnector().executeUpdate(delete.toString()) == 1;
+		final boolean saveOk = this.getConnector().executeUpdate(delete.toString()) == 1;
 		// seteamos la bandera en true
 		this.createNew = true;
 		// vaciamos los valores actuales
@@ -195,7 +195,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				return this.saveNew();
 			// guardamos los cambios
 			return this.saveUpdate();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// mostramos el trace
 			e.printStackTrace();
 			// retornamos false
@@ -319,7 +319,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// verificamos si el valor es null
 		if (value == null) {
 			// obtenemos el valor actual
-			Object actualValue = this.valuesNew.get(this.getColumn(columnName));
+			final Object actualValue = this.valuesNew.get(this.getColumn(columnName));
 			// eliminamos el valor
 			this.valuesNew.remove(this.getColumn(columnName));
 			// retornamos el valor viejo
@@ -410,12 +410,12 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	private CType getColumn(final String columnName) {
 		try {
 			// recorremos las columnas
-			for (CType column: this.getTable().getColumns())
+			for (final CType column: this.getTable().getColumns())
 				// verificamos si es la columna
 				if (columnName.equalsIgnoreCase(column.getColumnName()))
 					// retornamos la columna
 					return column;
-		} catch (SQLException ignored) {}
+		} catch (final SQLException ignored) {}
 		// mostramos un mensaje de error
 		System.err.println("Unknown column \"" + columnName + "\" on table " + this.getTable().getTableName());
 		// si no encontramos, retornamos null
@@ -435,7 +435,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	private String getColumnName(final String columnName, final HashMap<String, PKType> identifier) {
 		// recorremos las columnas
-		for (String column: identifier.keySet())
+		for (final String column: identifier.keySet())
 			// verificamos si es la columna
 			if (columnName.equalsIgnoreCase(column))
 				// retornamos el nombre de la columna
@@ -474,11 +474,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	private String getPKsFilter() {
 		// armamos el string para las PKs
-		StringBuffer pksFilter = new StringBuffer();
+		final StringBuffer pksFilter = new StringBuffer();
 		// bandera para agregar el AND
 		boolean addAND = false;
 		// recorremos las PKs
-		for (CType pkColumn: this.getPrimaryKeys().keySet()) {
+		for (final CType pkColumn: this.getPrimaryKeys().keySet()) {
 			// agregamos la PK al filtro
 			pksFilter.append((addAND ? " AND " : "") + pkColumn.getColumnName() + " = " + this.castValue(this.getPrimaryKeys().get(this.getColumn(pkColumn.getColumnName()))));
 			// modificamos la bandera
@@ -534,7 +534,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// verificamos si tenemos resultado
 		if (this.getConnector().getResultSet().next())
 			// recorremos las columnas de la tabla
-			for (CType column: this.getTable().getColumns())
+			for (final CType column: this.getTable().getColumns())
 				// cargamos la columna
 				this.valuesOld.put(column, this.getConnector().getResultSet().getObject(column.getColumnName()));
 	}
@@ -550,7 +550,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	private void loadPKsColumns() throws SQLException {
 		// recorremos las PKs
-		for (CType column: this.getTable().getPrimaryKeys())
+		for (final CType column: this.getTable().getPrimaryKeys())
 			// almacenamos la PK con valor null
 			this.getPrimaryKeys().put(column, null);
 	}
@@ -573,7 +573,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// verificamos si guardo ok
 		if (process) {
 			// actualizamos las PK
-			for (CType pkColumn: this.getTable().getPrimaryKeys())
+			for (final CType pkColumn: this.getTable().getPrimaryKeys())
 				// verificamos si se modifico
 				if (this.isNewRecord() || this.valuesNew.get(pkColumn) != null && !this.valuesOld.get(pkColumn).equals(this.valuesNew.get(pkColumn)))
 					// actualizamos el valor de la PK
@@ -602,15 +602,15 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	@SuppressWarnings("unchecked")
 	private boolean saveNew() throws Exception {
 		// armamos el SQL para insertar el registro
-		StringBuffer insert = new StringBuffer("INSERT INTO " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
+		final StringBuffer insert = new StringBuffer("INSERT INTO " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
 		// armamos la lista de columnas
-		StringBuffer columns = new StringBuffer("(");
+		final StringBuffer columns = new StringBuffer("(");
 		// armamos la lista de valores
-		StringBuffer values = new StringBuffer(") VALUES (");
+		final StringBuffer values = new StringBuffer(") VALUES (");
 		// creamos una bandera para la coma
 		boolean addComa = false;
 		// recorremos las columnas de la tabla
-		for (CType column: this.getTable().getColumns())
+		for (final CType column: this.getTable().getColumns())
 			// verificamos si se modifico el valor de la columna
 			if (this.valuesNew.containsKey(column)) {
 				// agregamos la columna
@@ -627,13 +627,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// cerramos el insert
 		insert.append(");");
 		// ejecutamos el SQL
-		boolean saveOk = this.getConnector().executeUpdate(insert.toString()) == 1;
+		final boolean saveOk = this.getConnector().executeUpdate(insert.toString()) == 1;
 		// verificamos si inserto
 		if (saveOk && this.getConnector().loadGeneratedKeys() && this.getConnector().getResultSet().next()) {
 			// vaciamos las PKs
 			this.primaryKeys.clear();
 			// recorremos las columnas PK
-			for (CType pkColumn: this.getTable().getPrimaryKeys())
+			for (final CType pkColumn: this.getTable().getPrimaryKeys())
 				// obtenemos el valor de la PK
 				this.primaryKeys.put(pkColumn, (PKType) this.getConnector().getResultSet().getObject(pkColumn.getColumnName()));
 		}
@@ -653,13 +653,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	private void savePKs(final HashMap<String, PKType> identifier) throws Exception {
 		// recorremos las columnas
-		for (String columnName: identifier.keySet())
+		for (final String columnName: identifier.keySet())
 			// verifiamos si la columna existe
 			if (!this.getTable().getPrimaryKeys().contains(this.getColumn(columnName)))
 				// salimos con una excepcion
 				throw new Exception("La columna \"" + columnName + "\" no existe en la tabla \"" + this.getTable().getTableName() + "\" o no es columna identificadora");
 		// recorremos las PKs de la tabla
-		for (CType column: this.getTable().getPrimaryKeys())
+		for (final CType column: this.getTable().getPrimaryKeys())
 			// almacenamos el valor de la PK
 			this.getPrimaryKeys().put(column, identifier.get(this.getColumnName(column.getColumnName(), identifier)));
 	}
@@ -676,11 +676,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	private boolean saveUpdate() throws Exception {
 		// armamos el SQL para actualizar el registro
-		StringBuffer update = new StringBuffer("UPDATE " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " SET ");
+		final StringBuffer update = new StringBuffer("UPDATE " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " SET ");
 		// creamos una bandera para la coma
 		boolean addComa = false;
 		// recorremos las columnas de la tabla
-		for (CType column: this.getTable().getColumns())
+		for (final CType column: this.getTable().getColumns())
 			// verificamos si se modifico el valor de la columna
 			if (this.valuesNew.containsKey(column)) {
 				// agregamos la columna y su nuevo valor
@@ -695,7 +695,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// cerramos agregamos el where
 		update.append(" WHERE " + this.getPKsFilter() + ";");
 		// ejecutamos el SQL
-		boolean saveOk = this.getConnector().executeUpdate(update.toString()) == 1;
+		final boolean saveOk = this.getConnector().executeUpdate(update.toString()) == 1;
 		// retornamos y recargamos el PO
 		return this.saveFinish(saveOk);
 	}

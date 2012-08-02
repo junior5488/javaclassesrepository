@@ -7,11 +7,6 @@ package org.schimpf.net;
 
 import org.schimpf.net.utils.ConnectionData;
 import org.schimpf.util.exceptions.MissingConnectionDataException;
-import com.trilead.ssh2.ChannelCondition;
-import com.trilead.ssh2.Connection;
-import com.trilead.ssh2.ConnectionInfo;
-import com.trilead.ssh2.Session;
-import com.trilead.ssh2.StreamGobbler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +15,11 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.security.auth.login.LoginException;
+import com.trilead.ssh2.ChannelCondition;
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.ConnectionInfo;
+import com.trilead.ssh2.Session;
+import com.trilead.ssh2.StreamGobbler;
 
 /**
  * Clase para conexiones por medio de SSH
@@ -29,6 +29,13 @@ import javax.security.auth.login.LoginException;
  * @version Jun 6, 2011 11:53:26 AM
  */
 public final class SSH {
+	/**
+	 * Puerto de conexion SSH
+	 * 
+	 * @version Jun 8, 2011 3:39:31 PM
+	 */
+	public static final Integer	Port_SSH			= 22;
+
 	/**
 	 * Conexion con el servidor
 	 * 
@@ -70,13 +77,6 @@ public final class SSH {
 	 * @version Jun 8, 2011 3:47:46 PM
 	 */
 	private Session					session;
-
-	/**
-	 * Puerto de conexion SSH
-	 * 
-	 * @version Jun 8, 2011 3:39:31 PM
-	 */
-	public static final Integer	Port_SSH			= 22;
 
 	/**
 	 * @author Hermann D. Schimpf

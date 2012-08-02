@@ -49,7 +49,7 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 	@Override
 	protected ArrayList<PGColumn> retrieveColumns(final String tableName) throws SQLException {
 		// creamos una lista para las columnas
-		ArrayList<PGColumn> columns = new ArrayList<PGColumn>();
+		final ArrayList<PGColumn> columns = new ArrayList<PGColumn>();
 		// ejecutamos el SQL para obtener la lista de las columnas
 		this.getSQLConnector().executeSQL("SELECT attname AS column_name FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax')");
 		// recorremos las columnas

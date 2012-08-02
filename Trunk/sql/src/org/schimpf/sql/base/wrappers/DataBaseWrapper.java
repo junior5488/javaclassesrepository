@@ -161,7 +161,7 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, MType ext
 			// vaciamos la lista
 			this.schemas.clear();
 			// recorremos los esquemas
-			for (SType schema: this.retrieveSchemas(this.getDataBaseName()))
+			for (final SType schema: this.retrieveSchemas(this.getDataBaseName()))
 				// agregamos el esquema
 				this.schemas.put(schema.getSchemaName(), schema);
 		}

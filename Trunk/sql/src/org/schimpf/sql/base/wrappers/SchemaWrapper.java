@@ -161,7 +161,7 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, MType exten
 			// vaciamos la lista
 			this.tables.clear();
 			// recorremos las tablas
-			for (TType table: this.retrieveTables(this.getSchemaName()))
+			for (final TType table: this.retrieveTables(this.getSchemaName()))
 				// agregamos la tabla de la DB
 				this.tables.put(table.getTableName(), table);
 		}

@@ -150,7 +150,7 @@ public final class Tree extends JPanel {
 				@Override
 				public void valueChanged(final TreeSelectionEvent event) {
 					// obtenemos el nodo seleccionado
-					TreeNode node = (TreeNode) Tree.this.getMainTree().getLastSelectedPathComponent();
+					final TreeNode node = (TreeNode) Tree.this.getMainTree().getLastSelectedPathComponent();
 					// almacenamos el nodo seleccionado
 					Tree.this.selectedTreeNode = node != null && node.isRoot() ? null : node;
 				}
@@ -187,7 +187,7 @@ public final class Tree extends JPanel {
 	 */
 	public ArrayList<TreeNode> getNodes() {
 		// genramos una lista
-		ArrayList<TreeNode> servers = new ArrayList<TreeNode>();
+		final ArrayList<TreeNode> servers = new ArrayList<TreeNode>();
 		// recorremos los nodos
 		for (int index = 0; index < this.getMainNode().getChildCount(); index++)
 			// agregamos el servidor a la lista

@@ -49,7 +49,7 @@ public final class MySQLTable extends TableWrapper<MySQLProcess, MySQLDBMS, MySQ
 	@Override
 	protected ArrayList<MySQLColumn> retrieveColumns(final String tableName) throws SQLException {
 		// armamos una lista
-		ArrayList<MySQLColumn> columns = new ArrayList<MySQLColumn>();
+		final ArrayList<MySQLColumn> columns = new ArrayList<MySQLColumn>();
 		// ejecutamos la consulta
 		this.getSQLConnector().executeSQL("SELECT column_name FROM information_schema.columns WHERE table_schema LIKE '" + this.getSchema().getSchemaName() + "' AND table_name LIKE '" + tableName + "' ORDER BY ordinal_position");
 		// recorremos las bases de datos

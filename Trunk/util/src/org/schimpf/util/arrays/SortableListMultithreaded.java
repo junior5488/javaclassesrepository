@@ -244,9 +244,9 @@ public final class SortableListMultithreaded<Type extends Comparable<? super Typ
 		// recorremos mientras las partes sean menores a la cantidad de treads
 		while (partitions.size() < SortableListMultithreaded.MAX_THREADS) {
 			// generamos una lista temporal
-			ArrayList<SortableList<Type>> temp = new ArrayList<SortableList<Type>>();
+			final ArrayList<SortableList<Type>> temp = new ArrayList<SortableList<Type>>();
 			// recorremos los elementos
-			for (SortableList<Type> list: partitions)
+			for (final SortableList<Type> list: partitions)
 				// dividimos y recorremos las sublistas
 				for (final SortableList<Type> sublist: this.divideList(list))
 					// agregamos la lista dividida

@@ -5,7 +5,6 @@
  */
 package org.schimpf.java.threads;
 
-
 /**
  * Thread para procesos
  * 
