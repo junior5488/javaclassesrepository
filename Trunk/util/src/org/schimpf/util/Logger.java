@@ -18,6 +18,9 @@
  */
 package org.schimpf.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,6 +46,20 @@ public final class Logger {
 	 * @version Aug 1, 2012 5:16:06 PM
 	 */
 	private Level			fileLevel		= Level.OFF;
+
+	/**
+	 * Fichero log
+	 * 
+	 * @version Aug 2, 2012 9:16:38 AM
+	 */
+	private final File	logFile;
+
+	/**
+	 * Bandera para habilitar el log en el fichero
+	 * 
+	 * @version Aug 2, 2012 9:22:52 AM
+	 */
+	private boolean		logToFile		= false;
 
 	/**
 	 * Nombre del logger
@@ -147,12 +164,17 @@ public final class Logger {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 1, 2012 5:08:04 PM
+	 * @version Aug 1, 2012 5:22:43 PM
 	 * @param clazz Clase que registra el logger
+	 * @param consoleLevel Nivel de mensajes en consola
+	 * @param fileLevel Nivel de mensajes en el fichero
+	 * @param logFile Ruta al fichero log
 	 */
-	public Logger(final Class<? extends Object> clazz) {
-		// almacenamos la clase
-		this.name = clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
+	public Logger(final Class<? extends Object> clazz, final Level consoleLevel, final Level fileLevel, final String logFile) {
+		// enviamos el constructor
+		this(clazz, consoleLevel, logFile);
+		// almacenamos el nivel del fichero
+		this.fileLevel = fileLevel;
 	}
 
 	/**
@@ -162,10 +184,11 @@ public final class Logger {
 	 * @version Aug 1, 2012 5:22:27 PM
 	 * @param clazz Clase que registra el logger
 	 * @param consoleLevel Nivel de mensajes en consola
+	 * @param logFile Ruta al fichero log
 	 */
-	public Logger(final Class<? extends Object> clazz, final Level consoleLevel) {
+	public Logger(final Class<? extends Object> clazz, final Level consoleLevel, final String logFile) {
 		// enviamos el constructor
-		this(clazz);
+		this(clazz, logFile);
 		// almacenamos el nivel de consola
 		this.consoleLevel = consoleLevel;
 	}
@@ -174,28 +197,34 @@ public final class Logger {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 1, 2012 5:22:43 PM
+	 * @version Aug 1, 2012 5:08:04 PM
 	 * @param clazz Clase que registra el logger
-	 * @param consoleLevel Nivel de mensajes en consola
-	 * @param fileLevel Nivel de mensajes en el fichero
+	 * @param logFile Ruta al fichero log
 	 */
-	public Logger(final Class<? extends Object> clazz, final Level consoleLevel, final Level fileLevel) {
-		// enviamos el constructor
-		this(clazz, consoleLevel);
-		// almacenamos el nivel del fichero
-		this.fileLevel = fileLevel;
+	public Logger(final Class<? extends Object> clazz, final String logFile) {
+		// almacenamos la clase
+		this.name = clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
+		// almacenamos el fichero log
+		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
+		// verificamos si se especifico el fichero log
+		this.enableLogFile(logFile != null);
 	}
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 1, 2012 6:13:53 PM
+	 * @version Aug 1, 2012 5:22:43 PM
 	 * @param name Nombre para el logger
+	 * @param consoleLevel Nivel de mensajes en consola
+	 * @param fileLevel Nivel de mensajes en el fichero
+	 * @param logFile Ruta al fichero log
 	 */
-	public Logger(final String name) {
-		// almacenamos la clase
-		this.name = name;
+	public Logger(final String name, final Level consoleLevel, final Level fileLevel, final String logFile) {
+		// enviamos el constructor
+		this(name, consoleLevel, logFile);
+		// almacenamos el nivel del fichero
+		this.fileLevel = fileLevel;
 	}
 
 	/**
@@ -205,10 +234,11 @@ public final class Logger {
 	 * @version Aug 1, 2012 6:14:17 PM
 	 * @param name Nombre para el logger
 	 * @param consoleLevel Nivel de mensajes en consola
+	 * @param logFile Rta al fichero log
 	 */
-	public Logger(final String name, final Level consoleLevel) {
+	public Logger(final String name, final Level consoleLevel, final String logFile) {
 		// enviamos el constructor
-		this(name);
+		this(name, logFile);
 		// almacenamos el nivel de consola
 		this.consoleLevel = consoleLevel;
 	}
@@ -217,16 +247,17 @@ public final class Logger {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 1, 2012 5:22:43 PM
+	 * @version Aug 1, 2012 6:13:53 PM
 	 * @param name Nombre para el logger
-	 * @param consoleLevel Nivel de mensajes en consola
-	 * @param fileLevel Nivel de mensajes en el fichero
+	 * @param logFile Ruta al fichero log
 	 */
-	public Logger(final String name, final Level consoleLevel, final Level fileLevel) {
-		// enviamos el constructor
-		this(name, consoleLevel);
-		// almacenamos el nivel del fichero
-		this.fileLevel = fileLevel;
+	public Logger(final String name, final String logFile) {
+		// almacenamos la clase
+		this.name = name;
+		// almacenamos el fichero log
+		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
+		// verificamos si se especifico el fichero log
+		this.enableLogFile(logFile != null);
 	}
 
 	/**
@@ -241,6 +272,20 @@ public final class Logger {
 	public void debug(final String message) {
 		// ejecutamos el mensaje
 		this.log(Level.DEBUG, message);
+	}
+
+	/**
+	 * Des/habilita el log al fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 2, 2012 9:22:18 AM
+	 * @param enable True para habilitar el log al fichero
+	 */
+	public void enableLogFile(final boolean enable) {
+		// des/hablitamos el log en el fichero
+		this.logToFile = enable;
 	}
 
 	/**
@@ -312,9 +357,14 @@ public final class Logger {
 				// mostrar el mensaje en consola de error
 				System.out.println(log);
 		// verificamos si mostramos en el fichero
-		if (this.fileLevel.isEnabled(level)) {
-			// TODO almacenar el log en el fichero
-		}
+		if (this.fileLevel.isEnabled(level) && this.logToFile)
+			try {
+				// almacenamos el log en el fichero
+				new FileWriter(this.logFile).write(message);
+			} catch (IOException e) {
+				// mostramos un log en consola
+				this.debug("Log can't be save on file. Reason: " + e.getMessage());
+			}
 	}
 
 	/**
