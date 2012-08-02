@@ -338,20 +338,6 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	}
 
 	/**
-	 * Retorna el logger
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 2, 2012 10:00:54 AM
-	 * @return Logger
-	 */
-	protected final Logger getLogger() {
-		// retornamos el logger
-		return this.log;
-	}
-
-	/**
 	 * Retorna el socket principal
 	 * 
 	 * @author Hermann D. Schimpf
@@ -991,5 +977,19 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		this.outputStream = stream;
 		// limpiamos el stream
 		this.getOutputStream().flush();
+	}
+
+	/**
+	 * Retorna el logger
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 2, 2012 10:00:54 AM
+	 * @return Logger
+	 */
+	final Logger getLogger() {
+		// retornamos el logger
+		return this.log;
 	}
 }
