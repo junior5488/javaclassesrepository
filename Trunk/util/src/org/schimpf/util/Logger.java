@@ -39,7 +39,7 @@ public final class Logger {
 	 * 
 	 * @version Aug 1, 2012 5:15:53 PM
 	 */
-	private Level			consoleLevel	= Level.WARNING;
+	private Level			consoleLevel	= Level.WARN;
 
 	/**
 	 * Nivel de mensajes en fichero log
@@ -125,7 +125,7 @@ public final class Logger {
 		 * 
 		 * @version Aug 1, 2012 5:04:36 PM
 		 */
-		WARNING(10);
+		WARN(10);
 		/**
 		 * ID del Nivel
 		 * 
@@ -347,7 +347,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el mensaje
-		String log = "[" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + "] " + message;
+		String log = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + " [" + level.name() + "] " + message;
 		// verificamos si mostramos en consola
 		if (level.isEnabled(this.consoleLevel))
 			// verificamos si es >= ERROR
@@ -429,6 +429,6 @@ public final class Logger {
 	 */
 	public void warning(final String message) {
 		// ejecutamos el mensaje
-		this.log(Level.WARNING, message);
+		this.log(Level.WARN, message);
 	}
 }
