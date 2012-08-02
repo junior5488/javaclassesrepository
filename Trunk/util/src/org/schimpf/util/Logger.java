@@ -39,14 +39,14 @@ public final class Logger {
 	 * 
 	 * @version Aug 1, 2012 5:15:53 PM
 	 */
-	private Level			consoleLevel	= Level.OFF;
+	private Level			consoleLevel	= Level.WARNING;
 
 	/**
 	 * Nivel de mensajes en fichero log
 	 * 
 	 * @version Aug 1, 2012 5:16:06 PM
 	 */
-	private Level			fileLevel		= Level.OFF;
+	private Level			fileLevel		= Level.INFO;
 
 	/**
 	 * Fichero log
@@ -83,7 +83,7 @@ public final class Logger {
 		 * 
 		 * @version Aug 1, 2012 5:03:23 PM
 		 */
-		ALL(100),
+		ALL(0),
 		/**
 		 * Nivel de depuracion
 		 * 
@@ -113,7 +113,7 @@ public final class Logger {
 		 * 
 		 * @version Aug 1, 2012 5:04:17 PM
 		 */
-		OFF(0),
+		OFF(100),
 		/**
 		 * Nivel de mensajes severos
 		 * 
@@ -157,7 +157,7 @@ public final class Logger {
 		 */
 		protected boolean isEnabled(final Level level) {
 			// retornamos si el parametro es mayor
-			return this.level <= level.level;
+			return level.level <= this.level;
 		}
 	}
 
@@ -343,22 +343,22 @@ public final class Logger {
 	 */
 	public void log(final Level level, final String message) {
 		// verificamos si alguno esta habilitado
-		if (!this.consoleLevel.isEnabled(level) && !this.fileLevel.isEnabled(level))
+		if (!level.isEnabled(this.consoleLevel) && !level.isEnabled(this.fileLevel))
 			// salimos
 			return;
 		// generamos el mensaje
 		String log = "[" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " {" + this.name + "}] " + message;
 		// verificamos si mostramos en consola
-		if (this.consoleLevel.isEnabled(level))
-			// verificamos si es >=ERROR
-			if (Level.ERROR.isEnabled(level))
+		if (level.isEnabled(this.consoleLevel))
+			// verificamos si es >= ERROR
+			if (level.isEnabled(Level.ERROR))
 				// mostrar el mensaje en consola de error
 				System.err.println(log);
 			else
 				// mostrar el mensaje en consola de error
 				System.out.println(log);
 		// verificamos si mostramos en el fichero
-		if (this.fileLevel.isEnabled(level) && this.logToFile)
+		if (level.isEnabled(this.fileLevel) && this.logToFile)
 			try {
 				// abrimos el fichero log
 				BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
