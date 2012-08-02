@@ -22,6 +22,7 @@ import org.schimpf.java.threads.Thread;
 import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.socket.base.ServerSocket;
 import org.schimpf.net.utils.Commands;
+import org.schimpf.util.Logger;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 import java.io.File;
@@ -110,6 +111,13 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	private Commands				lastCommand;
 
 	/**
+	 * Instancia de log
+	 * 
+	 * @version Aug 2, 2012 10:05:25 AM
+	 */
+	private final Logger			log;
+
+	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
@@ -191,6 +199,8 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		this.connection = connection;
 		// almacenamos el socket principal
 		this.serverSocket = serverSocket;
+		// instanciamos el logger
+		this.log = new Logger(this.getName(), null);
 	}
 
 	@Override
@@ -245,7 +255,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				// verificamos si no es la etapa final
 				if (!this.getStage().equals(Stage.POST)) {
 					// mostramos un log
-					this.log("=>> " + (this.getStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
+					this.getLogger().debug("=>> " + (this.getStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
 					// verificamos si estamos en la etapa de transferencia de un fichero
 					if (this.getStage().equals(Stage.FILE))
 						// procesamos el paso del fichero
@@ -256,7 +266,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 					// verificamos si directamente pasamos al proceso externo
 				} else {
 					// mostramos un log
-					this.log(Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE)) ? "=>> " + Commands.get(data.toString()) : ">>> " + data);
+					this.getLogger().debug(Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE)) ? "=>> " + Commands.get(data.toString()) : ">>> " + data);
 					// verificamos si es un comando de finalizacion
 					if (Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE))) {
 						// verificamos si el comando es transferencia de archivo
@@ -327,6 +337,20 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	protected final Commands getLastCommand() {
 		// retornamos el ultimo comando enviado
 		return this.lastCommand;
+	}
+
+	/**
+	 * Retorna el logger
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 2, 2012 10:00:54 AM
+	 * @return Logger
+	 */
+	protected final Logger getLogger() {
+		// retornamos el logger
+		return this.log;
 	}
 
 	/**
@@ -524,7 +548,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				// retornamos false
 				return false;
 			// mostramos un mensaje
-			this.log((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
+			this.getLogger().debug((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
 			// verificamos si es un comando
 			if (!this.getStage().equals(Stage.POST) && Commands.get(data.toString()) != null || overWrite != null)
 				// almacenamos el ultimo comando enviado
@@ -574,7 +598,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// almacenamos la nueva etapa
 		this.stage = newStage;
 		// mostramos un mensaje
-		this.log("Changing Stage to: " + this.getStage());
+		this.getLogger().debug("Changing Stage to: " + this.getStage());
 	}
 
 	/**
@@ -715,7 +739,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	private void openStreams() {
 		try {
 			// mostramos un log
-			this.log("Opening streams..");
+			this.getLogger().debug("Opening streams..");
 			// abrimos el stream de salida
 			this.setOutputStream(new ObjectOutputStream(this.getConnection().getOutputStream()));
 			// abrimos el stream de entrada
@@ -743,7 +767,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// verificamos si pedimos el nombre
 		} else if (this.getLastCommand().equals(Commands.NAME)) {
 			// mostramos un log
-			this.log(">>> " + data);
+			this.getLogger().debug(">>> " + data);
 			// almacenamos el nombre del fichero
 			this.setFileName(data.toString());
 			// solicitamos el tamano del fichero
@@ -751,7 +775,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// verificamos si solicitamos el tamano del fichero
 		} else if (this.getLastCommand().equals(Commands.SIZE)) {
 			// mostramos un log
-			this.log(">>> " + data + " bytes");
+			this.getLogger().debug(">>> " + data + " bytes");
 			// almacenamos el tamano del fichero
 			this.setFileSize(Long.parseLong(data.toString()));
 			// solicitamos el fichero
@@ -826,7 +850,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	 */
 	private File receiveFile() {
 		// mostramos un log
-		this.log("Receiving file (" + this.getFileName() + ": " + this.getFileSize() + " bytes)..");
+		this.getLogger().debug("Receiving file (" + this.getFileName() + ": " + this.getFileSize() + " bytes)..");
 		// creamos un fichero temporal
 		File result = null;
 		try {
@@ -854,7 +878,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// cerramos el fichero
 			outFile.close();
 			// mostramos un log
-			this.log("File received");
+			this.getLogger().info("File received");
 		} catch (final SocketException e) {
 			// mostramos el trace de la excepcion
 			e.printStackTrace();
@@ -877,7 +901,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	 */
 	private void sendFileContents() {
 		// mostramos un log
-		this.log("Sending file (" + this.getFile().getName() + ": " + this.getFile().length() + " bytes)..");
+		this.getLogger().debug("Sending file (" + this.getFile().getName() + ": " + this.getFile().length() + " bytes)..");
 		// iniciamos una bandera
 		int bytesRead = 0;
 		try {
@@ -897,7 +921,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// vaciamos el fichero enviado
 			this.file = null;
 			// mostramos un log
-			this.log("File sent");
+			this.getLogger().info("File sent");
 		} catch (final SocketException e) {
 			// mostramos el trace de la excepcion
 			e.printStackTrace();
