@@ -24,6 +24,8 @@ import org.schimpf.sql.base.wrappers.DBMSWrapper;
 import org.schimpf.sql.base.wrappers.DataBaseWrapper;
 import org.schimpf.sql.base.wrappers.SchemaWrapper;
 import org.schimpf.sql.base.wrappers.TableWrapper;
+import org.schimpf.util.Logger;
+import org.schimpf.util.Logger.Level;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
@@ -48,6 +50,14 @@ import java.util.HashMap;
  */
 public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType> {
 	/**
+	 * Nivel de mesajes de depuracion<BR/>
+	 * Apagado por defecto
+	 * 
+	 * @version Aug 2, 2012 2:26:32 PM
+	 */
+	public static Level							DEBUG_LEVEL	= Level.OFF;
+
+	/**
 	 * Instancia del conector SQL
 	 * 
 	 * @version Jul 31, 2012 9:34:32 PM
@@ -60,6 +70,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @version Jul 31, 2012 3:32:28 PM
 	 */
 	private boolean								createNew	= false;
+
+	/**
+	 * Instancia del Logger
+	 * 
+	 * @version Aug 2, 2012 1:47:01 PM
+	 */
+	private final Logger							log;
 
 	/**
 	 * Identificador del registro
@@ -101,10 +118,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	public AbstractPersistentObject() throws Exception {
 		// almacenamos la tabla
 		this.table = this.getTableInstance();
+		// iniciamos el logger
+		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// modificamos la bandera de creacion
 		this.createNew = true;
+		// mostramos un log
+		this.log.debug("New Persisten Object initiated [" + this.getTable() + "]");
 	}
 
 	/**
@@ -120,12 +141,16 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	public AbstractPersistentObject(final HashMap<String, PKType> identifier) throws Exception {
 		// almacenamos la tabla
 		this.table = this.getTableInstance();
+		// iniciamos el logger
+		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// almacenamos las PKs
 		this.savePKs(identifier);
 		// cargamos el registro
 		this.load();
+		// mostramos un log
+		this.log.debug("New Persisten Object loaded [" + this.getTable() + "]");
 	}
 
 	/**
@@ -139,12 +164,23 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws Exception Si no se pudo eliminar
 	 */
 	public final boolean delete() throws Exception {
+		// mostramos un log
+		this.log.debug("Starting delete of this Persisten Object");
 		// armamos el SQL para eliminar el registro
 		final StringBuffer delete = new StringBuffer("DELETE FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
 		// agregamos el where
 		delete.append(" WHERE " + this.getPKsFilter() + ";");
+		// mostramos el SQL
+		this.log.debug("SQL: " + delete.toString());
 		// ejecutamos el SQL
 		final boolean saveOk = this.getConnector().executeUpdate(delete.toString()) == 1;
+		// verificamos si elimino
+		if (saveOk)
+			// mostramos si se elimino
+			this.log.warning("Persisten Object deleted");
+		else
+			// mostramos el error
+			this.log.error("Failed to delete Persisten Object!");
 		// seteamos la bandera en true
 		this.createNew = true;
 		// vaciamos los valores actuales
@@ -184,10 +220,17 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		if (!this.isNewRecord() && this.isNothingChanged())
 			// retornamos true
 			return true;
+		// mostramos un log
+		this.log.debug("Executing beforeSave");
 		// ejecutamos el beforeSave
-		if (!this.beforeSave())
+		if (!this.beforeSave()) {
+			// mostramos un log
+			this.log.warning("Saving canceled on beforeSave");
 			// retornamos false
 			return false;
+		}
+		// mostramos un log
+		this.log.debug("beforeSave passed successfully");
 		try {
 			// veificamos si es registro nuevo
 			if (this.isNewRecord())
@@ -196,8 +239,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// guardamos los cambios
 			return this.saveUpdate();
 		} catch (final Exception e) {
-			// mostramos el trace
-			e.printStackTrace();
+			// mostramos un log
+			this.log.fatal("Saving failed! Reason: " + e.getMessage());
 			// retornamos false
 			return false;
 		}
@@ -415,9 +458,12 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				if (columnName.equalsIgnoreCase(column.getColumnName()))
 					// retornamos la columna
 					return column;
-		} catch (final SQLException ignored) {}
+		} catch (final SQLException e) {
+			// mostramos un log
+			this.log.fatal("Error ocurred finding column: " + e.getMessage());
+		}
 		// mostramos un mensaje de error
-		System.err.println("Unknown column \"" + columnName + "\" on table " + this.getTable().getTableName());
+		this.log.severe("Column \"" + columnName + "\" not found!");
 		// si no encontramos, retornamos null
 		return null;
 	}
@@ -526,17 +572,26 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws Exception Si no se pudo cargar el registro
 	 */
 	private void load() throws Exception {
-		// vaciamos los valores actuales
-		this.valuesOld.clear();
-		this.valuesNew.clear();
-		// ejecutamos el SQL para obtener los valores de las columnas del registro
-		this.getConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " WHERE " + this.getPKsFilter());
-		// verificamos si tenemos resultado
-		if (this.getConnector().getResultSet().next())
-			// recorremos las columnas de la tabla
-			for (final CType column: this.getTable().getColumns())
-				// cargamos la columna
-				this.valuesOld.put(column, this.getConnector().getResultSet().getObject(column.getColumnName()));
+		try {
+			// mostramos un log
+			this.log.debug("Loading Persistent Object");
+			// vaciamos los valores actuales
+			this.valuesOld.clear();
+			this.valuesNew.clear();
+			// ejecutamos el SQL para obtener los valores de las columnas del registro
+			this.getConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " WHERE " + this.getPKsFilter());
+			// verificamos si tenemos resultado
+			if (this.getConnector().getResultSet().next())
+				// recorremos las columnas de la tabla
+				for (final CType column: this.getTable().getColumns())
+					// cargamos la columna
+					this.valuesOld.put(column, this.getConnector().getResultSet().getObject(column.getColumnName()));
+		} catch (final Exception e) {
+			// mostramos un log
+			this.log.fatal("Error ocurred loading Persistent Object: " + e.getMessage());
+			// relanzamos la excepcion
+			throw e;
+		}
 	}
 
 	/**
@@ -549,10 +604,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws SQLException Si no se pudo cargar las columnas
 	 */
 	private void loadPKsColumns() throws SQLException {
+		// mostramos un log
+		this.log.debug("Loading PKs columns");
 		// recorremos las PKs
 		for (final CType column: this.getTable().getPrimaryKeys())
 			// almacenamos la PK con valor null
 			this.getPrimaryKeys().put(column, null);
+		// mostramos un log
+		this.log.debug("PKs columns are: " + this.getPrimaryKeys());
 	}
 
 	/**
@@ -568,6 +627,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	@SuppressWarnings("unchecked")
 	private boolean saveFinish(final boolean success) throws Exception {
+		// mostramos un log
+		this.log.debug("On saveFinish with " + (success ? "sucessfully" : "failed") + " save");
 		// copiamos la bandera
 		boolean process = success;
 		// verificamos si guardo ok
@@ -580,8 +641,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					this.getPrimaryKeys().put(pkColumn, (PKType) this.valuesNew.get(pkColumn));
 			// recargamos el PO
 			this.load();
+			// mostramos un log
+			this.log.debug("Executing afterSave");
 			// ejecutamos el afterSave()
 			process = process && this.afterSave(this.isNewRecord());
+			// verificamos si fue ok
+			if (!process && success)
+				// mostramos un log
+				this.log.warning("afterSave was failed!");
 			// modificamos la bandera
 			this.createNew = false;
 		}
@@ -601,6 +668,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	@SuppressWarnings("unchecked")
 	private boolean saveNew() throws Exception {
+		// mostramos un log
+		this.log.debug("Starting insert of this Persistent Object");
 		// armamos el SQL para insertar el registro
 		final StringBuffer insert = new StringBuffer("INSERT INTO " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
 		// armamos la lista de columnas
@@ -626,10 +695,18 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		insert.append(values);
 		// cerramos el insert
 		insert.append(");");
+		// mostramos el SQL
+		this.log.debug("SQL: " + insert.toString());
 		// ejecutamos el SQL
 		final boolean saveOk = this.getConnector().executeUpdate(insert.toString()) == 1;
+		// verificamos si elimino
+		if (!saveOk)
+			// mostramos el error
+			this.log.error("Failed to insert Persisten Object!");
 		// verificamos si inserto
 		if (saveOk && this.getConnector().loadGeneratedKeys() && this.getConnector().getResultSet().next()) {
+			// mostramos un log
+			this.log.debug("Getting inserted PKs");
 			// vaciamos las PKs
 			this.primaryKeys.clear();
 			// recorremos las columnas PK
@@ -675,6 +752,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws Exception Si no se pudo actualizar el registro
 	 */
 	private boolean saveUpdate() throws Exception {
+		// mostramos un log
+		this.log.debug("Starting update of this Persistent Object");
 		// armamos el SQL para actualizar el registro
 		final StringBuffer update = new StringBuffer("UPDATE " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " SET ");
 		// creamos una bandera para la coma
@@ -694,8 +773,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			return true;
 		// cerramos agregamos el where
 		update.append(" WHERE " + this.getPKsFilter() + ";");
+		// mostramos el SQL
+		this.log.debug("SQL: " + update.toString());
 		// ejecutamos el SQL
 		final boolean saveOk = this.getConnector().executeUpdate(update.toString()) == 1;
+		// verificamos si elimino
+		if (!saveOk)
+			// mostramos el error
+			this.log.error("Failed to update Persisten Object!");
 		// retornamos y recargamos el PO
 		return this.saveFinish(saveOk);
 	}
