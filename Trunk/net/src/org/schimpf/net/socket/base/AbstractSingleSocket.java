@@ -149,7 +149,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 		}
 		try {
 			// mostramos un log
-			this.log("Clossing connection port..");
+			this.getLogger().info("Clossing connection port..");
 			// cerramos la conexion
 			this.getConnection().close();
 		} catch (final IOException e) {
@@ -161,7 +161,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	@Override
 	protected final boolean execute() throws InterruptedException {
 		// mostramos un log
-		this.log("Starting connection..");
+		this.getLogger().info("Starting connection..");
 		// iniciamos
 		this.initConnection();
 		// abrimos los streams de comunicacion
@@ -185,7 +185,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 				// verificamos si no es la etapa final
 				if (!this.getStage().equals(Stage.POST)) {
 					// mostramos un log
-					this.log("=>> " + (this.getStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
+					this.getLogger().debug("=>> " + (this.getStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
 					// verificamos si estamos en la etapa de transferencia de un fichero
 					if (this.getStage().equals(Stage.FILE))
 						// procesamos el paso del fichero
@@ -196,7 +196,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 					// verificamos si directamente pasamos al proceso externo
 				} else {
 					// mostramos un log
-					this.log(Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE)) ? "=>> " + Commands.get(data.toString()) : ">>> " + data);
+					this.getLogger().debug(Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE)) ? "=>> " + Commands.get(data.toString()) : ">>> " + data);
 					// verificamos si es un comando de finalizacion
 					if (Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE))) {
 						// verificamos si el comando es transferencia de archivo
@@ -347,7 +347,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 				// retornamos false
 				return false;
 			// mostramos un mensaje
-			this.log((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
+			this.getLogger().debug((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
 			// verificamos si es un comando
 			if (!this.getStage().equals(Stage.POST) && Commands.get(data.toString()) != null || overWrite != null)
 				// almacenamos el ultimo comando enviado
@@ -397,7 +397,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 		// almacenamos la nueva etapa
 		this.stage = newStage;
 		// mostramos un mensaje
-		this.log("Changing Stage to: " + this.getStage());
+		this.getLogger().debug("Changing Stage to: " + this.getStage());
 	}
 
 	/**
@@ -481,7 +481,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	private void openStreams() {
 		try {
 			// mostramos un log
-			this.log("Opening streams..");
+			this.getLogger().debug("Opening streams..");
 			// abrimos el stream de salida
 			this.setOutputStream(new ObjectOutputStream(this.getConnection().getOutputStream()));
 			// abrimos el stream de entrada
@@ -509,7 +509,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			// verificamos si pedimos el nombre
 		} else if (this.getLastCommand().equals(Commands.NAME)) {
 			// mostramos un log
-			this.log(">>> " + data);
+			this.getLogger().debug(">>> " + data);
 			// almacenamos el nombre del fichero
 			this.setFileName(data.toString());
 			// solicitamos el tamano del fichero
@@ -517,7 +517,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			// verificamos si solicitamos el tamano del fichero
 		} else if (this.getLastCommand().equals(Commands.SIZE)) {
 			// mostramos un log
-			this.log(">>> " + data + " bytes");
+			this.getLogger().debug(">>> " + data + " bytes");
 			// almacenamos el tamano del fichero
 			this.setFileSize(Long.parseLong(data.toString()));
 			// solicitamos el fichero
@@ -592,7 +592,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	 */
 	private File receiveFile() {
 		// mostramos un log
-		this.log("Receiving file (" + this.getFileName() + ": " + this.getFileSize() + " bytes)..");
+		this.getLogger().debug("Receiving file (" + this.getFileName() + ": " + this.getFileSize() + " bytes)..");
 		// creamos un fichero temporal
 		File result = null;
 		try {
@@ -620,7 +620,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			// cerramos el fichero
 			outFile.close();
 			// mostramos un log
-			this.log("File received");
+			this.getLogger().info("File received");
 		} catch (final SocketException e) {
 			// mostramos el trace de la excepcion
 			e.printStackTrace();
@@ -643,7 +643,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	 */
 	private void sendFileContents() {
 		// mostramos un log
-		this.log("Sending file (" + this.getFile().getName() + ": " + this.getFile().length() + " bytes)..");
+		this.getLogger().debug("Sending file (" + this.getFile().getName() + ": " + this.getFile().length() + " bytes)..");
 		// iniciamos una bandera
 		int bytesRead = 0;
 		try {
@@ -663,7 +663,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			// vaciamos el fichero enviado
 			this.file = null;
 			// mostramos un log
-			this.log("File sent");
+			this.getLogger().info("File sent");
 		} catch (final SocketException e) {
 			// mostramos el trace de la excepcion
 			e.printStackTrace();

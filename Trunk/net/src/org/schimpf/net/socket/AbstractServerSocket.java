@@ -276,11 +276,11 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 	private void waitForConnection() {
 		try {
 			// mostramos un mensaje en consola
-			this.log("Waiting for connection..");
+			this.getLogger().debug("Waiting for connection..");
 			// abrimos el socket
 			this.setConnection(this.getServerSocket().accept());
 			// mostramos quien se conecto
-			this.log("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
+			this.getLogger().info("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
 			// ejecutamos el proceso de conexion recivida
 			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
 		} catch (final IOException e) {
