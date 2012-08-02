@@ -1,12 +1,28 @@
 /**
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
- * @version Aug 5, 2011 9:11:16 AM
+ * | This program is free software: you can redistribute it and/or modify
+ * | it under the terms of the GNU General Public License as published by
+ * | the Free Software Foundation, either version 3 of the License.
+ * |
+ * | This program is distributed in the hope that it will be useful,
+ * | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * | GNU General Public License for more details.
+ * |
+ * | You should have received a copy of the GNU General Public License
+ * | along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+ * @author <B>Schimpf.NET</B>
+ * @version Jul 19, 2012 1:19:11 PM
  */
-package org.schimpf.net.socket.base;
+package org.schimpf.net.socket;
 
+import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
+import org.schimpf.util.Logger;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,17 +30,49 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
- * Socket de comunicacion
+ * Conexion establecida en un socket
  * 
- * @author Hermann D. Schimpf
- * @author SCHIMPF - Sistemas de Informacion y Gestion
- * @author Schimpf.NET
- * @version Aug 5, 2011 9:11:16 AM
+ * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+ * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+ * @author <B>Schimpf.NET</B>
+ * @version Jul 19, 2012 1:19:11 PM
+ * @param <SType> Clase del socket servidor
+ * @param <CType> Clase de la conexion del socket
  */
-public abstract class AbstractSingleSocket extends AbstractSocket {
+public abstract class AbstractServerMultiSocketConnection<SType extends AbstractServerMultiSocket<SType, CType>, CType extends AbstractServerMultiSocketConnection<SType, CType>> extends Thread implements SignalHandler {
+	/**
+	 * Host por defecto
+	 * 
+	 * @version Aug 22, 2011 3:42:35 PM
+	 */
+	public static InetAddress	HOST;
+	static {
+		try {
+			// cargamos el localhost
+			AbstractServerMultiSocketConnection.HOST = InetAddress.getLocalHost();
+		} catch (final UnknownHostException ignored) {}
+	}
+
+	/**
+	 * Bandera de autenticacion correcta
+	 * 
+	 * @version Oct 6, 2011 12:24:33 PM
+	 */
+	private boolean				autenticated	= false;
+
+	/**
+	 * Socket de conexion abierta en el puerto
+	 * 
+	 * @version Aug 5, 2011 9:15:52 AM
+	 */
+	private final Socket			connection;
+
 	/**
 	 * Fichero a enviar
 	 * 
@@ -61,6 +109,13 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	private Commands				lastCommand;
 
 	/**
+	 * Instancia de log
+	 * 
+	 * @version Aug 2, 2012 10:05:25 AM
+	 */
+	private final Logger			log;
+
+	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
@@ -68,11 +123,60 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	private ObjectOutputStream	outputStream;
 
 	/**
+	 * Socket servidor al que pertenece esta conexion
+	 * 
+	 * @version Jul 19, 2012 3:14:35 PM
+	 */
+	private final SType			parent;
+
+	/**
+	 * Socket principal de conexion
+	 * 
+	 * @version Aug 5, 2011 9:17:23 AM
+	 */
+	private final ServerSocket	serverSocket;
+
+	/**
 	 * Etapa actual de datos
 	 * 
 	 * @version Oct 21, 2011 10:38:02 AM
 	 */
-	private Stage					stage	= Stage.INIT;
+	private Stage					stage				= Stage.INIT;
+
+	/**
+	 * Etapas de transmision de datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 10:39:26 AM
+	 */
+	protected enum Stage {
+		/**
+		 * Etapa de autenticacion
+		 * 
+		 * @version Oct 21, 2011 10:40:49 AM
+		 */
+		AUTH,
+		/**
+		 * Etapa de transmision de ficheros
+		 * 
+		 * @version Oct 21, 2011 10:40:22 AM
+		 */
+		FILE,
+		/**
+		 * Etapa inicial
+		 * 
+		 * @version Oct 21, 2011 10:40:04 AM
+		 */
+		INIT,
+		/**
+		 * Etapa de proceso externo
+		 * 
+		 * @version Oct 21, 2011 10:40:38 AM
+		 */
+		POST;
+	}
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -80,11 +184,29 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	 * @author Schimpf.NET
 	 * @version Aug 5, 2011 11:49:13 AM
 	 * @param name Nombre del thread
-	 * @param port Numero de puerto a conectar
+	 * @param parent Socket servidor en el que se inicio esta conexion
+	 * @param connection Socket en el que se establecio la conexion
+	 * @param serverSocket Socket principal de conexion
 	 */
-	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket> name, final Integer port) {
+	public AbstractServerMultiSocketConnection(final Class<? extends CType> name, final SType parent, final Socket connection, final ServerSocket serverSocket) {
 		// enviamos el constructor
-		super(name, port);
+		super(name, new Integer(connection.getPort()).toString());
+		// almacenamos el socket padre
+		this.parent = parent;
+		// almacenamos el socket de conexion
+		this.connection = connection;
+		// almacenamos el socket principal
+		this.serverSocket = serverSocket;
+		// instanciamos el logger
+		this.log = new Logger(this.getName(), null);
+	}
+
+	@Override
+	public final void handle(final Signal signal) {
+		// verificamos si la señal es salida desde consola
+		if (signal.getNumber() == 2 || signal.getNumber() == 15)
+			// realizamos el shutdown
+			this.shutdownRequest();
 	}
 
 	/**
@@ -102,76 +224,22 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	}
 
 	/**
-	 * Inicia el puerto y el thread
+	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 12:57:06 PM
-	 * @throws InterruptedException Si el thread ya finalizo
+	 * @version Nov 1, 2011 11:04:59 AM
 	 */
-	public final void open() throws InterruptedException {
-		// verificamos si esta finalizado
-		if (this.getState().equals(State.TERMINATED))
-			// salimos con una excepcion
-			throw new InterruptedException("El thread ya esta finalizado");
-		// modificamos la bandera
-		this.setIsContinue(true);
-		// verificamos si el estado es nuevo
-		if (this.getState().equals(State.NEW))
-			// iniciamos el thread
-			this.start();
-		else
-			synchronized (this) {
-				// continuamos la ejecucion
-				this.notify();
-			}
-	}
-
-	/**
-	 * Cierra el socket
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 10:40:53 AM
-	 * @param isContinue False para finalizar el thread
-	 */
-	@Override
-	protected final void close(final boolean isContinue) {
-		// modificamos la bandera
-		this.setIsContinue(isContinue);
-		synchronized (this) {
-			// verificamos si esta esperando
-			if (this.getState().equals(State.WAITING) || this.getState().equals(State.TIMED_WAITING))
-				// levantamos el thread
-				this.notify();
-		}
-		try {
-			// mostramos un log
-			this.getLogger().info("Clossing connection port..");
-			// cerramos la conexion
-			this.getConnection().close();
-		} catch (final IOException e) {
-			// print the StackTrace
-			e.printStackTrace();
-		}
-	}
+	public abstract void shutdownRequest();
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected final boolean execute() throws InterruptedException {
-		// mostramos un log
-		this.getLogger().info("Starting connection..");
-		// iniciamos
-		this.initConnection();
 		// abrimos los streams de comunicacion
 		this.openStreams();
 		// bandera para continuar recibiendo
 		boolean continuar = true;
-		// verificamos si empezamos enviando
-		if (this.firstData() != null)
-			// enviamos el primer dato
-			this.send(this.firstData());
 		// datos a recibir
 		Object data;
 		// ingresamos a un bucle
@@ -201,39 +269,33 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 					if (Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE))) {
 						// verificamos si el comando es transferencia de archivo
 						if (Commands.get(data.toString()).equals(Commands.FILE)) {
-							// cambiamos al modo transferencia
-							this.setStage(Stage.FILE);
 							// respondemos OK
 							this.send(Commands.ACK);
+							// cambiamos al modo transferencia
+							this.setStage(Stage.FILE);
 							// verificamos si el comando es transferencia de archivo
-						} else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+						} else if (Commands.get(data.toString()).equals(Commands.BYE))
 							// modificamos la bandera
 							continuar = false;
-							// cerramos el puerto
-							this.close(true);
-						} else {
+						else {
 							// modificamos la bandera
 							continuar = false;
 							// enviamos adios
 							this.send(Commands.BYE);
-							// cerramos el puerto
-							this.close(Commands.get(data.toString()).equals(Commands.EXIT));
 						}
 					} else
 						// procesamos los datos
 						continuar = this.processData(data);
 				}
 		} while (continuar);
-		// verificamos la bandera
-		if (this.isContinue())
-			// verificamos si el comando fue finalizar
-			if (data == null || Commands.get(data.toString()) != null && !Commands.get(data.toString()).equals(Commands.SHUTDOWN))
-				synchronized (this) {
-					// pausamos el trhead
-					this.wait();
-				}
-		// retornamos si seguimos con el puerto abierto
-		return this.isContinue();
+		try {
+			// cerramos la conexion
+			this.getConnection().close();
+		} catch (IOException ignored) {}
+		// avisamos al padre que finalizamos
+		this.getParent().connectionFinished((CType) this);
+		// finalizamos la conexion abierta
+		return false;
 	}
 
 	/**
@@ -248,17 +310,17 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	protected void fileReceived(final File fileReceived) {}
 
 	/**
-	 * Envia el primer dato al server
+	 * Retorna el socket con la conexion abierta para el traslado de datos
 	 * 
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 11:53:31 AM
-	 * @return Datos a enviar
+	 * @version Aug 5, 2011 9:24:11 AM
+	 * @return Conexion para el traslado de datos
 	 */
-	protected Object firstData() {
-		// por defecto enviamos null
-		return null;
+	protected final Socket getConnection() {
+		// retornamos la conexion abierta
+		return this.connection;
 	}
 
 	/**
@@ -276,6 +338,34 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	}
 
 	/**
+	 * Retorna el logger
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 2, 2012 10:00:54 AM
+	 * @return Logger
+	 */
+	protected final Logger getLogger() {
+		// retornamos el logger
+		return this.log;
+	}
+
+	/**
+	 * Retorna el socket principal
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 11:00:03 AM
+	 * @return Socket principal
+	 */
+	protected final MainSocket getSocket() {
+		// retornamos el socket principal
+		return this.getServerSocket();
+	}
+
+	/**
 	 * Retorna la etapa actual
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -287,6 +377,35 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	protected final Stage getStage() {
 		// retrnamos la etapa actual
 		return this.stage;
+	}
+
+	/**
+	 * Iniciador del socket
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 10:58:17 AM
+	 */
+	protected void initConnection() {
+		// vaciamos la bandera de autenticacion
+		this.autenticated = !this.needsAuthentication();
+		// cambiamos a la etapa inicial
+		this.setStage(Stage.INIT);
+	}
+
+	/**
+	 * Retorna si se requiere autenticacion para la conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:33:17 AM
+	 * @return True para solicitar autenticacion
+	 */
+	protected boolean needsAuthentication() {
+		// por defecto no utilizamos autenticacion
+		return false;
 	}
 
 	/**
@@ -312,7 +431,87 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	 * @param data Datos
 	 * @return True para continuar
 	 */
-	protected abstract boolean processStage(Stage stage, Object data);
+	protected final boolean processStage(final Stage stage, final Object data) {
+		// generamos una bandera
+		boolean continuar = true;
+		// verificamos en que etapa estamos
+		switch (stage) {
+			case INIT:
+				// verificamos si es el saludo
+				if (Commands.get(data.toString()).equals(Commands.HELO))
+					// saludamos
+					this.send(Commands.HELO);
+				// verificamos si es la solicitud de datos
+				else if (Commands.get(data.toString()).equals(Commands.DATA))
+					// verificamos si no estamos autenticados
+					if (!this.isAutenticated() && this.needsAuthentication()) {
+						// modificamos la etapa al proceso de autenticacion
+						this.setStage(Stage.AUTH);
+						// solicitamos autenticacion
+						this.send(Commands.AUTH);
+					} else {
+						// enviamos ok para aceptar datos
+						this.send(Commands.ACK);
+						// modificamos la etapa al proceso externo
+						this.setStage(Stage.POST);
+					}
+				// finalizamos la etapa
+				break;
+			case AUTH:
+				// verificamos si el comando anterior fue solicitud de autenticacion
+				if (this.getLastCommand().equals(Commands.AUTH)) {
+					// verificamos si se acepto la autenticacion
+					if (Commands.get(data.toString()).equals(Commands.ACK))
+						// solicitamos los datos de autenticacion
+						this.send(Commands.DATA);
+					else if (Commands.get(data.toString()).equals(Commands.NAK))
+						// retornamos autenticacion fallida
+						this.send(Commands.NAK);
+					// verificamos si solicitamos los datos de autenticacion
+				} else if (this.getLastCommand().equals(Commands.DATA)) {
+					// validamos la autenticacion
+					if (this.validateAutentication(data)) {
+						// modificamos la bandera de autenticacion
+						this.autenticated = true;
+						// enviamos autenticacion correcta
+						this.send(Commands.ACK);
+					} else {
+						// modificamos la bandera de autenticacion
+						this.autenticated = false;
+						// enviamos autenticacion fallida
+						this.send(Commands.NAK);
+					}
+				} else if (Commands.get(data.toString()).equals(Commands.DATA))
+					// verificamos si estamos autenticados
+					if (this.isAutenticated()) {
+						// retornamos ok
+						this.send(Commands.ACK);
+						// cambiamos a la etapa externa
+						this.setStage(Stage.POST);
+					} else
+						// retonamos false
+						this.send(Commands.NAK);
+				else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+					// modificamos la bandera
+					continuar = false;
+					try {
+						// finalizamos la conexion
+						this.getConnection().close();
+					} catch (IOException ignored) {}
+				}
+				// finalizamos la etapa
+				break;
+			// en cualquier otro caso
+			default:
+				if (Commands.get(data.toString()).equals(Commands.BYE))
+					// modificamos la bandera
+					continuar = false;
+				// finalizamos la etapa
+				break;
+		}
+		// retornamos la bandera
+		return continuar;
+	}
 
 	/**
 	 * Envia datos al output
@@ -401,6 +600,21 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	}
 
 	/**
+	 * Valida la autenticacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:57:06 AM
+	 * @param data Datos de autenticacion recibidos
+	 * @return True para aceptar la validacion
+	 */
+	protected boolean validateAutentication(final Object data) {
+		// por defecto enviamos false
+		return false;
+	}
+
+	/**
 	 * Retorna el fichero a enviar
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -471,6 +685,48 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	}
 
 	/**
+	 * Reorna el socket padre al que pertenece la conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 19, 2012 3:14:59 PM
+	 * @return Socket padre
+	 */
+	private SType getParent() {
+		// retornamos el socket padre
+		return this.parent;
+	}
+
+	/**
+	 * Retorna el socket principal
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 9:22:43 AM
+	 * @return ServerSoket
+	 */
+	private ServerSocket getServerSocket() {
+		// retornamos el socket
+		return this.serverSocket;
+	}
+
+	/**
+	 * Retorna si ya se realizo la autenticacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 12:00:27 PM
+	 * @return Bandera de autenticacion
+	 */
+	private boolean isAutenticated() {
+		// retornamos la banderta
+		return this.autenticated;
+	}
+
+	/**
 	 * Abre los streams de comunicacion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -524,10 +780,10 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			this.send(Commands.DATA);
 			// obtenemos el fichero
 			final File receivedFile = this.receiveFile();
-			// modficamos la etapa
-			this.setStage(Stage.POST);
 			// retornamos ok
 			this.send(Commands.ACK);
+			// modficamos la etapa
+			this.setStage(Stage.POST);
 			// recibimos el fichero y lo procesamos
 			this.fileReceived(receivedFile);
 			// verificamos si es solicitud de datos del fichero

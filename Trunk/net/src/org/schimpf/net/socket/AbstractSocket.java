@@ -16,7 +16,7 @@
  * @author <B>Schimpf.NET</B>
  * @version Jul 19, 2012 1:03:42 PM
  */
-package org.schimpf.net.socket.base;
+package org.schimpf.net.socket;
 
 import org.schimpf.java.threads.Thread;
 import org.schimpf.util.Logger;
@@ -167,20 +167,6 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	protected abstract Socket getConnection();
 
 	/**
-	 * Retorna el logger
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 2, 2012 10:00:54 AM
-	 * @return Logger
-	 */
-	protected final Logger getLogger() {
-		// retornamos el logger
-		return this.log;
-	}
-
-	/**
 	 * Retorna el socket principal
 	 * 
 	 * @author Hermann D. Schimpf
@@ -227,5 +213,19 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	protected final void setIsContinue(final boolean isContinue) {
 		// almacenamos la bandera
 		this.isContinue = isContinue;
+	}
+
+	/**
+	 * Retorna el logger
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 2, 2012 10:00:54 AM
+	 * @return Logger
+	 */
+	final Logger getLogger() {
+		// retornamos el logger
+		return this.log;
 	}
 }

@@ -6,10 +6,6 @@
  */
 package org.schimpf.net.socket;
 
-import org.schimpf.net.socket.base.AbstractSingleSocket;
-import org.schimpf.net.socket.base.AbstractSocket;
-import org.schimpf.net.socket.base.ClientSocket;
-import org.schimpf.net.socket.base.MainSocket;
 import org.schimpf.net.utils.Commands;
 import java.io.IOException;
 import java.net.InetAddress;

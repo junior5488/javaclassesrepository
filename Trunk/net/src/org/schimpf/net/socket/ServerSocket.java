@@ -4,7 +4,7 @@
  * @author Schimpf.NET
  * @version Aug 5, 2011 11:04:03 AM
  */
-package org.schimpf.net.socket.base;
+package org.schimpf.net.socket;
 
 import java.io.IOException;
 

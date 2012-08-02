@@ -16,11 +16,8 @@
  * @author <B>Schimpf.NET</B>
  * @version Jul 19, 2012 1:57:31 PM
  */
-package org.schimpf.net.socket.multi;
+package org.schimpf.net.socket;
 
-import org.schimpf.net.socket.base.AbstractSocket;
-import org.schimpf.net.socket.base.MainSocket;
-import org.schimpf.net.socket.base.ServerSocket;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
