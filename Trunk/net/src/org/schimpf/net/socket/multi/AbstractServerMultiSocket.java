@@ -162,7 +162,7 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 		this.setIsContinue(isContinue);
 		try {
 			// mostramos un log
-			this.log("Clossing connection port..");
+			this.getLogger().debug("Clossing connection port..");
 			// cerramos la conexion
 			this.getConnection().close();
 		} catch (final IOException e) {
@@ -201,7 +201,7 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	@SuppressWarnings("unchecked")
 	protected final boolean execute() throws InterruptedException {
 		// mostramos un log
-		this.log("Starting connections..");
+		this.getLogger().debug("Starting connections..");
 		// iniciamos las conexiones
 		this.initConnection();
 		// creamos una nueva conexion
@@ -230,11 +230,11 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	protected void initConnection() {
 		try {
 			// mostramos un mensaje en consola
-			this.log("Waiting for connection..");
+			this.getLogger().debug("Waiting for connection..");
 			// abrimos el socket
 			this.setConnection(this.getServerSocket().accept());
 			// mostramos quien se conecto
-			this.log("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
+			this.getLogger().info("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
 			// ejecutamos el proceso de conexion recivida
 			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
 		} catch (final IOException e) {
