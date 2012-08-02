@@ -347,7 +347,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el mensaje
-		String log = "[" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " {" + this.name + "}] " + message;
+		String log = "[" + new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + "] " + message;
 		// verificamos si mostramos en consola
 		if (level.isEnabled(this.consoleLevel))
 			// verificamos si es >= ERROR
