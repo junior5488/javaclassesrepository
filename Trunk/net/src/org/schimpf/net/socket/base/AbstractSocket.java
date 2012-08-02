@@ -19,6 +19,7 @@
 package org.schimpf.net.socket.base;
 
 import org.schimpf.java.threads.Thread;
+import org.schimpf.util.Logger;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 import java.net.InetAddress;
@@ -53,6 +54,13 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	 * @version Oct 4, 2011 1:33:14 PM
 	 */
 	private boolean				isContinue	= true;
+
+	/**
+	 * Instancia de log
+	 * 
+	 * @version Aug 2, 2012 10:05:25 AM
+	 */
+	private final Logger			log;
 
 	/**
 	 * Etapas de transmision de datos
@@ -100,6 +108,8 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	public AbstractSocket(final Class<? extends AbstractSocket> name, final Integer port) {
 		// enviamos el constructor
 		super(name, port.toString());
+		// instanciamos el logger
+		this.log = new Logger(this.getName(), null);
 	}
 
 	@Override
@@ -155,6 +165,20 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 	 * @return Conexion para el traslado de datos
 	 */
 	protected abstract Socket getConnection();
+
+	/**
+	 * Retorna el logger
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 2, 2012 10:00:54 AM
+	 * @return Logger
+	 */
+	protected final Logger getLogger() {
+		// retornamos el logger
+		return this.log;
+	}
 
 	/**
 	 * Retorna el socket principal
