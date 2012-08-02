@@ -18,6 +18,7 @@
  */
 package org.schimpf.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -359,8 +360,16 @@ public final class Logger {
 		// verificamos si mostramos en el fichero
 		if (this.fileLevel.isEnabled(level) && this.logToFile)
 			try {
-				// almacenamos el log en el fichero
-				new FileWriter(this.logFile).write(message);
+				// abrimos el fichero log
+				BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
+				// agregamos el log
+				output.write(log);
+				// agregamos una linea
+				output.newLine();
+				// finalizamos el output
+				output.flush();
+				// cerramos el fichero
+				output.close();
 			} catch (IOException e) {
 				// mostramos un log en consola
 				this.debug("Log can't be save on file. Reason: " + e.getMessage());
