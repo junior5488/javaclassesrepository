@@ -5,8 +5,6 @@
  */
 package org.schimpf.java.threads;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Thread para procesos
@@ -134,19 +132,5 @@ public abstract class Thread extends java.lang.Thread {
 	protected final boolean isRunning() {
 		// retornamos la bandera
 		return this.running;
-	}
-
-	/**
-	 * Muestra un mensaje en consola
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Información y Gestión
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 3:08:41 PM
-	 * @param message Mensaje a mostrar
-	 */
-	protected final void log(final String message) {
-		// mostramos el mensaje en consola
-		System.out.println(new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.getName().substring(this.getName().lastIndexOf(".") + 1) + " " + message);
 	}
 }
