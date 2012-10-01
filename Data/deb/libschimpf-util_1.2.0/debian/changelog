@@ -1,3 +1,11 @@
+libschimpf-util (1.2.0) stable; urgency=low
+
+  * Agregamos la clase Logger
+  * SortableList: Utilizamos la clase Collections para ordenar
+  * Eliminamos la clase SortableListMultiThreaded
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Mon, 01 Oct 2012 17:09:46 -0300
+
 libschimpf-util (1.1.0) stable; urgency=low
 
   * Agregamos la clase org.schimpf.util.arrays.MultiKeyMap
