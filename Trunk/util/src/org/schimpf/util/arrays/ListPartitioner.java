@@ -161,7 +161,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 		// diferencia entre elementos
 		Integer diff = 0;
 		// promedio para obtener el pivot
-		Integer prom = 0;
+		Double prom = 0.0;
 		// posicion actual
 		Integer pos = 0;
 		// recorremos la lista original
@@ -190,7 +190,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 		// recorremos las prioridades
 		for (final Entry<Integer, Integer> prioridad: prioridades.entrySet()) {
 			// obtenemos la diferencia entre la prioridad y el promedio
-			diff = prioridad.getKey().compareTo(prom);
+			diff = prioridad.getKey().compareTo(prom.intValue());
 			// verificamos si es mas cercano que el anterior
 			if (diff.compareTo(near) <= 0) {
 				// almacenamos el elemento de la posicion actual como pivot
@@ -254,7 +254,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 		// verificamos si tenemos el pivot
 		if (this.pivot == null)
 			// obtenemos el pivot
-			this.setPivot(this.findPivot());
+			this.pivot = this.findPivot();
 		// retornamos el elemento pivot
 		return this.pivot;
 	}
@@ -270,18 +270,5 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	private void setList(final SortableList<Type> list) {
 		// almacenamos la lista de valores
 		this.list = list;
-	}
-
-	/**
-	 * Almacena el elemento pivot
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Feb 10, 2011 10:40:59 AM
-	 * @param pivot the pivot to set
-	 */
-	private void setPivot(final Type pivot) {
-		// set the value of this.pivot
-		this.pivot = pivot;
 	}
 }
