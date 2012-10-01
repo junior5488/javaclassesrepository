@@ -262,6 +262,20 @@ public final class Logger {
 	}
 
 	/**
+	 * Almacena una excepcion de depuracion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void debug(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.DEBUG, exception);
+	}
+
+	/**
 	 * Almacena un mensaje de depuracion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -290,6 +304,20 @@ public final class Logger {
 	}
 
 	/**
+	 * Almacena una excepcion de error
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 1, 2012 1:06:45 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void error(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.ERROR, exception);
+	}
+
+	/**
 	 * Almacena un mensaje de error
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -301,6 +329,20 @@ public final class Logger {
 	public void error(final String message) {
 		// ejecutamos el mensaje
 		this.log(Level.ERROR, message);
+	}
+
+	/**
+	 * Almacena una excepcion fatal
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 1, 2012 1:06:20 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void fatal(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.FATAL, exception);
 	}
 
 	/**
@@ -318,6 +360,20 @@ public final class Logger {
 	}
 
 	/**
+	 * Almacena una excepcion de informacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 1, 2012 1:05:54 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void info(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.INFO, exception);
+	}
+
+	/**
 	 * Almacena un mensaje de informacion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -332,6 +388,58 @@ public final class Logger {
 	}
 
 	/**
+	 * Almacena el mensaje de una excepcion en el log
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 1, 2012 12:55:33 PM
+	 * @param level Nivel del mensaje
+	 * @param exception Excepcion a mostrar
+	 */
+	public synchronized void log(final Level level, final Exception exception) {
+		// verificamos si alguno esta habilitado
+		if (!level.isEnabled(this.consoleLevel) && !level.isEnabled(this.fileLevel))
+			// salimos
+			return;
+		// generamos el inicio del mensaje
+		String logStart = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + " [" + level.name() + "] ";
+		// iniciamos el mensaje
+		final StringBuffer log = new StringBuffer(logStart);
+		// agregamos el mensaje de la excepcion
+		log.append(exception.getMessage() != null ? exception.getMessage() : exception.getClass().getName() + ":");
+		// recorremos los pasos
+		for (StackTraceElement stackTrace: exception.getStackTrace())
+			// agregamos el elemento
+			log.append("\n" + logStart + "\t" + stackTrace.getClassName() + "." + stackTrace.getMethodName() + "(" + stackTrace.getFileName() + ":" + stackTrace.getLineNumber() + ")");
+		// verificamos si mostramos en consola
+		if (level.isEnabled(this.consoleLevel))
+			// verificamos si es >= ERROR
+			if (level.isEnabled(Level.ERROR))
+				// mostrar el mensaje en consola de error
+				System.err.println(log);
+			else
+				// mostrar el mensaje en consola de error
+				System.out.println(log);
+		// verificamos si mostramos en el fichero
+		if (level.isEnabled(this.fileLevel) && this.logToFile)
+			try {
+				// abrimos el fichero log
+				final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
+				// agregamos el log
+				output.write(log.toString());
+				// agregamos una linea
+				output.newLine();
+				// finalizamos el output
+				output.flush();
+				// cerramos el fichero
+				output.close();
+			} catch (final IOException e) {
+				// mostramos un log en consola
+				this.debug("Log can't be save on file. Reason: " + e.getMessage());
+			}
+	}
+
+	/**
 	 * Almacena un mensaje de log
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -341,7 +449,7 @@ public final class Logger {
 	 * @param level Nivel del mensaje
 	 * @param message Mensaje a mostrar
 	 */
-	public void log(final Level level, final String message) {
+	public synchronized void log(final Level level, final String message) {
 		// verificamos si alguno esta habilitado
 		if (!level.isEnabled(this.consoleLevel) && !level.isEnabled(this.fileLevel))
 			// salimos
@@ -405,6 +513,20 @@ public final class Logger {
 	}
 
 	/**
+	 * Almacena una excepcion severo
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 1, 2012 1:05:27 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void severe(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.SEVERE, exception);
+	}
+
+	/**
 	 * Almacena un mensaje severo
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -416,6 +538,20 @@ public final class Logger {
 	public void severe(final String message) {
 		// ejecutamos el mensaje
 		this.log(Level.SEVERE, message);
+	}
+
+	/**
+	 * Almacena una excepcion de alerta
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 1, 2012 1:04:53 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void warning(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.WARN, exception);
 	}
 
 	/**
