@@ -1,3 +1,11 @@
+libschimpf-sql (1.3.0) stable; urgency=low
+
+  * Agregamos la clase abstracta para objetos persistentes (AbstractPersistentObject)
+  * SQLProcess: Agregamos la posibilidad de obtener los IDs del registro insertado
+  * SQLProcess: Agregamos la posibilidad de transacciones
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Mon, 01 Oct 2012 17:24:23 -0300
+
 libschimpf-sql (1.2.0) stable; urgency=low
 
   * Agregamos la interfaz comparable a las clases
