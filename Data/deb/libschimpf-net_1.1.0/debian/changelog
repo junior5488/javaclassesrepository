@@ -1,3 +1,10 @@
+libschimpf-net (1.1.0) stable; urgency=low
+
+  * Agregamos la clase para socket servidor con capacidad de multiples clientes a la vez
+  * SSH: Input/Output Streams publicos
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Mon, 01 Oct 2012 17:20:44 -0300
+
 libschimpf-net (1.0.2) stable; urgency=low
 
   * Generamos el enlace org.schimpf.net

@@ -1,14 +1,14 @@
 Source: libschimpf-net
 Section: libs
 Priority: extra
-Maintainer: Hermann D. Schimpf <hschimpf@gschimpf.com>
+Maintainer: Hermann D. Schimpf <hschimpf@hds-solutions.net>
 Standards-Version: 3.8.0
 Build-Depends: debhelper (>= 5), oracle-java7-installer
-Homepage: http://lanparty.sytes.net/
+Homepage: http://hds-solutions.net/
 
 Package: libschimpf-net
 Architecture: all
-Depends: java7-runtime, libtrilead-ssh2-java, libgeronimo-javamail-1.4-spec-java, libschimpf-thread-java, libschimpf-exceptions-java
+Depends: java7-runtime, libtrilead-ssh2-java, libgeronimo-javamail-1.4-spec-java, libschimpf-thread-java, libschimpf-exceptions-java, libschimpf-logger-java
 Provides: libschimpf-ssh-java, libschimpf-email-java, libschimpf-sockets-java, libschimpf-connection-data-java, libschimpf-commands-java
 Description: Schimpf Net Library
  Paquete Java de librerias Net
