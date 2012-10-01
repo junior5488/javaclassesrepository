@@ -44,8 +44,9 @@ import java.net.UnknownHostException;
  * @version Jul 19, 2012 1:19:11 PM
  * @param <SType> Clase del socket servidor
  * @param <CType> Clase de la conexion del socket
+ * @param <StageType> Enum para las etapas POST
  */
-public abstract class AbstractServerMultiSocketConnection<SType extends AbstractServerMultiSocket<SType, CType>, CType extends AbstractServerMultiSocketConnection<SType, CType>> extends Thread implements SignalHandler {
+public abstract class AbstractServerMultiSocketConnection<SType extends AbstractServerMultiSocket<SType, CType, StageType>, CType extends AbstractServerMultiSocketConnection<SType, CType, StageType>, StageType extends Enum<StageType>> extends Thread implements SignalHandler {
 	/**
 	 * Host por defecto
 	 * 
@@ -109,6 +110,13 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	private Commands				lastCommand;
 
 	/**
+	 * Etapa actual de datos
+	 * 
+	 * @version Oct 21, 2011 10:38:02 AM
+	 */
+	private Stage					localStage		= Stage.INIT;
+
+	/**
 	 * Instancia de log
 	 * 
 	 * @version Aug 2, 2012 10:05:25 AM
@@ -137,11 +145,11 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	private final ServerSocket	serverSocket;
 
 	/**
-	 * Etapa actual de datos
+	 * Etapa POST actual
 	 * 
-	 * @version Oct 21, 2011 10:38:02 AM
+	 * @version Oct 1, 2012 11:55:41 AM
 	 */
-	private Stage					stage				= Stage.INIT;
+	private StageType				stage;
 
 	/**
 	 * Etapas de transmision de datos
@@ -251,16 +259,16 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// verificamos si hay datos
 			if (data != null)
 				// verificamos si no es la etapa final
-				if (!this.getStage().equals(Stage.POST)) {
+				if (!this.getLocalStage().equals(Stage.POST)) {
 					// mostramos un log
-					this.getLogger().debug("=>> " + (this.getStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
+					this.getLogger().debug("=>> " + (this.getLocalStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
 					// verificamos si estamos en la etapa de transferencia de un fichero
-					if (this.getStage().equals(Stage.FILE))
+					if (this.getLocalStage().equals(Stage.FILE))
 						// procesamos el paso del fichero
 						continuar = this.processFileStage(data);
 					else
 						// procesamos la etapa
-						continuar = this.processStage(this.getStage(), data);
+						continuar = this.processStage(this.getLocalStage(), data);
 					// verificamos si directamente pasamos al proceso externo
 				} else {
 					// mostramos un log
@@ -272,7 +280,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 							// respondemos OK
 							this.send(Commands.ACK);
 							// cambiamos al modo transferencia
-							this.setStage(Stage.FILE);
+							this.setLocalStage(Stage.FILE);
 							// verificamos si el comando es transferencia de archivo
 						} else if (Commands.get(data.toString()).equals(Commands.BYE))
 							// modificamos la bandera
@@ -352,16 +360,15 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	}
 
 	/**
-	 * Retorna la etapa actual
+	 * Retorna la etapa POST actual
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 10:43:19 AM
-	 * @return Etapa actual
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 1, 2012 11:55:44 AM
+	 * @return Etapa POST actual
 	 */
-	protected final Stage getStage() {
-		// retrnamos la etapa actual
+	protected final StageType getStage() {
+		// reornamos la etapa actual
 		return this.stage;
 	}
 
@@ -377,7 +384,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// vaciamos la bandera de autenticacion
 		this.autenticated = !this.needsAuthentication();
 		// cambiamos a la etapa inicial
-		this.setStage(Stage.INIT);
+		this.setLocalStage(Stage.INIT);
 	}
 
 	/**
@@ -432,14 +439,14 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 					// verificamos si no estamos autenticados
 					if (!this.isAutenticated() && this.needsAuthentication()) {
 						// modificamos la etapa al proceso de autenticacion
-						this.setStage(Stage.AUTH);
+						this.setLocalStage(Stage.AUTH);
 						// solicitamos autenticacion
 						this.send(Commands.AUTH);
 					} else {
 						// enviamos ok para aceptar datos
 						this.send(Commands.ACK);
 						// modificamos la etapa al proceso externo
-						this.setStage(Stage.POST);
+						this.setLocalStage(Stage.POST);
 					}
 				// finalizamos la etapa
 				break;
@@ -473,7 +480,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 						// retornamos ok
 						this.send(Commands.ACK);
 						// cambiamos a la etapa externa
-						this.setStage(Stage.POST);
+						this.setLocalStage(Stage.POST);
 					} else
 						// retonamos false
 						this.send(Commands.NAK);
@@ -534,7 +541,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// mostramos un mensaje
 			this.getLogger().debug((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
 			// verificamos si es un comando
-			if (!this.getStage().equals(Stage.POST) && Commands.get(data.toString()) != null || overWrite != null)
+			if (!this.getLocalStage().equals(Stage.POST) && Commands.get(data.toString()) != null || overWrite != null)
 				// almacenamos el ultimo comando enviado
 				this.lastCommand = overWrite != null ? overWrite : Commands.get(data.toString());
 			// enviamos el dato
@@ -564,25 +571,22 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// almacenamos el fichero a enviar
 		this.file = file;
 		// cambiamos al modo transferencia
-		this.setStage(Stage.FILE);
+		this.setLocalStage(Stage.FILE);
 		// soliticamos el envio del fichero
 		this.send(Commands.FILE);
 	}
 
 	/**
-	 * Almacena la nueva etapa
+	 * Almacena la nueva etapa POST
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 10:44:25 AM
-	 * @param newStage Nueva etapa
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 1, 2012 11:56:52 AM
+	 * @param stage Etapa POST
 	 */
-	protected final void setStage(final Stage newStage) {
-		// almacenamos la nueva etapa
-		this.stage = newStage;
-		// mostramos un mensaje
-		this.getLogger().debug("Changing Stage to: " + this.getStage());
+	protected final void setStage(final StageType stage) {
+		// almcenamos la etapa actual
+		this.stage = stage;
 	}
 
 	/**
@@ -769,7 +773,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// retornamos ok
 			this.send(Commands.ACK);
 			// modficamos la etapa
-			this.setStage(Stage.POST);
+			this.setLocalStage(Stage.POST);
 			// recibimos el fichero y lo procesamos
 			this.fileReceived(receivedFile);
 			// verificamos si es solicitud de datos del fichero
@@ -792,7 +796,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// verificamos si se pidio el tamano del fichero
 		else if (Commands.get(data.toString()).equals(Commands.ACK))
 			// cambiamos al modo normal
-			this.setStage(Stage.POST);
+			this.setLocalStage(Stage.POST);
 		// retornamos true para continuar
 		return true;
 	}
@@ -980,6 +984,20 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	}
 
 	/**
+	 * Retorna la etapa actual
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 10:43:19 AM
+	 * @return Etapa actual
+	 */
+	final Stage getLocalStage() {
+		// retrnamos la etapa actual
+		return this.localStage;
+	}
+
+	/**
 	 * Retorna el logger
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -991,5 +1009,21 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	final Logger getLogger() {
 		// retornamos el logger
 		return this.log;
+	}
+
+	/**
+	 * Almacena la nueva etapa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 10:44:25 AM
+	 * @param newStage Nueva etapa
+	 */
+	final void setLocalStage(final Stage newStage) {
+		// almacenamos la nueva etapa
+		this.localStage = newStage;
+		// mostramos un mensaje
+		this.getLogger().debug("Changing Stage to: " + this.getLocalStage());
 	}
 }

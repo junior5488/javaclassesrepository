@@ -32,8 +32,9 @@ import java.util.ArrayList;
  * @version Jul 19, 2012 1:57:31 PM
  * @param <SType> Clase para el socket servidor
  * @param <CType> Clase para las conexiones a generar
+ * @param <StageType> Enum para las etapas POST
  */
-public abstract class AbstractServerMultiSocket<SType extends AbstractServerMultiSocket<SType, CType>, CType extends AbstractServerMultiSocketConnection<SType, CType>> extends AbstractSocket {
+public abstract class AbstractServerMultiSocket<SType extends AbstractServerMultiSocket<SType, CType, StageType>, CType extends AbstractServerMultiSocketConnection<SType, CType, StageType>, StageType extends Enum<StageType>> extends AbstractSocket {
 	/**
 	 * Socket de conexion abierto en el puerto
 	 * 
@@ -64,7 +65,7 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	 * @param port Puerto de conexion
 	 * @throws IOException Si no se pudo crear el socket
 	 */
-	public AbstractServerMultiSocket(final Class<? extends AbstractServerMultiSocket<SType, CType>> name, final Integer port) throws IOException {
+	public AbstractServerMultiSocket(final Class<? extends AbstractServerMultiSocket<SType, CType, StageType>> name, final Integer port) throws IOException {
 		// enviamos el constructor
 		super(name, port);
 		try {
