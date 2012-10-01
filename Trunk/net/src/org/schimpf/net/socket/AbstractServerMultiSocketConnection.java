@@ -550,7 +550,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			this.getOutputStream().flush();
 		} catch (final IOException e) {
 			// mostramos el trace
-			e.printStackTrace();
+			this.getLogger().severe(e);
 			// retornamos false
 			return false;
 		}
@@ -818,10 +818,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				return this.getInputStream().readObject();
 		} catch (final IOException e) {
 			// print the StackTrace
-			e.printStackTrace();
+			this.getLogger().error(e);
 		} catch (final ClassNotFoundException e) {
 			// print the StackTrace
-			e.printStackTrace();
+			this.getLogger().severe(e);
 		}
 		// retornamos null
 		return null;
@@ -869,10 +869,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			this.getLogger().info("File received");
 		} catch (final SocketException e) {
 			// mostramos el trace de la excepcion
-			e.printStackTrace();
+			this.getLogger().severe(e);
 		} catch (final IOException e) {
 			// mostramos el trace de la excepcion
-			e.printStackTrace();
+			this.getLogger().severe(e);
 		}
 		// retornamos el fichero
 		return result;
@@ -912,7 +912,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			this.getLogger().info("File sent");
 		} catch (final SocketException e) {
 			// mostramos el trace de la excepcion
-			e.printStackTrace();
+			this.getLogger().severe(e);
 		} catch (final FileNotFoundException e) {
 			try {
 				// enviamos -1 para finalizar
@@ -920,7 +920,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			} catch (final IOException ignored) {}
 		} catch (final IOException e) {
 			// mostramos el trace de la excepcion
-			e.printStackTrace();
+			this.getLogger().severe(e);
 		}
 	}
 
