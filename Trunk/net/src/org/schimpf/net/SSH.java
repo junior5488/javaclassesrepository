@@ -249,6 +249,45 @@ public final class SSH {
 	}
 
 	/**
+	 * Retorna el stream de entrada de errores
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:11:35 AM
+	 * @return Stream de entrada de errores
+	 */
+	public InputStream getErrStream() {
+		// retornamos el stream de entrada de errores
+		return this.errStream;
+	}
+
+	/**
+	 * Retorna el stream de entrada
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:11:35 AM
+	 * @return Stream de entrada
+	 */
+	public InputStream getInputStream() {
+		// retornamos el stream de entrada
+		return this.inputStream;
+	}
+
+	/**
+	 * Retorna el stream de salida
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Jun 8, 2011 6:18:08 AM
+	 * @return Stream de salida
+	 */
+	public OutputStream getOutputStream() {
+		// retornamos el stream de salida
+		return this.outputStream;
+	}
+
+	/**
 	 * Retorna la respuesta recibida del servidor
 	 * 
 	 * @author Hermann D. Schimpf
@@ -486,19 +525,6 @@ public final class SSH {
 	}
 
 	/**
-	 * Retorna el stream de entrada de errores
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 6:11:35 AM
-	 * @return Stream de entrada de errores
-	 */
-	private InputStream getErrStream() {
-		// retornamos el stream de entrada de errores
-		return this.errStream;
-	}
-
-	/**
 	 * Retorna el host para la conexion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -509,32 +535,6 @@ public final class SSH {
 	private InetAddress getHost() {
 		// retornamos el host
 		return this.getConnectionData().getHostname();
-	}
-
-	/**
-	 * Retorna el stream de entrada
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 6:11:35 AM
-	 * @return Stream de entrada
-	 */
-	private InputStream getInputStream() {
-		// retornamos el stream de entrada
-		return this.inputStream;
-	}
-
-	/**
-	 * Retorna el stream de salida
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Jun 8, 2011 6:18:08 AM
-	 * @return Stream de salida
-	 */
-	private OutputStream getOutputStream() {
-		// retornamos el stream de salida
-		return this.outputStream;
 	}
 
 	/**
