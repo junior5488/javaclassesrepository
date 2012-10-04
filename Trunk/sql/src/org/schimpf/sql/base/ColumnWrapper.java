@@ -18,6 +18,7 @@
  */
 package org.schimpf.sql.base;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -62,6 +63,13 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @version May 1, 2012 11:01:58 PM
 	 */
 	private String				defaultValue;
+
+	/**
+	 * Bandera de columna con incremento automatico
+	 * 
+	 * @version Oct 4, 2012 11:20:50 AM
+	 */
+	private Boolean			isAutoIncrement;
 
 	/**
 	 * Bandera de columna nuleable
@@ -198,6 +206,24 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	}
 
 	/**
+	 * Retorna si la columna es auto incrementable
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 11:21:14 AM
+	 * @return True si es autoincrementable
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 */
+	public final Boolean isAutoIncrement() throws SQLException {
+		// verificamos si no tenemos valor
+		if (this.isAutoIncrement == null)
+			// cargamos los datos
+			this.loadMetaData();
+		// retornamos si es nulo
+		return this.isAutoIncrement;
+	}
+
+	/**
 	 * Retorna si el campo permite valores nulos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -278,10 +304,21 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			this.isPrimaryKey = this.getTable().getPrimaryKeys().contains(this);
 			// almacenamos si es unique
 			this.isUnique = this.getTable().getUniqueColumns().contains(this);
-			// almacenamos si es nullable
-			this.isNullable = null; // FIXME
-			// almacenamos el valor por defecto
-			this.defaultValue = null; // FIXME
+			// obtenemos mas datos
+			ResultSet moreData = this.getMetadata().getColumns(this.getTable().getSchema().getDataBase().getDataBaseName(), null, this.getTable().getTableName(), this.getColumnName());
+			// verificamos si tenemos datos
+			if (moreData.next()) {
+				// almacenamos si es nullable
+				this.isNullable = moreData.getInt(11) == java.sql.DatabaseMetaData.columnNullable;
+				// almacenamos el valor por defecto
+				this.defaultValue = moreData.getString(13);
+				// almacenamos el valor de auto increment
+				this.isAutoIncrement = moreData.getString(23).equals("YES");
+				// verificamos si la posicion es correcta
+				if (this.getColumnPosition() != moreData.getInt(17))
+					// salimos con una excepcion
+					throw new SQLException("Column ordinal position error! Loaded: " + this.getColumnPosition() + ", Found on: " + moreData.getInt(17));
+			}
 		}
 	}
 }
