@@ -18,7 +18,7 @@
  */
 package org.schimpf.sql.pgsql.wrapper;
 
-import org.schimpf.sql.base.wrappers.DBMSWrapper;
+import org.schimpf.sql.base.DBMSWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDBMS, PGDataB
 	protected ArrayList<PGDataBase> retrieveDataBases(final String dbmsName) throws SQLException {
 		// armamos una lista para las bases de datos
 		final ArrayList<PGDataBase> dbs = new ArrayList<PGDataBase>();
-		// ejecutamos el SQL para obtener las bases de datos
+		// obtenemos las bases de datos
 		this.getSQLConnector().executeSQL("SELECT datname AS database_name FROM pg_database WHERE datname NOT ILIKE 'template%' ORDER BY datname");
 		// recorremos las bases de datos
 		while (this.getSQLConnector().getResultSet().next())

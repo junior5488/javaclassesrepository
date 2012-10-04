@@ -18,7 +18,7 @@
  */
 package org.schimpf.sql.pgsql.wrapper;
 
-import org.schimpf.sql.base.wrappers.ColumnWrapper;
+import org.schimpf.sql.base.ColumnWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
 import java.sql.ResultSet;
 import java.sql.SQLException;
