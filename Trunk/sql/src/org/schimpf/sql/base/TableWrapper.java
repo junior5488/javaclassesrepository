@@ -18,9 +18,12 @@
  */
 package org.schimpf.sql.base;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * Metodos para obtencion de datos de las tablas
@@ -42,28 +45,130 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * 
 	 * @version Apr 26, 2012 7:20:49 PM
 	 */
-	private final TreeMap<String, CType>	columns		= new TreeMap<String, CType>();
+	private final HashMap<String, CType>			columns		= new HashMap<String, CType>();
+
+	/**
+	 * Columnas Foraneas de la tabla
+	 * 
+	 * @version Oct 4, 2012 9:45:43 AM
+	 */
+	private final ArrayList<ForeignKey<CType>>	fkColumns	= new ArrayList<ForeignKey<CType>>();
 
 	/**
 	 * Columnas Clave Primaria de la tabla
 	 * 
 	 * @version May 2, 2012 11:09:49 AM
 	 */
-	private final ArrayList<CType>			keyColumns	= new ArrayList<CType>();
+	private final ArrayList<CType>					pkColumns	= new ArrayList<CType>();
 
 	/**
 	 * Esquema al que pertenece la tabla
 	 * 
 	 * @version May 2, 2012 2:02:12 AM
 	 */
-	private final SType							schema;
+	private final SType									schema;
 
 	/**
 	 * Nombre fisico de la tabla
 	 * 
 	 * @version Apr 26, 2012 7:32:31 PM
 	 */
-	private final String							tableName;
+	private final String									tableName;
+
+	/**
+	 * Columnas con indice UNIQUE
+	 * 
+	 * @version Oct 4, 2012 10:21:06 AM
+	 */
+	private final ArrayList<CType>					uqColumns	= new ArrayList<CType>();
+
+	/**
+	 * Clase para obtener los datos de claves foraneas de tablas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 9:48:26 AM
+	 * @param <FKCType> Tipo de columnas
+	 */
+	@SuppressWarnings("unchecked")
+	public static final class ForeignKey<FKCType extends ColumnWrapper> {
+		/**
+		 * Columnas relacionadas de la clave foranea
+		 * 
+		 * @version Oct 4, 2012 9:51:49 AM
+		 */
+		private final HashMap<FKCType, FKCType>	foreignKeyColumns;
+
+		/**
+		 * Nombre de la clave foranea
+		 * 
+		 * @version Oct 4, 2012 9:51:37 AM
+		 */
+		private final String								foreignKeyName;
+
+		/**
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Oct 4, 2012 9:48:40 AM
+		 * @param fkName Nombre de la FK
+		 * @param columns Columnas relacionadas de la FK
+		 */
+		protected ForeignKey(final String fkName, final HashMap<FKCType, FKCType> columns) {
+			// almacenamos el nombre de la FK
+			this.foreignKeyName = fkName;
+			// almacenamos las columnas
+			this.foreignKeyColumns = columns;
+		}
+
+		/**
+		 * Retorna las columnas de la clave foranea
+		 * 
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Oct 4, 2012 9:52:14 AM
+		 * @return Columnas de la clave
+		 */
+		public HashMap<FKCType, FKCType> getColumns() {
+			// retornamos las columnas
+			return this.foreignKeyColumns;
+		}
+
+		/**
+		 * Retorna el nombre de la clave foranea
+		 * 
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Oct 4, 2012 9:53:16 AM
+		 * @return Nombre de la clave foranea
+		 */
+		public String getForeignKeyName() {
+			// retornamos el nombre
+			return this.foreignKeyName;
+		}
+
+		@Override
+		public String toString() {
+			// armamos la definicion de la FK
+			StringBuffer fk = new StringBuffer("FOREIGN KEY " + this.getForeignKeyName());
+			StringBuffer localColumns = new StringBuffer();
+			StringBuffer foreignColumns = new StringBuffer();
+			// obtenemos las columnas
+			Iterator<Entry<FKCType, FKCType>> couples = this.getColumns().entrySet().iterator();
+			// recorremos las columnas
+			while (couples.hasNext()) {
+				// obtenemos la relacion
+				Entry<FKCType, FKCType> couple = couples.next();
+				// agregamos la columna origen
+				localColumns.append((localColumns.toString().length() == 0 ? "" : ", ") + couple.getKey().getColumnName());
+				// agregamos la columna destino
+				foreignColumns.append((foreignColumns.toString().length() == 0 ? "" : ", ") + couple.getValue().getColumnName());
+			}
+			// agregamos las columnas origen
+			fk.append(" (" + localColumns.toString() + ") REFERENCES " + this.getColumns().entrySet().iterator().next().getValue().getTable().getTableName() + " (" + foreignColumns.toString() + ")");
+			// retornamos la definicion de la FK
+			return fk.toString();
+		}
+	}
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -148,6 +253,46 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	}
 
 	/**
+	 * Retorna las claves foraneas de la tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 9:46:55 AM
+	 * @return Lista de claves foraneas de la tabla
+	 * @throws SQLException Si se produce un error al obtener las claves foraneas
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized final ArrayList<ForeignKey<CType>> getForeignKeys() throws SQLException {
+		// verificamos si tenemos la lista
+		if (this.fkColumns.size() == 0) {
+			// obtenemos las columnas PKs
+			ResultSet foreignKeys = this.getSQLConnector().getMetadata().getImportedKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
+			// armamos una lista
+			HashMap<String, HashMap<CType, CType>> fks = new HashMap<String, HashMap<CType, CType>>();
+			// recorremos las columnas
+			while (foreignKeys.next()) {
+				// verificamos si la FK ya existe
+				if (!fks.containsKey(foreignKeys.getString(12)))
+					// agregamos la FK
+					fks.put(foreignKeys.getString(12), new HashMap<CType, CType>());
+				// agregamos la colunma a la FK
+				fks.get(foreignKeys.getString(12)).put(this.getColumn(foreignKeys.getString(8)), this.getSchema().getTable(foreignKeys.getString(3)).getColumn(foreignKeys.getString(4)));
+			}
+			// obtenemos las FKs armadas
+			Iterator<Entry<String, HashMap<CType, CType>>> armedFKs = fks.entrySet().iterator();
+			// recorremos las FKs armadas
+			while (armedFKs.hasNext()) {
+				// obtenemos la FK
+				Entry<String, HashMap<CType, CType>> fk = armedFKs.next();
+				// agregamos la clave foranea
+				this.fkColumns.add(new ForeignKey(fk.getKey(), fk.getValue()));
+			}
+		}
+		// retornamos las columnas FK
+		return this.fkColumns;
+	}
+
+	/**
 	 * Retorna las columnas clave primarias de la tabla
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -159,15 +304,16 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 */
 	public synchronized final ArrayList<CType> getPrimaryKeys() throws SQLException {
 		// verificamos si tenemos la lista
-		if (this.keyColumns.size() == 0)
+		if (this.pkColumns.size() == 0) {
+			// obtenemos las columnas PKs
+			ResultSet primaryKeys = this.getSQLConnector().getMetadata().getPrimaryKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
 			// recorremos las columnas
-			for (final CType column: this.getColumns())
-				// verificamos si es PK
-				if (column.isPrimaryKey())
-					// agregamos la columna a la lista
-					this.keyColumns.add(column);
+			while (primaryKeys.next())
+				// agregamos la columna PK
+				this.pkColumns.add(this.getColumn(primaryKeys.getString(4)));
+		}
 		// retornamos las columnas PK
-		return this.keyColumns;
+		return this.pkColumns;
 	}
 
 	/**
@@ -216,4 +362,29 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * @throws SQLException Si se produce un error al obtener la lista de las columnas
 	 */
 	protected abstract ArrayList<CType> retrieveColumns(String tableName) throws SQLException;
+
+	/**
+	 * Retorna las columnas con Indice UNIQUE
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 10:22:33 AM
+	 * @return Columnas con indice UQ
+	 * @throws SQLException Si se produce un error al obtener las columnas
+	 */
+	synchronized final ArrayList<CType> getUniqueColumns() throws SQLException {
+		// verificamos si tenemos la lista
+		if (this.uqColumns.size() == 0) {
+			// obtenemos las claves
+			ResultSet uqs = this.getSQLConnector().getMetadata().getIndexInfo(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), true, false);
+			// recorremos las columnas
+			while (uqs.next())
+				// verificamos si es una PK
+				if (this.getPrimaryKeys().contains(this.getColumn(uqs.getString(9))))
+					// agregamos la columna UQ
+					this.uqColumns.add(this.getColumn(uqs.getString(9)));
+		}
+		// retornamos las columnas UQ
+		return this.uqColumns;
+	}
 }
