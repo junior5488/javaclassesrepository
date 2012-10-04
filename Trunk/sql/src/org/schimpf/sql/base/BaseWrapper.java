@@ -21,7 +21,7 @@ package org.schimpf.sql.base;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.Map;
 
 /**
  * Metodos comunes entre los wrappers
@@ -91,7 +91,7 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 	 * @param hashMap HashMap a convertir
 	 * @return ArrayList
 	 */
-	protected final <AType> ArrayList<AType> toArrayList(final TreeMap<String, AType> hashMap) {
+	protected final <AType> ArrayList<AType> toArrayList(final Map<String, AType> hashMap) {
 		// creamos un arrayList
 		final ArrayList<AType> arrayList = new ArrayList<AType>();
 		// recorremos los valores
