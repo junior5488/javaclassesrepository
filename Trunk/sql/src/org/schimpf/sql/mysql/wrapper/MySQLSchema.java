@@ -57,7 +57,7 @@ public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, My
 		while (tbls.next())
 			// agregamos la tabla a la lista
 			tables.add(new MySQLTable(this.getSQLConnector(), this, tbls.getString(3)));
-		// retornamos las bases de datos
+		// retornamos las tablas
 		return tables;
 	}
 }
