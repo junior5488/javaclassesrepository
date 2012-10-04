@@ -107,17 +107,36 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		private final String								foreignKeyName;
 
 		/**
+		 * Politica al eliminar
+		 * 
+		 * @version Oct 4, 2012 11:47:22 AM
+		 */
+		private final Short								onDelete;
+
+		/**
+		 * Politica al actualizar
+		 * 
+		 * @version Oct 4, 2012 11:47:15 AM
+		 */
+		private final Short								onUpdate;
+
+		/**
 		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
 		 * @version Oct 4, 2012 9:48:40 AM
 		 * @param fkName Nombre de la FK
 		 * @param columns Columnas relacionadas de la FK
+		 * @param onUpdate Politica al actualizar
+		 * @param onDelete Politica al eliminar
 		 */
-		protected ForeignKey(final String fkName, final HashMap<FKCType, FKCType> columns) {
+		protected ForeignKey(final String fkName, final HashMap<FKCType, FKCType> columns, final Short onUpdate, final Short onDelete) {
 			// almacenamos el nombre de la FK
 			this.foreignKeyName = fkName;
 			// almacenamos las columnas
 			this.foreignKeyColumns = columns;
+			// almacenamos las logicas
+			this.onUpdate = onUpdate;
+			this.onDelete = onDelete;
 		}
 
 		/**
@@ -146,6 +165,42 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 			return this.foreignKeyName;
 		}
 
+		/**
+		 * Retorna la accion a tomar cuando la clave relacionada es eliminada
+		 * 
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Oct 4, 2012 11:49:27 AM
+		 * @return Accion a tomar cuando la clave es eliminada
+		 * @see java.sql.DatabaseMetaData#importedKeyCascade
+		 * @see java.sql.DatabaseMetaData#importedKeyNoAction
+		 * @see java.sql.DatabaseMetaData#importedKeySetNull
+		 * @see java.sql.DatabaseMetaData#importedKeyRestrict
+		 * @see java.sql.DatabaseMetaData#importedKeySetDefault
+		 */
+		public Short onDelete() {
+			// retornamos la politica al eliminar
+			return this.onDelete;
+		}
+
+		/**
+		 * Retorna la accion a tomar cuando la clave relacionada es actualizada
+		 * 
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Oct 4, 2012 11:49:48 AM
+		 * @return Accion a tomar cuando la clave es modificada
+		 * @see java.sql.DatabaseMetaData#importedKeyCascade
+		 * @see java.sql.DatabaseMetaData#importedKeyNoAction
+		 * @see java.sql.DatabaseMetaData#importedKeySetNull
+		 * @see java.sql.DatabaseMetaData#importedKeyRestrict
+		 * @see java.sql.DatabaseMetaData#importedKeySetDefault
+		 */
+		public Short onUpdate() {
+			// retornamos la politica al actualizar
+			return this.onUpdate;
+		}
+
 		@Override
 		public String toString() {
 			// armamos la definicion de la FK
@@ -165,6 +220,20 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 			}
 			// agregamos las columnas origen
 			fk.append(" (" + localColumns.toString() + ") REFERENCES " + this.getColumns().entrySet().iterator().next().getValue().getTable().getTableName() + " (" + foreignColumns.toString() + ")");
+			// agregamos la accion al UPDATE
+			fk.append(" ON UPDATE");
+			fk.append(this.onUpdate() == java.sql.DatabaseMetaData.importedKeyCascade ? " CASCADE" : "");
+			fk.append(this.onUpdate() == java.sql.DatabaseMetaData.importedKeyNoAction ? " NO ACTION" : "");
+			fk.append(this.onUpdate() == java.sql.DatabaseMetaData.importedKeyRestrict ? " RESTRICT" : "");
+			fk.append(this.onUpdate() == java.sql.DatabaseMetaData.importedKeySetDefault ? " SET DEFAULT" : "");
+			fk.append(this.onUpdate() == java.sql.DatabaseMetaData.importedKeySetNull ? " SET NULL" : "");
+			// agregamos la accion al DELETE
+			fk.append(" ON DELETE");
+			fk.append(this.onDelete() == java.sql.DatabaseMetaData.importedKeyCascade ? " CASCADE" : "");
+			fk.append(this.onDelete() == java.sql.DatabaseMetaData.importedKeyNoAction ? " NO ACTION" : "");
+			fk.append(this.onDelete() == java.sql.DatabaseMetaData.importedKeyRestrict ? " RESTRICT" : "");
+			fk.append(this.onDelete() == java.sql.DatabaseMetaData.importedKeySetDefault ? " SET DEFAULT" : "");
+			fk.append(this.onDelete() == java.sql.DatabaseMetaData.importedKeySetNull ? " SET NULL" : "");
 			// retornamos la definicion de la FK
 			return fk.toString();
 		}
@@ -268,24 +337,30 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 			// obtenemos las columnas PKs
 			ResultSet foreignKeys = this.getSQLConnector().getMetadata().getImportedKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
 			// armamos una lista
-			HashMap<String, HashMap<CType, CType>> fks = new HashMap<String, HashMap<CType, CType>>();
+			HashMap<String, HashMap<String, Object>> fks = new HashMap<String, HashMap<String, Object>>();
 			// recorremos las columnas
 			while (foreignKeys.next()) {
 				// verificamos si la FK ya existe
-				if (!fks.containsKey(foreignKeys.getString(12)))
-					// agregamos la FK
-					fks.put(foreignKeys.getString(12), new HashMap<CType, CType>());
+				if (!fks.containsKey(foreignKeys.getString(12))) {
+					// creamos la lista para los valores
+					fks.put(foreignKeys.getString(12), new HashMap<String, Object>());
+					// agregamos las validaciones de la FK
+					fks.get(foreignKeys.getString(12)).put("UPDATE", foreignKeys.getShort(10));
+					fks.get(foreignKeys.getString(12)).put("DELETE", foreignKeys.getShort(11));
+					// creamos la lista de columnas
+					fks.get(foreignKeys.getString(12)).put("COLUMNS", new HashMap<CType, CType>());
+				}
 				// agregamos la colunma a la FK
-				fks.get(foreignKeys.getString(12)).put(this.getColumn(foreignKeys.getString(8)), this.getSchema().getTable(foreignKeys.getString(3)).getColumn(foreignKeys.getString(4)));
+				((HashMap<CType, CType>) fks.get(foreignKeys.getString(12)).get("COLUMNS")).put(this.getColumn(foreignKeys.getString(8)), this.getSchema().getTable(foreignKeys.getString(3)).getColumn(foreignKeys.getString(4)));
 			}
 			// obtenemos las FKs armadas
-			Iterator<Entry<String, HashMap<CType, CType>>> armedFKs = fks.entrySet().iterator();
+			Iterator<Entry<String, HashMap<String, Object>>> armedFKs = fks.entrySet().iterator();
 			// recorremos las FKs armadas
 			while (armedFKs.hasNext()) {
 				// obtenemos la FK
-				Entry<String, HashMap<CType, CType>> fk = armedFKs.next();
+				Entry<String, HashMap<String, Object>> fk = armedFKs.next();
 				// agregamos la clave foranea
-				this.fkColumns.add(new ForeignKey(fk.getKey(), fk.getValue()));
+				this.fkColumns.add(new ForeignKey(fk.getKey(), (HashMap<CType, CType>) fk.getValue().get("COLUMNS"), (Short) fk.getValue().get("UPDATE"), (Short) fk.getValue().get("DELETE")));
 			}
 		}
 		// retornamos las columnas FK
