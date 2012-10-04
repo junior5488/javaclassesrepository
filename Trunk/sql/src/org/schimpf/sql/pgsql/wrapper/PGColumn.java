@@ -20,7 +20,6 @@ package org.schimpf.sql.pgsql.wrapper;
 
 import org.schimpf.sql.base.ColumnWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -40,55 +39,20 @@ public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGDBMS, PGD
 	 * @param sqlConnector Conector PostgreSQL a la DB
 	 * @param table Tabla de la columna
 	 * @param columnName Nombre de la Columna
+	 * @param columnPosition Posicion fisica de la columna
 	 */
-	public PGColumn(final PostgreSQLProcess sqlConnector, final PGTable table, final String columnName) {
+	public PGColumn(final PostgreSQLProcess sqlConnector, final PGTable table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
-		super(sqlConnector, table, columnName);
+		super(sqlConnector, table, columnName, columnPosition);
 	}
 
 	@Override
 	public String toString() {
 		try {
 			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " (PK)" : "");
+			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " PRIMARY KEY" : "");
 		} catch (final SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
-	}
-
-	@Override
-	protected String getDataTypeFromMetadata(final ResultSet metadata) throws SQLException {
-		// retonamos el tipo de dato
-		return metadata.getString("data_type");
-	}
-
-	@Override
-	protected String getDefaultValueFromMetadata(final ResultSet metadata) throws SQLException {
-		// retornamos el valor por defecto
-		return metadata.getString("default_value");
-	}
-
-	@Override
-	protected Boolean getIsNullableFromMetadata(final ResultSet metadata) throws SQLException {
-		// retornamos si permite valores nulos
-		return metadata.getString("is_notnull").equals("TRUE") ? false : true;
-	}
-
-	@Override
-	protected Boolean getIsPrimaryKeyFromMetadata(final ResultSet metadata) throws SQLException {
-		// retornamos si es clave primaria
-		return metadata.getString("is_primarykey").equals("TRUE") ? true : false;
-	}
-
-	@Override
-	protected Boolean getIsUniqueFromMetadata(final ResultSet metadata) throws SQLException {
-		// retornamos si es de valores unicos
-		return metadata.getString("is_unique").equals("TRUE") ? true : false;
-	}
-
-	@Override
-	protected boolean retrieveColumnMetadata(final PGSchema schema, final PGTable table, final String columnName) {
-		// retornamos el resultado del SQL
-		return this.getSQLConnector().executeSQL("SELECT f.attname AS column_name, pg_catalog.format_type(f.atttypid,f.atttypmod) AS data_type, CASE WHEN f.attnotnull = 't' THEN 'TRUE' ELSE 'FALSE' END AS is_notnull, CASE WHEN p.contype = 'p' THEN 'TRUE' ELSE 'FALSE' END AS is_primarykey, CASE WHEN p.contype = 'u' THEN 'TRUE' ELSE 'FALSE' END AS is_unique, CASE WHEN f.atthasdef = 't' THEN d.adsrc END AS default_value FROM pg_attribute f JOIN pg_class c ON c.oid = f.attrelid JOIN pg_type t ON t.oid = f.atttypid LEFT JOIN pg_attrdef d ON d.adrelid = c.oid AND d.adnum = f.attnum LEFT JOIN pg_namespace n ON n.oid = c.relnamespace LEFT JOIN pg_constraint p ON p.conrelid = c.oid AND f.attnum = ANY (p.conkey) WHERE c.relkind = 'r'::char AND n.nspname ILIKE '" + schema.getSchemaName() + "' AND c.relname ILIKE '" + table.getTableName() + "' AND f.attname ILIKE '" + columnName + "' AND f.attnum > 0 ORDER BY f.attnum, is_primarykey DESC LIMIT 1");
 	}
 }
