@@ -53,10 +53,12 @@ public final class MySQLTable extends TableWrapper<MySQLProcess, MySQLDBMS, MySQ
 		final ArrayList<MySQLColumn> columns = new ArrayList<MySQLColumn>();
 		// obtenemos las columnas
 		ResultSet cols = this.getMetadata().getColumns(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), null);
+		// posicion de la columna
+		Integer colPos = 1;
 		// recorremos las columnas
 		while (cols.next())
 			// agregamos la columna a la lista
-			columns.add(new MySQLColumn(this.getSQLConnector(), this, cols.getString(4)));
+			columns.add(new MySQLColumn(this.getSQLConnector(), this, cols.getString(4), colPos++));
 		// retornamos las bases de datos
 		return columns;
 	}
