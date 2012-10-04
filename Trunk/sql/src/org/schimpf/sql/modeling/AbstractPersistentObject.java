@@ -18,12 +18,12 @@
  */
 package org.schimpf.sql.modeling;
 
+import org.schimpf.sql.base.ColumnWrapper;
+import org.schimpf.sql.base.DBMSWrapper;
+import org.schimpf.sql.base.DataBaseWrapper;
 import org.schimpf.sql.base.SQLProcess;
-import org.schimpf.sql.base.wrappers.ColumnWrapper;
-import org.schimpf.sql.base.wrappers.DBMSWrapper;
-import org.schimpf.sql.base.wrappers.DataBaseWrapper;
-import org.schimpf.sql.base.wrappers.SchemaWrapper;
-import org.schimpf.sql.base.wrappers.TableWrapper;
+import org.schimpf.sql.base.SchemaWrapper;
+import org.schimpf.sql.base.TableWrapper;
 import org.schimpf.util.Logger;
 import org.schimpf.util.Logger.Level;
 import java.math.BigDecimal;
