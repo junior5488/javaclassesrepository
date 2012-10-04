@@ -16,9 +16,10 @@
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:42:45 PM
  */
-package org.schimpf.sql.base.wrappers;
+package org.schimpf.sql.base;
 
-import org.schimpf.sql.base.SQLProcess;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -49,6 +50,20 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 	protected BaseWrapper(final SQLConnector connector) {
 		// almacenamos el procesador SQL
 		this.sqlConnector = connector;
+	}
+
+	/**
+	 * Retorna los metadatos de la base
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 7:11:11 AM
+	 * @return Metadatos de la Base de Datos
+	 * @throws SQLException Si no se pudo obtener los metadatos
+	 */
+	protected final DatabaseMetaData getMetadata() throws SQLException {
+		// retornamos los metadatos de la base
+		return this.getSQLConnector().getMetadata();
 	}
 
 	/**

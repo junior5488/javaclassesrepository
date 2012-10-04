@@ -16,9 +16,8 @@
  * @author <B>Schimpf.NET</B>
  * @version Apr 26, 2012 7:34:56 PM
  */
-package org.schimpf.sql.base.wrappers;
+package org.schimpf.sql.base;
 
-import org.schimpf.sql.base.SQLProcess;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

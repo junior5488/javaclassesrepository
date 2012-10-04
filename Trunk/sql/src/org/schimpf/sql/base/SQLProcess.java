@@ -5,6 +5,7 @@
  */
 package org.schimpf.sql.base;
 
+import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -327,5 +328,19 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics {
 	private void setStatement(final PreparedStatement statement) {
 		// almacenamos la consulta SQL
 		this.statement = statement;
+	}
+
+	/**
+	 * Retorna los metadatos de la Base de Datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 7:30:32 AM
+	 * @return Metadatos de la Base de Datos
+	 * @throws SQLException Si no se pudieron obtener los metadatos
+	 */
+	final DatabaseMetaData getMetadata() throws SQLException {
+		// retornamos los metadatos de la base
+		return this.getConnection().getMetaData();
 	}
 }
