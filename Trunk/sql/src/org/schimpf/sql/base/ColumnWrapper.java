@@ -281,7 +281,11 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	}
 
 	@Override
-	public String toString() {
+	public final String toString() {
+		try {
+			// retornamos la definicion de la columna
+			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() && !this.isPrimaryKey() ? " UNIQUE" : "") + (this.isNullable() != null && this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " PRIMARY KEY" : "") + (this.isAutoIncrement() ? " AUTO INCREMENT" : "");
+		} catch (final SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
 	}
@@ -313,7 +317,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 				// almacenamos el valor por defecto
 				this.defaultValue = moreData.getString(13);
 				// almacenamos el valor de auto increment
-				this.isAutoIncrement = moreData.getString(23).equals("YES");
+				this.isAutoIncrement = moreData.getMetaData().getColumnCount() >= 23 ? moreData.getString(23).equals("YES") : false;
 				// verificamos si la posicion es correcta
 				if (this.getColumnPosition() != moreData.getInt(17))
 					// salimos con una excepcion

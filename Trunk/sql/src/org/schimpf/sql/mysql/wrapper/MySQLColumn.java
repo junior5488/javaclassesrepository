@@ -20,7 +20,6 @@ package org.schimpf.sql.mysql.wrapper;
 
 import org.schimpf.sql.base.ColumnWrapper;
 import org.schimpf.sql.mysql.MySQLProcess;
-import java.sql.SQLException;
 
 /**
  * Datos de la columna MySQL
@@ -44,15 +43,5 @@ public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLDBMS, My
 	public MySQLColumn(final MySQLProcess sqlConnector, final MySQLTable table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
 		super(sqlConnector, table, columnName, columnPosition);
-	}
-
-	@Override
-	public String toString() {
-		try {
-			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() != null && this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " PRIMARY KEY" : "");
-		} catch (final SQLException e) {}
-		// retornamos el nombre de la columna
-		return this.getColumnName();
 	}
 }

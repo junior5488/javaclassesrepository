@@ -20,7 +20,6 @@ package org.schimpf.sql.pgsql.wrapper;
 
 import org.schimpf.sql.base.ColumnWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
-import java.sql.SQLException;
 
 /**
  * Datos de la columna PostgreSQL
@@ -44,15 +43,5 @@ public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGDBMS, PGD
 	public PGColumn(final PostgreSQLProcess sqlConnector, final PGTable table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
 		super(sqlConnector, table, columnName, columnPosition);
-	}
-
-	@Override
-	public String toString() {
-		try {
-			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() != null && this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " PRIMARY KEY" : "");
-		} catch (final SQLException e) {}
-		// retornamos el nombre de la columna
-		return this.getColumnName();
 	}
 }
