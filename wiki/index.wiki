@@ -64,11 +64,12 @@ Las librerias pueden ser instaladas desde un repositorio de paquetes Debian / Ub
 ===Instalacion de los repositorios===
 _Direccion APT del repositorio:_
 {{{
-deb http://lanparty.sytes.net/ubuntu schimpf java
+deb http://downloads.hds-solutions.net/ubuntu schimpf java
+deb http://downloads.hds-solutions.net/ubuntu schimpf-updates java
 }}}
 _Instalacion de la clave GPG:_
 {{{
-wget -q http://lanparty.sytes.net/schimpf.gpg.key -O - | apt-key add -
+wget -q http://downloads.hds-solutions.net/hds-solutions.gpg.key -O - | apt-key add -
 }}}
 ===Paquetes disponibles===
 ====libschimpf-all-java====
@@ -103,5 +104,5 @@ _*Depende de*_:
 
 ----
  * *Hermann D. Schimpf*
- * _hschimpf@gschimpf.com_
- * *[http://gschimpf.com SCHIMPF]* - _Sistemas de Información y Gestión_
+ * _hschimpf@hds-solutions.net_
+ * *[http://hds-solutions.net HDS Solutions]* - _Soluciones Informáticas_

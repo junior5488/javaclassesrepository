@@ -64,11 +64,12 @@ The libraries can be installed from a Debian / Ubuntu package repository.
 ===Repository Installation===
 _Repository APT:_
 {{{
-deb http://lanparty.sytes.net/ubuntu schimpf java
+deb http://downloads.hds-solutions.net/ubuntu schimpf java
+deb http://downloads.hds-solutions.net/ubuntu schimpf-updates java
 }}}
 _GPG key installation:_
 {{{
-wget -q http://lanparty.sytes.net/schimpf.gpg.key -O - | apt-key add -
+wget -q http://downloads.hds-solutions.net/hds-solutions.gpg.key -O - | apt-key add -
 }}}
 ===Available Packages===
 ====libschimpf-all-java====
@@ -103,5 +104,5 @@ _*Depends on*_:
 
 ----
  * *Hermann D. Schimpf*
- * _hschimpf@gschimpf.com_
- * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
+ * _hschimpf@hds-solutions.net_
+ * *[http://hds-solutions.net HDS Solutions]* - _Soluciones Informáticas_

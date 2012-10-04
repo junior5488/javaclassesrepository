@@ -106,5 +106,5 @@ public class Usage {
 [http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=en back to packages list]
 ----
  * *Hermann D. Schimpf*
- * _hschimpf@gschimpf.com_
- * *[http://gschimpf.com SCHIMPF]* - _Information & Gestion Systems_
+ * _hschimpf@hds-solutions.net_
+ * *[http://hds-solutions.net HDS Solutions]* - _Soluciones Informáticas_
