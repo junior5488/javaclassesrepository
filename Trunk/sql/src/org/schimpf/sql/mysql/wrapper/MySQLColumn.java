@@ -18,7 +18,7 @@
  */
 package org.schimpf.sql.mysql.wrapper;
 
-import org.schimpf.sql.base.wrappers.ColumnWrapper;
+import org.schimpf.sql.base.ColumnWrapper;
 import org.schimpf.sql.mysql.MySQLProcess;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +50,7 @@ public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLDBMS, My
 	public String toString() {
 		try {
 			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() ? " UNIQUE" : "") + (this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " (PK)" : "");
+			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() != null && this.isUnique() ? " UNIQUE" : "") + (this.isNullable() != null && this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() != null && this.isPrimaryKey() ? " (PK)" : "");
 		} catch (final SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
