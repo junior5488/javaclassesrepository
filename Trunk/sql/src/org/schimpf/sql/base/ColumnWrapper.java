@@ -18,7 +18,6 @@
  */
 package org.schimpf.sql.base;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -41,49 +40,56 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * 
 	 * @version Apr 26, 2012 7:37:18 PM
 	 */
-	private final String	columnName;
+	private final String		columnName;
+
+	/**
+	 * Posicion de la columna
+	 * 
+	 * @version Oct 4, 2012 9:16:54 AM
+	 */
+	private final Integer	columnPosition;
 
 	/**
 	 * Tipo de dato de la columna
 	 * 
 	 * @version May 1, 2012 10:53:13 PM
 	 */
-	private String			dataType;
+	private String				dataType;
 
 	/**
 	 * Valor por defecto del campo
 	 * 
 	 * @version May 1, 2012 11:01:58 PM
 	 */
-	private String			defaultValue;
+	private String				defaultValue;
 
 	/**
 	 * Bandera de columna nuleable
 	 * 
 	 * @version May 1, 2012 11:00:40 PM
 	 */
-	private Boolean		isNullable;
+	private Boolean			isNullable;
 
 	/**
 	 * Bandera para identificar si la columna es clave primaria
 	 * 
 	 * @version May 2, 2012 12:08:53 AM
 	 */
-	private Boolean		isPrimaryKey;
+	private Boolean			isPrimaryKey;
 
 	/**
 	 * Bandera para identificar si la columna es de valor unico
 	 * 
 	 * @version May 2, 2012 1:53:48 AM
 	 */
-	private Boolean		isUnique;
+	private Boolean			isUnique;
 
 	/**
 	 * Tabla a la cual pertenece la columna
 	 * 
 	 * @version May 2, 2012 12:31:54 AM
 	 */
-	private final TType	table;
+	private final TType		table;
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -93,14 +99,17 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @param sqlConnector Conexion a la DB
 	 * @param table Tabla a la que pertenece la columna
 	 * @param columnName Nombre de la columna en la DB
+	 * @param columnPosition Posicion fisica de la columna
 	 */
-	protected ColumnWrapper(final SQLConnector sqlConnector, final TType table, final String columnName) {
+	protected ColumnWrapper(final SQLConnector sqlConnector, final TType table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
 		super(sqlConnector);
 		// almacenamos la tabla
 		this.table = table;
 		// almacenamos el nombre de la columna
 		this.columnName = columnName;
+		// almacenamos la pocision
+		this.columnPosition = columnPosition;
 	}
 
 	@Override
@@ -121,6 +130,19 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	public final String getColumnName() {
 		// retornamos el nombre de la columna
 		return this.columnName;
+	}
+
+	/**
+	 * Retorna la posicion fisica de la columna
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 4, 2012 9:34:43 AM
+	 * @return Posicion Fisica de la columna
+	 */
+	public final Integer getColumnPosition() {
+		// retornamos la posicion de la columna
+		return this.columnPosition;
 	}
 
 	/**
@@ -239,85 +261,6 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	}
 
 	/**
-	 * Retorna el tipo de dato de la columna desde los metadatos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 10:55:50 PM
-	 * @param metadata Metadatos actuales
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return Tipo de dato de la columna
-	 */
-	protected abstract String getDataTypeFromMetadata(ResultSet metadata) throws SQLException;
-
-	/**
-	 * Retorna el valor por defecto de la columna desde los metadatos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 11:06:11 PM
-	 * @param metadata Metadatos actuales
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return Valor por defecto de la columna
-	 */
-	protected abstract String getDefaultValueFromMetadata(ResultSet metadata) throws SQLException;
-
-	/**
-	 * Retorna si la columna permite valores nulos desde los metadatos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 11:05:33 PM
-	 * @param metadata Metadatos actuales
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return True si permite valores nulos
-	 */
-	protected abstract Boolean getIsNullableFromMetadata(ResultSet metadata) throws SQLException;
-
-	/**
-	 * Retorna si la columna es clave primaria de la tabla
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 2, 2012 12:10:55 AM
-	 * @param metadata Metadatos actuales
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return True si es clave primaria
-	 */
-	protected abstract Boolean getIsPrimaryKeyFromMetadata(ResultSet metadata) throws SQLException;
-
-	/**
-	 * Retorna el tamaño de la columna desde los metadatos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 11:03:18 PM
-	 * @param metadata Metadatos actuales
-	 * @throws SQLException Si se produjo un error al cargar los metadatos
-	 * @return Tamaño de la columna
-	 */
-	protected abstract Boolean getIsUniqueFromMetadata(ResultSet metadata) throws SQLException;
-
-	/**
-	 * Obtiene los metadatos de la columna
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version May 1, 2012 10:47:59 PM
-	 * @param schema Esquema de la columna
-	 * @param table Tabla de la columna
-	 * @param columnName Nombre de la columna
-	 * @return ResultSet con los metadatos
-	 */
-	protected abstract boolean retrieveColumnMetadata(SType schema, TType table, String columnName);
-
-	/**
 	 * Carga los metadatos de la columna
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -328,17 +271,17 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	private synchronized void loadMetaData() throws SQLException {
 		// recorremos los metadatos
-		if (this.retrieveColumnMetadata(this.getTable().getSchema(), this.getTable(), this.getColumnName()) && this.getSQLConnector().getResultSet().next()) {
+		if (this.getSQLConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " LIMIT 1")) {
 			// almacenamos el tipo de dato
-			this.dataType = this.getDataTypeFromMetadata(this.getSQLConnector().getResultSet());
+			this.dataType = this.getSQLConnector().getResultSet().getMetaData().getColumnTypeName(this.getColumnPosition());
 			// almacenamos si es clave primaria
-			this.isPrimaryKey = this.getIsPrimaryKeyFromMetadata(this.getSQLConnector().getResultSet());
+			this.isPrimaryKey = this.getTable().getPrimaryKeys().contains(this);
 			// almacenamos si es unique
-			this.isUnique = this.getIsUniqueFromMetadata(this.getSQLConnector().getResultSet());
+			this.isUnique = this.getTable().getUniqueColumns().contains(this);
 			// almacenamos si es nullable
-			this.isNullable = this.getIsNullableFromMetadata(this.getSQLConnector().getResultSet());
+			this.isNullable = null; // FIXME
 			// almacenamos el valor por defecto
-			this.defaultValue = this.getDefaultValueFromMetadata(this.getSQLConnector().getResultSet());
+			this.defaultValue = null; // FIXME
 		}
 	}
 }
