@@ -18,8 +18,9 @@
  */
 package org.schimpf.sql.mysql.wrapper;
 
-import org.schimpf.sql.base.wrappers.DBMSWrapper;
+import org.schimpf.sql.base.DBMSWrapper;
 import org.schimpf.sql.mysql.MySQLProcess;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -49,12 +50,14 @@ public final class MySQLDBMS extends DBMSWrapper<MySQLProcess, MySQLDBMS, MySQLD
 	protected ArrayList<MySQLDataBase> retrieveDataBases(final String dbmsName) throws SQLException {
 		// armamos una lista
 		final ArrayList<MySQLDataBase> databases = new ArrayList<MySQLDataBase>();
-		// ejecutamos la consulta
-		this.getSQLConnector().executeSQL("SELECT schema_name AS database_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'mysql')");
+		// obtenemos el ResultSet con las bases de datos
+		ResultSet dbs = this.getMetadata().getCatalogs();
 		// recorremos las bases de datos
-		while (this.getSQLConnector().getResultSet().next())
-			// agregamos la base de datos a la lista
-			databases.add(new MySQLDataBase(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("database_name")));
+		while (dbs.next())
+			// verificamos que no sea tabla interna de mysql
+			if (!dbs.getString(1).equals("information_schema") && !dbs.getString(1).equals("mysql"))
+				// agregamos la base de datos a la lista
+				databases.add(new MySQLDataBase(this.getSQLConnector(), this, dbs.getString(1)));
 		// retornamos las bases de datos
 		return databases;
 	}

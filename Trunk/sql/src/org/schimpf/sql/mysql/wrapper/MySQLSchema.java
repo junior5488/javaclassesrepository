@@ -18,8 +18,9 @@
  */
 package org.schimpf.sql.mysql.wrapper;
 
-import org.schimpf.sql.base.wrappers.SchemaWrapper;
+import org.schimpf.sql.base.SchemaWrapper;
 import org.schimpf.sql.mysql.MySQLProcess;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -50,12 +51,12 @@ public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, My
 	protected ArrayList<MySQLTable> retrieveTables(final String schemaName) throws SQLException {
 		// armamos una lista
 		final ArrayList<MySQLTable> tables = new ArrayList<MySQLTable>();
-		// ejecutamos la consulta
-		this.getSQLConnector().executeSQL("SELECT table_name FROM information_schema.tables WHERE table_schema LIKE '" + schemaName + "';");
-		// recorremos las bases de datos
-		while (this.getSQLConnector().getResultSet().next())
-			// agregamos la base de datos a la lista
-			tables.add(new MySQLTable(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("table_name")));
+		// obtenemos una lista de las tablas
+		ResultSet tbls = this.getMetadata().getTables(this.getDataBase().getDataBaseName(), null, null, null);
+		// recorremos la lista
+		while (tbls.next())
+			// agregamos la tabla a la lista
+			tables.add(new MySQLTable(this.getSQLConnector(), this, tbls.getString(3)));
 		// retornamos las bases de datos
 		return tables;
 	}

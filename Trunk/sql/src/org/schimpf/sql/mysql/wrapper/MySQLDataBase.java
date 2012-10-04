@@ -18,7 +18,7 @@
  */
 package org.schimpf.sql.mysql.wrapper;
 
-import org.schimpf.sql.base.wrappers.DataBaseWrapper;
+import org.schimpf.sql.base.DataBaseWrapper;
 import org.schimpf.sql.mysql.MySQLProcess;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,12 +50,8 @@ public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLDBMS
 	protected ArrayList<MySQLSchema> retrieveSchemas(final String dataBaseName) throws SQLException {
 		// armamos una lista
 		final ArrayList<MySQLSchema> schemas = new ArrayList<MySQLSchema>();
-		// ejecutamos la consulta
-		this.getSQLConnector().executeSQL("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('information_schema', 'mysql') AND schema_name LIKE '" + dataBaseName + "'");
-		// recorremos las bases de datos
-		while (this.getSQLConnector().getResultSet().next())
-			// agregamos la base de datos a la lista
-			schemas.add(new MySQLSchema(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("schema_name")));
+		// agregamos el esquema a la lista
+		schemas.add(new MySQLSchema(this.getSQLConnector(), this, this.getDataBaseName()));
 		// retornamos las bases de datos
 		return schemas;
 	}

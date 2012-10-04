@@ -18,8 +18,9 @@
  */
 package org.schimpf.sql.mysql.wrapper;
 
-import org.schimpf.sql.base.wrappers.TableWrapper;
+import org.schimpf.sql.base.TableWrapper;
 import org.schimpf.sql.mysql.MySQLProcess;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -50,12 +51,12 @@ public final class MySQLTable extends TableWrapper<MySQLProcess, MySQLDBMS, MySQ
 	protected ArrayList<MySQLColumn> retrieveColumns(final String tableName) throws SQLException {
 		// armamos una lista
 		final ArrayList<MySQLColumn> columns = new ArrayList<MySQLColumn>();
-		// ejecutamos la consulta
-		this.getSQLConnector().executeSQL("SELECT column_name FROM information_schema.columns WHERE table_schema LIKE '" + this.getSchema().getSchemaName() + "' AND table_name LIKE '" + tableName + "' ORDER BY ordinal_position");
-		// recorremos las bases de datos
-		while (this.getSQLConnector().getResultSet().next())
+		// obtenemos las columnas
+		ResultSet cols = this.getMetadata().getColumns(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), null);
+		// recorremos las columnas
+		while (cols.next())
 			// agregamos la columna a la lista
-			columns.add(new MySQLColumn(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("column_name")));
+			columns.add(new MySQLColumn(this.getSQLConnector(), this, cols.getString(4)));
 		// retornamos las bases de datos
 		return columns;
 	}
