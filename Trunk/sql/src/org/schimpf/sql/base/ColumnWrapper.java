@@ -284,7 +284,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	public final String toString() {
 		try {
 			// retornamos la definicion de la columna
-			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() && !this.isPrimaryKey() ? " UNIQUE" : "") + (this.isNullable() != null && this.isNullable() ? "" : " NOT") + " NULL" + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "") + (this.isPrimaryKey() ? " PRIMARY KEY" : "") + (this.isAutoIncrement() ? " AUTO INCREMENT" : "");
+			return this.getColumnName() + " " + this.getDataType() + (this.isUnique() && !this.isPrimaryKey() ? " UNIQUE" : "") + (this.isNullable() != null && this.isNullable() ? "" : " NOT") + " NULL" + (this.isPrimaryKey() ? " PRIMARY KEY" : "") + (this.isAutoIncrement() ? " AUTO INCREMENT" : "") + (this.getDefaultValue() != null ? " DEFAULT " + this.getDefaultValue() : "");
 		} catch (final SQLException e) {}
 		// retornamos el nombre de la columna
 		return this.getColumnName();
