@@ -37,13 +37,12 @@ public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLDBMS
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 2, 2012 5:20:08 PM
-	 * @param connector Conexion al servidor MySQL
 	 * @param dbms Sistema de Base de Datos al que pertenece la base de datos
 	 * @param dbName Nombre de la base de datos
 	 */
-	public MySQLDataBase(final MySQLProcess connector, final MySQLDBMS dbms, final String dbName) {
+	public MySQLDataBase(final MySQLDBMS dbms, final String dbName) {
 		// envamos el constructor
-		super(connector, dbms, dbName);
+		super(dbms, dbName);
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLDBMS
 		// armamos una lista
 		final ArrayList<MySQLSchema> schemas = new ArrayList<MySQLSchema>();
 		// agregamos el esquema a la lista
-		schemas.add(new MySQLSchema(this.getSQLConnector(), this, this.getDataBaseName()));
+		schemas.add(new MySQLSchema(this, this.getDataBaseName()));
 		// retornamos las bases de datos
 		return schemas;
 	}

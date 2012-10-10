@@ -37,13 +37,12 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:56:14 PM
-	 * @param sqlConnector Conector PostgreSQL a la DB
 	 * @param schema Esquema al que pertenece la tabla
 	 * @param tableName Nombre de la tabla
 	 */
-	public PGTable(final PostgreSQLProcess sqlConnector, final PGSchema schema, final String tableName) {
+	public PGTable(final PGSchema schema, final String tableName) {
 		// enviamos el constructor
-		super(sqlConnector, schema, tableName);
+		super(schema, tableName);
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 		// recorremos las columnas
 		while (this.getSQLConnector().getResultSet().next())
 			// aregamos la columna a la lista
-			columns.add(new PGColumn(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("column_name"), colPos++));
+			columns.add(new PGColumn(this, this.getSQLConnector().getResultSet().getString("column_name"), colPos++));
 		// retornamos la lista de las columnas
 		return columns;
 	}

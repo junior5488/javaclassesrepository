@@ -37,13 +37,12 @@ public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGDBMS, PGD
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 27, 2012 10:47:16 AM
-	 * @param connector Conector a la DB
 	 * @param dataBase Base de Datos a la que pertenece el esquema
 	 * @param schemaName Nombre del esquema
 	 */
-	public PGSchema(final PostgreSQLProcess connector, final PGDataBase dataBase, final String schemaName) {
+	public PGSchema(final PGDataBase dataBase, final String schemaName) {
 		// enviamos el constructor
-		super(connector, dataBase, schemaName);
+		super(dataBase, schemaName);
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGDBMS, PGD
 		// recorremos las tablas
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos una tabla
-			tables.add(new PGTable(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("table_name")));
+			tables.add(new PGTable(this, this.getSQLConnector().getResultSet().getString("table_name")));
 		// retornamos las tablas
 		return tables;
 	}

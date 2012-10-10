@@ -63,13 +63,12 @@ public abstract class DataBaseWrapper<SQLConnector extends SQLProcess, MType ext
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 8:13:18 PM
-	 * @param connector Conector a la DB
 	 * @param dbms Sistema de Base de Datos al que pertenece la base de datos
 	 * @param dbName Nombre de la DB
 	 */
-	protected DataBaseWrapper(final SQLConnector connector, final MType dbms, final String dbName) {
+	protected DataBaseWrapper(final MType dbms, final String dbName) {
 		// enviamos el constructor
-		super(connector);
+		super(dbms.getSQLConnector());
 		// almacenamos el sistema al que pertenece la base de datos
 		this.dbms = dbms;
 		// almacenamos el nombre de la DB

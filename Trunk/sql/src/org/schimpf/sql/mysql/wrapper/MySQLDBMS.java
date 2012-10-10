@@ -57,7 +57,7 @@ public final class MySQLDBMS extends DBMSWrapper<MySQLProcess, MySQLDBMS, MySQLD
 			// verificamos que no sea tabla interna de mysql
 			if (!dbs.getString(1).equals("information_schema") && !dbs.getString(1).equals("mysql"))
 				// agregamos la base de datos a la lista
-				databases.add(new MySQLDataBase(this.getSQLConnector(), this, dbs.getString(1)));
+				databases.add(new MySQLDataBase(this, dbs.getString(1)));
 		// retornamos las bases de datos
 		return databases;
 	}

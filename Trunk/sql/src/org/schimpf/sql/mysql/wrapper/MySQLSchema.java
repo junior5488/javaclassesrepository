@@ -38,13 +38,12 @@ public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, My
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 2, 2012 5:18:52 PM
-	 * @param connector Conexion al servidor MySQL
 	 * @param dataBase Base de Datos a la que pertenece el esquema
 	 * @param schemaName Nombre del esquema
 	 */
-	public MySQLSchema(final MySQLProcess connector, final MySQLDataBase dataBase, final String schemaName) {
+	public MySQLSchema(final MySQLDataBase dataBase, final String schemaName) {
 		// enviamos el constructor
-		super(connector, dataBase, schemaName);
+		super(dataBase, schemaName);
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, My
 		// recorremos la lista
 		while (tbls.next())
 			// agregamos la tabla a la lista
-			tables.add(new MySQLTable(this.getSQLConnector(), this, tbls.getString(3)));
+			tables.add(new MySQLTable(this, tbls.getString(3)));
 		// retornamos las tablas
 		return tables;
 	}

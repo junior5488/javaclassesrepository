@@ -244,13 +244,12 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:33:20 PM
-	 * @param sqlConnector Conector SQL a la DB
 	 * @param schema Esquema de la tabla
 	 * @param tableName Nombre de la tabla
 	 */
-	protected TableWrapper(final SQLConnector sqlConnector, final SType schema, final String tableName) {
+	protected TableWrapper(final SType schema, final String tableName) {
 		// enviamos el conector SQL
-		super(sqlConnector);
+		super(schema.getSQLConnector());
 		// almacenamos el esquema
 		this.schema = schema;
 		// almacenamos el nombre de la tabla

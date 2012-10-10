@@ -35,13 +35,12 @@ public final class MySQLColumn extends ColumnWrapper<MySQLProcess, MySQLDBMS, My
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 2, 2012 5:23:25 PM
-	 * @param sqlConnector Conexion al servidor MySQL
 	 * @param table Tabla
 	 * @param columnName Nombre de la columna
 	 * @param columnPosition Posicion fisica de la columna
 	 */
-	public MySQLColumn(final MySQLProcess sqlConnector, final MySQLTable table, final String columnName, final Integer columnPosition) {
+	public MySQLColumn(final MySQLTable table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
-		super(sqlConnector, table, columnName, columnPosition);
+		super(table, columnName, columnPosition);
 	}
 }

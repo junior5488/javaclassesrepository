@@ -54,7 +54,7 @@ public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDBMS, PGDataB
 		// recorremos las bases de datos
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos la base de datos
-			dbs.add(new PGDataBase(this.getSQLConnector(), this, this.getSQLConnector().getResultSet().getString("database_name")));
+			dbs.add(new PGDataBase(this, this.getSQLConnector().getResultSet().getString("database_name")));
 		// retornamos las bases de datos
 		return dbs;
 	}

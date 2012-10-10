@@ -35,13 +35,12 @@ public final class PGColumn extends ColumnWrapper<PostgreSQLProcess, PGDBMS, PGD
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:54:35 PM
-	 * @param sqlConnector Conector PostgreSQL a la DB
 	 * @param table Tabla de la columna
 	 * @param columnName Nombre de la Columna
 	 * @param columnPosition Posicion fisica de la columna
 	 */
-	public PGColumn(final PostgreSQLProcess sqlConnector, final PGTable table, final String columnName, final Integer columnPosition) {
+	public PGColumn(final PGTable table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
-		super(sqlConnector, table, columnName, columnPosition);
+		super(table, columnName, columnPosition);
 	}
 }

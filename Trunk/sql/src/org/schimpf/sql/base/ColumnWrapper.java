@@ -111,14 +111,13 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 26, 2012 7:37:45 PM
-	 * @param sqlConnector Conexion a la DB
 	 * @param table Tabla a la que pertenece la columna
 	 * @param columnName Nombre de la columna en la DB
 	 * @param columnPosition Posicion fisica de la columna
 	 */
-	protected ColumnWrapper(final SQLConnector sqlConnector, final TType table, final String columnName, final Integer columnPosition) {
+	protected ColumnWrapper(final TType table, final String columnName, final Integer columnPosition) {
 		// enviamos el constructor
-		super(sqlConnector);
+		super(table.getSQLConnector());
 		// almacenamos la tabla
 		this.table = table;
 		// almacenamos el nombre de la columna

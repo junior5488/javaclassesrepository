@@ -38,13 +38,12 @@ public final class MySQLTable extends TableWrapper<MySQLProcess, MySQLDBMS, MySQ
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version May 2, 2012 5:22:07 PM
-	 * @param sqlConnector Conexion al servidor MySQL
 	 * @param schema Esquema
 	 * @param tableName Nombre de la tabla
 	 */
-	public MySQLTable(final MySQLProcess sqlConnector, final MySQLSchema schema, final String tableName) {
+	public MySQLTable(final MySQLSchema schema, final String tableName) {
 		// enviamos el constructor
-		super(sqlConnector, schema, tableName);
+		super(schema, tableName);
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public final class MySQLTable extends TableWrapper<MySQLProcess, MySQLDBMS, MySQ
 		// recorremos las columnas
 		while (cols.next())
 			// agregamos la columna a la lista
-			columns.add(new MySQLColumn(this.getSQLConnector(), this, cols.getString(4), colPos++));
+			columns.add(new MySQLColumn(this, cols.getString(4), colPos++));
 		// retornamos las bases de datos
 		return columns;
 	}

@@ -63,13 +63,12 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Apr 27, 2012 10:05:42 AM
-	 * @param connector Conector SQL a la DB
 	 * @param dataBase Base de datos a la que pertenece el esquema
 	 * @param schemaName Nombre del esquema
 	 */
-	protected SchemaWrapper(final SQLConnector connector, final DType dataBase, final String schemaName) {
+	protected SchemaWrapper(final DType dataBase, final String schemaName) {
 		// envimos el constructor
-		super(connector);
+		super(dataBase.getSQLConnector());
 		// almacenamos la base de datos
 		this.dataBase = dataBase;
 		// almacenamos el nombre del esquema
