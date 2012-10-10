@@ -26,11 +26,14 @@ import org.schimpf.sql.base.SchemaWrapper;
 import org.schimpf.sql.base.TableWrapper;
 import org.schimpf.util.Logger;
 import org.schimpf.util.Logger.Level;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -115,7 +118,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @version Jul 31, 2012 3:28:54 PM
 	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
-	public AbstractPersistentObject() throws Exception {
+	protected AbstractPersistentObject() throws Exception {
 		// almacenamos la tabla
 		this.table = this.getTableInstance();
 		// iniciamos el logger
@@ -138,7 +141,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @param identifier Identificador del registro
 	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
-	public AbstractPersistentObject(final HashMap<String, PKType> identifier) throws Exception {
+	protected AbstractPersistentObject(final PKType... identifier) throws Exception {
 		// almacenamos la tabla
 		this.table = this.getTableInstance();
 		// iniciamos el logger
@@ -146,11 +149,119 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// almacenamos las PKs
-		this.savePKs(identifier);
+		this.savePKs(this.getPrimaryKeys(identifier));
 		// cargamos el registro
 		this.load();
 		// mostramos un log
-		this.log.debug("New Persisten Object loaded [" + this.getTable() + "]");
+		this.log.debug("New Persisten Object loaded [" + this + "]");
+	}
+
+	/**
+	 * Retorna una lista de instancias desde la DB
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 9, 2012 3:49:43 PM
+	 * @param <SQLConnector> Conector SQL
+	 * @param <MType> Tipo de sistema de base de datos
+	 * @param <DType> Tipo de base de datos
+	 * @param <SType> Tipo de esquema
+	 * @param <TType> Tipo de tabla
+	 * @param <CType> Tipo de columna
+	 * @param <PKType> Tipo de valor de las PK
+	 * @param <RType> Clase de las instancias a retornar
+	 * @param clazz Clase de las instancias a obtener
+	 * @param where Filtro SQL
+	 * @return Lista de instancias
+	 */
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String where) {
+		// retornamos los recibos
+		return AbstractPersistentObject.getFromDB(clazz, null, where);
+	}
+
+	/**
+	 * Retorna una lista de instancias desde la DB
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 9, 2012 3:49:43 PM
+	 * @param <SQLConnector> Conector SQL
+	 * @param <MType> Tipo de sistema de base de datos
+	 * @param <DType> Tipo de base de datos
+	 * @param <SType> Tipo de esquema
+	 * @param <TType> Tipo de tabla
+	 * @param <CType> Tipo de columna
+	 * @param <PKType> Tipo de valor de las PK
+	 * @param <RType> Clase de las instancias a retornar
+	 * @param clazz Clase de las instancias a obtener
+	 * @param join SQL Join
+	 * @param where Filtro SQL
+	 * @return Lista de instancias
+	 */
+	@SuppressWarnings("unchecked")
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String join, final String where) {
+		// FIXME en produccion
+		if (System.currentTimeMillis() > 0)
+			throw new RuntimeException("Sorry, method in development!");
+		// armamos una lista para los PO's
+		final ArrayList<RType> list = new ArrayList<RType>();
+		try {
+			// nombre de la tabla
+			TType table = null;
+			// superclase del PO
+			Class<?> superClazz = clazz;
+			// recorremos hasta encontrar la tabla
+			while (table == null)
+				try {
+					// obtenemos el metodo
+					Method tableInstance = superClazz.getDeclaredMethod("getTableInstance", new Class[] {});
+					// lo setamos como accesible
+					tableInstance.setAccessible(true);
+					// obtenemos el nombre de la tabla
+					table = (TType) tableInstance.invoke(clazz.getDeclaredConstructor(new Class[] {}).newInstance());
+				} catch (Exception ignored) {
+					// obtenemos el padre
+					superClazz = superClazz.getSuperclass();
+				}
+			// obtenemos el constructor
+			final Constructor<?> constructor = superClazz.getSuperclass().getDeclaredConstructor(new Class[] { HashMap.class });
+			try {
+				// creamos una lista de las PKs
+				final ArrayList<String> pks = new ArrayList<String>();
+				// columnas para el select
+				StringBuffer selectPKs = new StringBuffer();
+				// recorremos las PKs
+				for (CType pkColumn: table.getPrimaryKeys()) {
+					// agregamos la columna a la lista
+					pks.add(pkColumn.getColumnName());
+					// agregamos la columna al select
+					selectPKs.append((selectPKs.toString().length() == 0 ? "" : ", ") + table.getTableName() + "." + pkColumn.getColumnName());
+				}
+				// ejecutamos la consulta
+				AbstractPersistentObject.sqlConnector.executeSQL("SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : ""));
+				// creamos el hashpmap
+				final HashMap<String, Long> identifier = new HashMap<String, Long>();
+				// recorremos los resultados
+				while (AbstractPersistentObject.sqlConnector.getResultSet().next()) {
+					// vaciamos el hashmap
+					identifier.clear();
+					// recorremos las PKs
+					for (String pkColumn: pks)
+						// seteamos el ID de la columna
+						identifier.put(pkColumn, AbstractPersistentObject.sqlConnector.getResultSet().getLong(pkColumn));
+					// agregamos el PO
+					list.add((RType) constructor.newInstance(new Object[] { identifier }));
+				}
+			} catch (final SQLException e) {
+				// mostramos el error
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			// mostramos el trace de la excepcion
+			e.printStackTrace();
+		}
+		// retornamos la lista
+		return list;
 	}
 
 	/**
@@ -169,7 +280,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// armamos el SQL para eliminar el registro
 		final StringBuffer delete = new StringBuffer("DELETE FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName());
 		// agregamos el where
-		delete.append(" WHERE " + this.getPKsFilter() + ";");
+		delete.append(" WHERE " + this.getPKsFilter(false) + ";");
 		// mostramos el SQL
 		this.log.debug("SQL: " + delete.toString());
 		// ejecutamos el SQL
@@ -246,6 +357,12 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		}
 	}
 
+	@Override
+	public String toString() {
+		// retornamos la definicion del objeto
+		return this.getTable() + " {" + this.getPKsFilter(true) + "}";
+	}
+
 	/**
 	 * Procesos a ejecutar luego de almacenar el PO en la base de datos
 	 * 
@@ -273,6 +390,37 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	protected boolean beforeSave() {
 		// por defecto sin validaciones
 		return true;
+	}
+
+	/**
+	 * Retorna el HashMap con las PKs del registro
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 9, 2012 6:11:49 PM
+	 * @param PrimaryKeys Claves Primarias en orden
+	 * @return HashMap con las claves primarias
+	 * @throws SQLException Si no se pueden obtener las columnas PK
+	 */
+	protected final HashMap<String, PKType> getPrimaryKeys(final PKType... PrimaryKeys) throws SQLException {
+		// creamos el hashpmap
+		final HashMap<String, PKType> pks = new HashMap<String, PKType>();
+		// verificamos si tiene valor
+		if (PrimaryKeys == null)
+			// salimos con un error
+			throw new IllegalArgumentException("Primary Keys is mandatory");
+		// verificamos si falta algun valor
+		if (PrimaryKeys.length != this.getTable().getPrimaryKeys().size())
+			// salimos con un error
+			throw new IllegalArgumentException("Number of Primary Keys specified is not equals to number of PK columns (" + PrimaryKeys.length + " != " + this.getTable().getPrimaryKeys().size() + ")");
+		// posicion de la PK
+		Integer pkPos = 0;
+		// recorremos las columnas PK
+		for (CType pkColumn: this.getTable().getPrimaryKeys())
+			// agregamos la PK
+			pks.put(pkColumn.getColumnName(), PrimaryKeys[pkPos++]);
+		// retornamos las PKs
+		return pks;
 	}
 
 	/**
@@ -516,20 +664,16 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Jul 31, 2012 1:26:00 PM
+	 * @param toString True para utilizar en metodo toString
 	 * @return Filtro SQL
 	 */
-	private String getPKsFilter() {
+	private String getPKsFilter(final boolean toString) {
 		// armamos el string para las PKs
 		final StringBuffer pksFilter = new StringBuffer();
-		// bandera para agregar el AND
-		boolean addAND = false;
 		// recorremos las PKs
-		for (final CType pkColumn: this.getPrimaryKeys().keySet()) {
+		for (final CType pkColumn: this.getPrimaryKeys().keySet())
 			// agregamos la PK al filtro
-			pksFilter.append((addAND ? " AND " : "") + pkColumn.getColumnName() + " = " + this.castValue(this.getPrimaryKeys().get(this.getColumn(pkColumn.getColumnName()))));
-			// modificamos la bandera
-			addAND = true;
-		}
+			pksFilter.append((pksFilter.toString().length() > 0 ? (toString ? "; " : " AND ") : "") + pkColumn.getColumnName() + (toString ? ":" : " = ") + this.castValue(this.getPrimaryKeys().get(this.getColumn(pkColumn.getColumnName()))));
 		// retornamos el filtro con las PKs
 		return pksFilter.toString();
 	}
@@ -579,7 +723,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			this.valuesOld.clear();
 			this.valuesNew.clear();
 			// ejecutamos el SQL para obtener los valores de las columnas del registro
-			this.getConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " WHERE " + this.getPKsFilter());
+			this.getConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " WHERE " + this.getPKsFilter(false));
 			// verificamos si tenemos resultado
 			if (this.getConnector().getResultSet().next())
 				// recorremos las columnas de la tabla
@@ -772,7 +916,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// retornamos true, nada actualizado
 			return true;
 		// cerramos agregamos el where
-		update.append(" WHERE " + this.getPKsFilter() + ";");
+		update.append(" WHERE " + this.getPKsFilter(false) + ";");
 		// mostramos el SQL
 		this.log.debug("SQL: " + update.toString());
 		// ejecutamos el SQL
