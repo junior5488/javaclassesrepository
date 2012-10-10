@@ -195,7 +195,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String where) {
 		// retornamos los recibos
-		return AbstractPersistentObject.getFromDB(clazz, null, where);
+		return AbstractPersistentObject.getFromDB(clazz, null, where, null);
 	}
 
 	/**
@@ -217,8 +217,33 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @param where Filtro SQL
 	 * @return Lista de instancias
 	 */
-	@SuppressWarnings("unchecked")
 	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String join, final String where) {
+		// retornamos los recibos
+		return AbstractPersistentObject.getFromDB(clazz, join, where, null);
+	}
+
+	/**
+	 * Retorna una lista de instancias desde la DB
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 9, 2012 3:49:43 PM
+	 * @param <SQLConnector> Conector SQL
+	 * @param <MType> Tipo de sistema de base de datos
+	 * @param <DType> Tipo de base de datos
+	 * @param <SType> Tipo de esquema
+	 * @param <TType> Tipo de tabla
+	 * @param <CType> Tipo de columna
+	 * @param <PKType> Tipo de valor de las PK
+	 * @param <RType> Clase de las instancias a retornar
+	 * @param clazz Clase de las instancias a obtener
+	 * @param join SQL Join
+	 * @param where Filtro SQL
+	 * @param orderBy SQL ORDER BY
+	 * @return Lista de instancias
+	 */
+	@SuppressWarnings("unchecked")
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String join, final String where, final String orderBy) {
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().info("Obtaining Persistent Objects from DB");
 		// armamos una lista para los PO's
@@ -245,7 +270,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// mostramos un log
 				AbstractPersistentObject.getSLogger().debug("Primary Keys to select: " + selectPKs.toString());
 				// armamos el sql
-				String sql = "SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : "");
+				String sql = "SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : "") + (orderBy != null ? " ORDER BY " + orderBy : "");
 				// mostramos el sql
 				AbstractPersistentObject.getSLogger().debug("SQL: " + sql);
 				// ejecutamos la consulta
