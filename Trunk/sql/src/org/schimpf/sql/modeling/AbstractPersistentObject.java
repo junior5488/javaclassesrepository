@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -68,6 +69,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @version Jul 31, 2012 9:34:32 PM
 	 */
 	private static SQLProcess					sqlConnector;
+
+	/**
+	 * Logger estatico
+	 * 
+	 * @version Oct 10, 2012 3:01:21 PM
+	 */
+	private static final Logger				static_log	= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL, null);
 
 	/**
 	 * Bandera de creacion para nuevo registro
@@ -202,11 +210,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	@SuppressWarnings("unchecked")
 	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String join, final String where) {
-		// FIXME en produccion
-		if (System.currentTimeMillis() > 0)
-			throw new RuntimeException("Sorry, method in development!");
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().info("Obtaining Persistent Objects from DB");
 		// armamos una lista para los PO's
 		final ArrayList<RType> list = new ArrayList<RType>();
+		// verificamos si tenemos el conector iniciado
+		if (AbstractPersistentObject.sqlConnector == null)
+			// retornamos la lista vacia
+			return list;
 		try {
 			// nombre de la tabla
 			TType table = null;
@@ -225,35 +236,57 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					// obtenemos el padre
 					superClazz = superClazz.getSuperclass();
 				}
-			// obtenemos el constructor
-			final Constructor<?> constructor = superClazz.getSuperclass().getDeclaredConstructor(new Class[] { HashMap.class });
+			// mostramos un log
+			AbstractPersistentObject.getSLogger().debug("Table found for getting: " + table);
 			try {
 				// creamos una lista de las PKs
 				final ArrayList<String> pks = new ArrayList<String>();
+				// lista para los argumentos del constructor
+				Class<?>[] params = new Class<?>[table.getPrimaryKeys().size()];
+				// posicion de los parametros
+				Integer pos = 0;
 				// columnas para el select
 				StringBuffer selectPKs = new StringBuffer();
 				// recorremos las PKs
 				for (CType pkColumn: table.getPrimaryKeys()) {
 					// agregamos la columna a la lista
 					pks.add(pkColumn.getColumnName());
+					// agregamos la clase a la lista
+					params[pos++] = pkColumn.getDataClass();
 					// agregamos la columna al select
 					selectPKs.append((selectPKs.toString().length() == 0 ? "" : ", ") + table.getTableName() + "." + pkColumn.getColumnName());
 				}
+				// mostramos un log
+				AbstractPersistentObject.getSLogger().debug("Primary Keys to select: " + selectPKs.toString());
+				// obtenemos el constructor
+				final Constructor<?> constructor = clazz.getDeclaredConstructor(params);
+				// mostramos un log
+				AbstractPersistentObject.getSLogger().debug("Constructor used to instanciate Persistent Objects: " + constructor);
+				// armamos el sql
+				String sql = "SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : "");
+				// mostramos el sql
+				AbstractPersistentObject.getSLogger().debug("SQL: " + sql);
 				// ejecutamos la consulta
-				AbstractPersistentObject.sqlConnector.executeSQL("SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : ""));
+				AbstractPersistentObject.sqlConnector.executeSQL(sql);
+				// obtenemos el resultset
+				ResultSet result = AbstractPersistentObject.sqlConnector.getResultSet();
 				// creamos el hashpmap
-				final HashMap<String, Long> identifier = new HashMap<String, Long>();
+				PKType[] identifier;
 				// recorremos los resultados
-				while (AbstractPersistentObject.sqlConnector.getResultSet().next()) {
-					// vaciamos el hashmap
-					identifier.clear();
+				while (result.next()) {
+					// iniciamos el array
+					identifier = (PKType[]) new Object[table.getPrimaryKeys().size()];
+					// reiniciamos la posicion
+					pos = 0;
 					// recorremos las PKs
 					for (String pkColumn: pks)
 						// seteamos el ID de la columna
-						identifier.put(pkColumn, AbstractPersistentObject.sqlConnector.getResultSet().getLong(pkColumn));
+						identifier[pos++] = (PKType) result.getObject(pkColumn);
 					// agregamos el PO
-					list.add((RType) constructor.newInstance(new Object[] { identifier }));
+					list.add((RType) constructor.newInstance(identifier));
 				}
+				// mostramos un log
+				AbstractPersistentObject.getSLogger().info(list.size() + " Persistent Objects loaded");
 			} catch (final SQLException e) {
 				// mostramos el error
 				e.printStackTrace();
@@ -264,6 +297,21 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		}
 		// retornamos la lista
 		return list;
+	}
+
+	/**
+	 * Retorna el logger estatico
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 10, 2012 3:03:01 PM
+	 * @return Logger estatico
+	 */
+	private static Logger getSLogger() {
+		// copiamos el nivel de consola actual
+		AbstractPersistentObject.static_log.setConsoleLevel(AbstractPersistentObject.DEBUG_LEVEL);
+		// retornamos el logger
+		return AbstractPersistentObject.static_log;
 	}
 
 	/**
