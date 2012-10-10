@@ -26,6 +26,7 @@ import org.schimpf.sql.base.SchemaWrapper;
 import org.schimpf.sql.base.TableWrapper;
 import org.schimpf.util.Logger;
 import org.schimpf.util.Logger.Level;
+import org.schimpf.util.arrays.MultiKeyMap;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -61,63 +62,71 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * 
 	 * @version Aug 2, 2012 2:26:32 PM
 	 */
-	public static Level							DEBUG_LEVEL	= Level.OFF;
+	public static Level																	DEBUG_LEVEL		= Level.OFF;
+
+	/**
+	 * Lista de PO's referenciados
+	 * 
+	 * @version Oct 10, 2012 6:35:44 PM
+	 */
+	@SuppressWarnings("unchecked")
+	private static final MultiKeyMap<Object, AbstractPersistentObject>	referencedPOs	= new MultiKeyMap<Object, AbstractPersistentObject>();
 
 	/**
 	 * Instancia del conector SQL
 	 * 
 	 * @version Jul 31, 2012 9:34:32 PM
 	 */
-	private static SQLProcess					sqlConnector;
+	private static SQLProcess															sqlConnector;
 
 	/**
 	 * Logger estatico
 	 * 
 	 * @version Oct 10, 2012 3:01:21 PM
 	 */
-	private static final Logger				static_log	= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL, null);
+	private static final Logger														static_log		= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL, null);
 
 	/**
 	 * Bandera de creacion para nuevo registro
 	 * 
 	 * @version Jul 31, 2012 3:32:28 PM
 	 */
-	private boolean								createNew	= false;
+	private boolean																		createNew		= false;
 
 	/**
 	 * Instancia del Logger
 	 * 
 	 * @version Aug 2, 2012 1:47:01 PM
 	 */
-	private final Logger							log;
+	private final Logger																	log;
 
 	/**
 	 * Identificador del registro
 	 * 
 	 * @version Jul 31, 2012 11:56:57 AM
 	 */
-	private final HashMap<CType, PKType>	primaryKeys	= new HashMap<CType, PKType>();
+	private final HashMap<CType, PKType>											primaryKeys		= new HashMap<CType, PKType>();
 
 	/**
 	 * Tabla a la que pertenece el registro
 	 * 
 	 * @version Jul 31, 2012 12:09:33 PM
 	 */
-	private final TType							table;
+	private final TType																	table;
 
 	/**
 	 * Columnas y sus valores nuevos (modificados)
 	 * 
 	 * @version Jul 31, 2012 12:00:21 PM
 	 */
-	private final HashMap<CType, Object>	valuesNew	= new HashMap<CType, Object>();
+	private final HashMap<CType, Object>											valuesNew		= new HashMap<CType, Object>();
 
 	/**
 	 * Columnas y sus valores originales
 	 * 
 	 * @version Jul 31, 2012 3:34:39 PM
 	 */
-	private final HashMap<CType, Object>	valuesOld	= new HashMap<CType, Object>();
+	private final HashMap<CType, Object>											valuesOld		= new HashMap<CType, Object>();
 
 	/**
 	 * Constructor del PO
@@ -220,48 +229,21 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			return list;
 		try {
 			// nombre de la tabla
-			TType table = null;
-			// superclase del PO
-			Class<?> superClazz = clazz;
-			// recorremos hasta encontrar la tabla
-			while (table == null)
-				try {
-					// obtenemos el metodo
-					Method tableInstance = superClazz.getDeclaredMethod("getTableInstance", new Class[] {});
-					// lo setamos como accesible
-					tableInstance.setAccessible(true);
-					// obtenemos el nombre de la tabla
-					table = (TType) tableInstance.invoke(clazz.getDeclaredConstructor(new Class[] {}).newInstance());
-				} catch (Exception ignored) {
-					// obtenemos el padre
-					superClazz = superClazz.getSuperclass();
-				}
-			// mostramos un log
-			AbstractPersistentObject.getSLogger().debug("Table found for getting: " + table);
+			TType table = AbstractPersistentObject.getTableOf(clazz);
 			try {
 				// creamos una lista de las PKs
 				final ArrayList<String> pks = new ArrayList<String>();
-				// lista para los argumentos del constructor
-				Class<?>[] params = new Class<?>[table.getPrimaryKeys().size()];
-				// posicion de los parametros
-				Integer pos = 0;
 				// columnas para el select
 				StringBuffer selectPKs = new StringBuffer();
 				// recorremos las PKs
 				for (CType pkColumn: table.getPrimaryKeys()) {
 					// agregamos la columna a la lista
 					pks.add(pkColumn.getColumnName());
-					// agregamos la clase a la lista
-					params[pos++] = pkColumn.getDataClass();
 					// agregamos la columna al select
 					selectPKs.append((selectPKs.toString().length() == 0 ? "" : ", ") + table.getTableName() + "." + pkColumn.getColumnName());
 				}
 				// mostramos un log
 				AbstractPersistentObject.getSLogger().debug("Primary Keys to select: " + selectPKs.toString());
-				// obtenemos el constructor
-				final Constructor<?> constructor = clazz.getDeclaredConstructor(params);
-				// mostramos un log
-				AbstractPersistentObject.getSLogger().debug("Constructor used to instanciate Persistent Objects: " + constructor);
 				// armamos el sql
 				String sql = "SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : "");
 				// mostramos el sql
@@ -277,13 +259,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					// iniciamos el array
 					identifier = (PKType[]) new Object[table.getPrimaryKeys().size()];
 					// reiniciamos la posicion
-					pos = 0;
+					Integer pos = 0;
 					// recorremos las PKs
 					for (String pkColumn: pks)
 						// seteamos el ID de la columna
 						identifier[pos++] = (PKType) result.getObject(pkColumn);
 					// agregamos el PO
-					list.add((RType) constructor.newInstance(identifier));
+					list.add((RType) AbstractPersistentObject.getConstuctorOf(clazz).newInstance(identifier));
 				}
 				// mostramos un log
 				AbstractPersistentObject.getSLogger().info(list.size() + " Persistent Objects loaded");
@@ -300,6 +282,166 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	}
 
 	/**
+	 * Retorna la instancia del Objeto Persistente relacionado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 10, 2012 6:11:30 PM
+	 * @param <SQLConnector> Conector SQL
+	 * @param <MType> Tipo de sistema de base de datos
+	 * @param <DType> Tipo de base de datos
+	 * @param <SType> Tipo de esquema
+	 * @param <TType> Tipo de tabla
+	 * @param <CType> Tipo de columna
+	 * @param <PKType> Tipo de valor de las PK
+	 * @param <RType> Clase de las instancias a retornar
+	 * @param localPO Instancia del Objeto Persistente desde el que se obtiene el PO referenciado
+	 * @param clazz Clase del Objeto Persistente referenciado
+	 * @param identifier Identificador del Objeto Persistente referenciado
+	 * @return Instancia del Objeto Persistente referenciado
+	 */
+	@SuppressWarnings("unchecked")
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> RType getReferencedPO(final AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType> localPO, final Class<RType> clazz, final PKType... identifier) {
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().info("Getting referenced Persistent Object in " + localPO + " to " + clazz.getName());
+		// verificamos si hay identificadores
+		if (identifier == null)
+			// retornamos null
+			return null;
+		try {
+			try {
+				// creamos el identificador
+				ArrayList<PKType> identifierLocalPO = new ArrayList<PKType>();
+				// recorremos las PKs
+				for (CType pkColumn: localPO.getTable().getPrimaryKeys())
+					// seteamos el ID de la columna
+					identifierLocalPO.add((PKType) localPO.getValue(pkColumn.getColumnName()));
+				// verificamos si tenemos el PO referenciado
+				RType referencedPO = AbstractPersistentObject.getSavedReferencedPO((Class<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>>) localPO.getClass(), identifierLocalPO, clazz, identifier);
+				// verificamos si existe
+				if (referencedPO != null)
+					// retornamos el Objeto Persistente referenciado
+					return referencedPO;
+				// obtenemos el PO referenciado
+				referencedPO = (RType) AbstractPersistentObject.getConstuctorOf(clazz).newInstance(identifier);
+				// verificamos si es null
+				if (referencedPO == null)
+					// salimos con un error
+					throw new InstantiationException("Referenced Persistent Object can't be instantiated");
+				// agregamos el PO a la lista de referenciados
+				AbstractPersistentObject.referencedPOs.put(referencedPO, localPO.getClass(), identifierLocalPO, clazz);
+				// retornamos el PO referenciado
+				return referencedPO;
+			} catch (SQLException e) {
+				// mostramos el error
+				AbstractPersistentObject.getSLogger().error(e);
+			}
+		} catch (Exception e) {
+			// mostramos el trace de la excepcion
+			AbstractPersistentObject.getSLogger().error(e);
+		}
+		// retornamos null
+		return null;
+	}
+
+	/**
+	 * Retorna el constructor para la tabla
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 10, 2012 6:00:26 PM
+	 * @param clazz Clase de la cual obtener el contructor
+	 * @return Constructor de la clase
+	 */
+	private static <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> Constructor<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> getConstuctorOf(final Class<RType> clazz) {
+		try {
+			// mostramos un log
+			AbstractPersistentObject.getSLogger().debug("Finding constructor of Persistent Object for class " + clazz.getName());
+			// obtenemos la tabla
+			TType table = AbstractPersistentObject.getTableOf(clazz);
+			// lista para los argumentos del constructor
+			Class<?>[] params = new Class<?>[table.getPrimaryKeys().size()];
+			// posicion de los parametros
+			Integer pos = 0;
+			// recorremos las PKs
+			for (CType pkColumn: table.getPrimaryKeys())
+				// agregamos la clase a la lista
+				params[pos++] = pkColumn.getDataClass();
+			// obtenemos el constructor
+			final Constructor<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> constructor = clazz.getDeclaredConstructor(params);
+			// mostramos un log
+			AbstractPersistentObject.getSLogger().debug("Constructor found to instanciate Persistent Objects: " + constructor);
+			// retornamos el constructor
+			return constructor;
+		} catch (SQLException e) {
+			// mostramos el error
+			AbstractPersistentObject.getSLogger().error(e);
+		} catch (NoSuchMethodException e) {
+			// mostramos el error
+			AbstractPersistentObject.getSLogger().error(e);
+		} catch (SecurityException e) {
+			// mostramos el error
+			AbstractPersistentObject.getSLogger().error(e);
+		}
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().warning("Constructor of Persistent Object not found for class " + clazz.getName());
+		// retornamos null
+		return null;
+	}
+
+	/**
+	 * Retorna el Objeto Persistente si ya fue cargado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 10, 2012 6:49:06 PM
+	 * @param poClass Clase del PO local que solicita el PO referenciado
+	 * @param identifierLocalPO Identificador del PO local
+	 * @param clazz Clase del PO referenciado
+	 * @param identifier Identificador del PO referenciado
+	 * @return PO referenciado o null si no existe o si el identificador referenciado no coincide
+	 */
+	@SuppressWarnings("unchecked")
+	private static <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> RType getSavedReferencedPO(final Class<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> poClass, final ArrayList<PKType> identifierLocalPO, final Class<RType> clazz, final PKType... identifier) {
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().debug("Finding preloaded Persistent Object");
+		// verificamos si tenemos el PO referenciado
+		RType referencedPO = (RType) AbstractPersistentObject.referencedPOs.get(poClass, identifierLocalPO, clazz);
+		try {
+			// verificamos si es null
+			if (referencedPO != null) {
+				// bandera
+				boolean isEqual = true;
+				// reiniciamos la posicion
+				Integer pos = 0;
+				// verificamos si es el mismo ID
+				for (CType pkColumn: AbstractPersistentObject.getTableOf(clazz).getPrimaryKeys())
+					// verificamos si es el mismo ID
+					if (!identifier[pos++].equals(referencedPO.getValue(pkColumn.getColumnName()))) {
+						// modificamos la bandera
+						isEqual = false;
+						// salimos
+						break;
+					}
+				// verificamos si es el PO
+				if (isEqual) {
+					// mostramos un log
+					AbstractPersistentObject.getSLogger().info("Preloaded Persistent Object found");
+					// retornamos el PO
+					return referencedPO;
+				}
+			}
+		} catch (SQLException e) {
+			// mostramos el error
+			AbstractPersistentObject.getSLogger().error(e);
+		}
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().debug("Preloaded Persistent Object can't be found");
+		// retornamos null
+		return null;
+	}
+
+	/**
 	 * Retorna el logger estatico
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -312,6 +454,42 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		AbstractPersistentObject.static_log.setConsoleLevel(AbstractPersistentObject.DEBUG_LEVEL);
 		// retornamos el logger
 		return AbstractPersistentObject.static_log;
+	}
+
+	/**
+	 * Retorna la tabla (TableWrapper) de la clase especificada
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 10, 2012 5:53:21 PM
+	 * @param clazz Clase de la cual obtener la tabla
+	 * @return Tabla de la clase
+	 */
+	@SuppressWarnings("unchecked")
+	private static <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> TType getTableOf(final Class<RType> clazz) {
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().debug("Finding table for " + clazz.getName());
+		// nombre de la tabla
+		TType table = null;
+		// superclase del PO
+		Class<?> superClazz = clazz;
+		// recorremos hasta encontrar la tabla
+		while (table == null)
+			try {
+				// obtenemos el metodo
+				Method tableInstance = superClazz.getDeclaredMethod("getTableInstance", new Class[] {});
+				// lo setamos como accesible
+				tableInstance.setAccessible(true);
+				// obtenemos el nombre de la tabla
+				table = (TType) tableInstance.invoke(clazz.getDeclaredConstructor(new Class[] {}).newInstance());
+			} catch (Exception ignored) {
+				// obtenemos el padre
+				superClazz = superClazz.getSuperclass();
+			}
+		// mostramos un log
+		AbstractPersistentObject.getSLogger().debug("Table found: " + table);
+		// retornamos la tabla
+		return table;
 	}
 
 	/**
@@ -487,41 +665,6 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	}
 
 	/**
-	 * Retorna el HashMap con las PKs del registro
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
-	 * @version Oct 9, 2012 6:11:49 PM
-	 * @param PrimaryKeys Claves Primarias en orden
-	 * @return HashMap con las claves primarias
-	 * @throws SQLException Si no se pueden obtener las columnas PK
-	 */
-	protected final HashMap<String, PKType> getPrimaryKeys(final PKType... PrimaryKeys) throws SQLException {
-		// creamos el hashpmap
-		final HashMap<String, PKType> pks = new HashMap<String, PKType>();
-		// verificamos si tiene valor
-		if (PrimaryKeys == null)
-			// salimos con un error
-			throw new IllegalArgumentException("Primary Keys is mandatory");
-		// verificamos si falta algun valor
-		if (PrimaryKeys.length != this.getTable().getPrimaryKeys().size())
-			// salimos con un error
-			throw new IllegalArgumentException("Number of Primary Keys specified is not equals to number of PK columns (" + PrimaryKeys.length + " != " + this.getTable().getPrimaryKeys().size() + ")");
-		// mostramos un log
-		this.log.info("Loading Primary Keys");
-		// posicion de la PK
-		Integer pkPos = 0;
-		// recorremos las columnas PK
-		for (CType pkColumn: this.getTable().getPrimaryKeys())
-			// agregamos la PK
-			pks.put(pkColumn.getColumnName(), PrimaryKeys[pkPos++]);
-		// mostramos un log
-		this.log.debug("Loaded Primary Keys are: " + this.getPKsFilter(true));
-		// retornamos las PKs
-		return pks;
-	}
-
-	/**
 	 * Retorna la instancia del conector SQL a la DB
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -532,20 +675,6 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws Exception Si no se puede obtener el conector
 	 */
 	protected abstract SQLConnector getSQLConnector() throws Exception;
-
-	/**
-	 * Retorna la tabla del registro
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Jul 31, 2012 12:14:42 PM
-	 * @return Tabla Fisica
-	 */
-	protected final TType getTable() {
-		// retornamos la tabla
-		return this.table;
-	}
 
 	/**
 	 * Retorna el nombre de la tabla
@@ -802,6 +931,55 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	private HashMap<CType, PKType> getPrimaryKeys() {
 		// retornamos las PKs
 		return this.primaryKeys;
+	}
+
+	/**
+	 * Retorna el HashMap con las PKs del registro
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 9, 2012 6:11:49 PM
+	 * @param PrimaryKeys Claves Primarias en orden
+	 * @return HashMap con las claves primarias
+	 * @throws SQLException Si no se pueden obtener las columnas PK
+	 */
+	private HashMap<String, PKType> getPrimaryKeys(final PKType... PrimaryKeys) throws SQLException {
+		// creamos el hashpmap
+		final HashMap<String, PKType> pks = new HashMap<String, PKType>();
+		// verificamos si tiene valor
+		if (PrimaryKeys == null)
+			// salimos con un error
+			throw new IllegalArgumentException("Primary Keys is mandatory");
+		// verificamos si falta algun valor
+		if (PrimaryKeys.length != this.getTable().getPrimaryKeys().size())
+			// salimos con un error
+			throw new IllegalArgumentException("Number of Primary Keys specified is not equals to number of PK columns (" + PrimaryKeys.length + " != " + this.getTable().getPrimaryKeys().size() + ")");
+		// mostramos un log
+		this.log.info("Loading Primary Keys");
+		// posicion de la PK
+		Integer pkPos = 0;
+		// recorremos las columnas PK
+		for (CType pkColumn: this.getTable().getPrimaryKeys())
+			// agregamos la PK
+			pks.put(pkColumn.getColumnName(), PrimaryKeys[pkPos++]);
+		// mostramos un log
+		this.log.debug("Loaded Primary Keys are: " + this.getPKsFilter(true));
+		// retornamos las PKs
+		return pks;
+	}
+
+	/**
+	 * Retorna la tabla del registro
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 31, 2012 12:14:42 PM
+	 * @return Tabla Fisica
+	 */
+	private TType getTable() {
+		// retornamos la tabla
+		return this.table;
 	}
 
 	/**
