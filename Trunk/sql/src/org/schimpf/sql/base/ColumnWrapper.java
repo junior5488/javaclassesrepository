@@ -51,6 +51,13 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	private final Integer	columnPosition;
 
 	/**
+	 * Clase de la columna
+	 * 
+	 * @version Oct 10, 2012 2:23:15 PM
+	 */
+	private Class<?>			dataClass;
+
+	/**
 	 * Tipo de dato de la columna
 	 * 
 	 * @version May 1, 2012 10:53:13 PM
@@ -151,6 +158,24 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	public final Integer getColumnPosition() {
 		// retornamos la posicion de la columna
 		return this.columnPosition;
+	}
+
+	/**
+	 * Retorna la clase de la columna
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 10, 2012 2:22:35 PM
+	 * @return Clase de la columna
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 */
+	public final Class<?> getDataClass() throws SQLException {
+		// verificamos si tenemos valor
+		if (this.dataClass == null)
+			// cargamos los datos
+			this.loadMetaData();
+		// retornamos la clase de la columna
+		return this.dataClass;
 	}
 
 	/**
@@ -304,6 +329,10 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 		if (this.getSQLConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " LIMIT 1")) {
 			// almacenamos el tipo de dato
 			this.dataType = this.getSQLConnector().getResultSet().getMetaData().getColumnTypeName(this.getColumnPosition());
+			try {
+				// almacenamos la clase
+				this.dataClass = Class.forName(this.getSQLConnector().getResultSet().getMetaData().getColumnClassName(this.getColumnPosition()));
+			} catch (ClassNotFoundException ignored) {}
 			// almacenamos si es clave primaria
 			this.isPrimaryKey = this.getTable().getPrimaryKeys().contains(this);
 			// almacenamos si es unique
