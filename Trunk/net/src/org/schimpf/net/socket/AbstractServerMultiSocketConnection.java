@@ -21,8 +21,6 @@ package org.schimpf.net.socket;
 import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
 import org.schimpf.util.Logger;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,7 +44,7 @@ import java.net.UnknownHostException;
  * @param <CType> Clase de la conexion del socket
  * @param <StageType> Enum para las etapas POST
  */
-public abstract class AbstractServerMultiSocketConnection<SType extends AbstractServerMultiSocket<SType, CType, StageType>, CType extends AbstractServerMultiSocketConnection<SType, CType, StageType>, StageType extends Enum<StageType>> extends Thread implements SignalHandler {
+public abstract class AbstractServerMultiSocketConnection<SType extends AbstractServerMultiSocket<SType, CType, StageType>, CType extends AbstractServerMultiSocketConnection<SType, CType, StageType>, StageType extends Enum<StageType>> extends Thread {
 	/**
 	 * Host por defecto
 	 * 
@@ -207,14 +205,14 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		this.serverSocket = serverSocket;
 		// instanciamos el logger
 		this.log = new Logger(this.getName(), null);
-	}
-
-	@Override
-	public final void handle(final Signal signal) {
-		// verificamos si la señal es salida desde consola
-		if (signal.getNumber() == 2 || signal.getNumber() == 15)
-			// realizamos el shutdown
-			this.shutdownRequest();
+		// registramos el capturador de señal de apagado
+		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
+			@Override
+			public void run() {
+				// realizamos el shutdown
+				AbstractServerMultiSocketConnection.this.shutdownRequest();
+			}
+		}));
 	}
 
 	/**
