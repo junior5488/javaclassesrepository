@@ -5,7 +5,6 @@
  */
 package org.schimpf.net.utils;
 
-import sun.security.util.Password;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -210,7 +209,7 @@ public final class ConnectionData {
 		// solicitamos el pass
 		System.out.print("Input password: ");
 		// recorremos las letras
-		for (final char c: Password.readPassword(System.in))
+		for (final char c: System.console().readPassword())
 			// agregamos la letra al pass
 			this.pass += c;
 	}
