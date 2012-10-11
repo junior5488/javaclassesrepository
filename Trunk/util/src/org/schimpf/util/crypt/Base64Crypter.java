@@ -18,8 +18,7 @@
  */
 package org.schimpf.util.crypt;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -139,7 +138,7 @@ public class Base64Crypter {
 	public String decrypt(final String string) {
 		try {
 			// Decode base64 to get bytes
-			final byte[] dec = new BASE64Decoder().decodeBuffer(string);
+			final byte[] dec = Base64.decodeBase64(string);
 			// Decrypt
 			final byte[] utf8 = this.dcipher.doFinal(dec);
 			// Decode using utf-8
@@ -166,7 +165,7 @@ public class Base64Crypter {
 			// Encrypt
 			final byte[] enc = this.ecipher.doFinal(utf8);
 			// Encode bytes to base64 to get a string
-			return new BASE64Encoder().encode(enc);
+			return Base64.encodeBase64String(enc);
 		} catch (final Exception ignored) {}
 		// retornamos null
 		return null;
