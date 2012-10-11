@@ -296,11 +296,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				AbstractPersistentObject.getSLogger().info(list.size() + " Persistent Objects loaded");
 			} catch (final SQLException e) {
 				// mostramos el error
-				e.printStackTrace();
+				AbstractPersistentObject.getSLogger().error(e);
 			}
 		} catch (Exception e) {
 			// mostramos el trace de la excepcion
-			e.printStackTrace();
+			AbstractPersistentObject.getSLogger().fatal(e);
 		}
 		// retornamos la lista
 		return list;
@@ -1058,14 +1058,16 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			this.log.debug("SQL: " + sql);
 			// ejecutamos el SQL para obtener los valores de las columnas del registro
 			this.getConnector().executeSQL(sql);
+			// obtenemos el resultset
+			ResultSet loadData = this.getConnector().getResultSet();
 			// verificamos si tenemos resultado
-			if (this.getConnector().getResultSet().next()) {
+			if (loadData.next()) {
 				// mostramos un log
 				this.log.debug("Persistent Object found!");
 				// recorremos las columnas de la tabla
 				for (final CType column: this.getTable().getColumns())
 					// cargamos la columna
-					this.valuesOld.put(column, this.getConnector().getResultSet().getObject(column.getColumnName()));
+					this.valuesOld.put(column, loadData.getObject(column.getColumnName()));
 				// mostramos un log
 				this.log.info("Persistent Object loaded finished");
 				// si no existe
@@ -1088,7 +1090,9 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			}
 		} catch (final Exception e) {
 			// mostramos un log
-			this.log.error("Error ocurred loading Persistent Object: " + e.getMessage());
+			this.log.error("Error ocurred loading Persistent Object:");
+			// mostramos el error
+			this.log.error(e);
 			// relanzamos la excepcion
 			throw e;
 		}
