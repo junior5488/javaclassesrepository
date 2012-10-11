@@ -1,3 +1,9 @@
+libschimpf-net (1.1.1) stable; urgency=low
+
+  * No utilizamos la API Sun
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Thu, 11 Oct 2012 15:17:05 -0300
+
 libschimpf-net (1.1.0) stable; urgency=low
 
   * Agregamos la clase para socket servidor con capacidad de multiples clientes a la vez
