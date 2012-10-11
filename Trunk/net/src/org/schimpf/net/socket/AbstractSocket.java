@@ -20,8 +20,6 @@ package org.schimpf.net.socket;
 
 import org.schimpf.java.threads.Thread;
 import org.schimpf.util.Logger;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -34,7 +32,7 @@ import java.net.UnknownHostException;
  * @author <B>Schimpf.NET</B>
  * @version Jul 19, 2012 1:03:42 PM
  */
-public abstract class AbstractSocket extends Thread implements SignalHandler {
+public abstract class AbstractSocket extends Thread {
 	/**
 	 * Host por defecto
 	 * 
@@ -110,14 +108,14 @@ public abstract class AbstractSocket extends Thread implements SignalHandler {
 		super(name, port.toString());
 		// instanciamos el logger
 		this.log = new Logger(this.getName(), null);
-	}
-
-	@Override
-	public final void handle(final Signal signal) {
-		// verificamos si la señal es salida desde consola
-		if (signal.getNumber() == 2 || signal.getNumber() == 15)
-			// realizamos el shutdown
-			this.shutdownRequest();
+		// generamos el thread para capturar la señal de apagado
+		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
+			@Override
+			public void run() {
+				// realizamos el shutdown
+				AbstractSocket.this.shutdownRequest();
+			}
+		}));
 	}
 
 	/**
