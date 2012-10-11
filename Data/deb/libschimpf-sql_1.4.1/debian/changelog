@@ -1,3 +1,25 @@
+libschimpf-sql (1.4.1) stable; urgency=low
+
+  * AbstractPersistentObject: Constructores son protected
+  * AbstractPersistentObject: Agregamos 2 metodos estaticos para obtener instancias desde la DB
+  * AbstractPersistentObject: Agregamos la definicion del PO en toString()
+  * AbstractPersistentObject: Agregamos el metodo para armar el identificator del registro. El constructor ahora recibe los parametros como lista (ID1, ID2, ...)
+  * AbstractPersistentObject: Agregamos los metodos beforeDelete() y afterDelete()
+  * AbstractPersistentObject: Mejoramos la validacion de cambios realizados en el PO
+  * AbstractPersistentObject: Validamos la existencia del PO al cargarlo, si no existe almacenamos los IDs especificados en el constructor
+  * AbstractPersistentObject: La obtencion de los IDs insertados la hacemos con posiciones, no nombres de campos
+  * AbstractPersistentObject: Agregamos mas mensajes de depuracion
+  * AbstractPersistentObject: Agregamos el logger estatico
+  * AbstractPersistentObject: Ya funciona el metodo getFromDB()
+  * AbstractPersistentObject: Agregamos el metodo getReferencedPO() para obtener instancias de Objetos Persistentes referenciados
+  * AbstractPersistentObject: Movimos la obtencion del constructor a un metodo aparte
+  * AbstractPersistentObject: Ocultamos los metodos getTable() y getPrimaryKeys()
+  * ColumnWrapper: Agregamos el metodo para obtener la clase de la columna
+  * AbstractPersistentObject: Agregamos otra opcion para el metodo getFromDB() para especificar el ORDER BY
+  * *Wrapper: Eliminamos el parametro SQLProcess, obtenemos desde la instancia a la que pertenece el objeto
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Wed, 10 Oct 2012 21:22:35 -0300
+
 libschimpf-sql (1.4.0) stable; urgency=low
 
   * Movimos las clases *Wrapper al paquete base para ocultar un metodo protegido interno

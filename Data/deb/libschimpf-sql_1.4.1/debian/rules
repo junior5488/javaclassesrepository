@@ -32,7 +32,7 @@ post-clean:
 	dh_clean
 	rm -f build-stamp
 	rm -Rf debian/input/*
-	chown hschimpf:root ../libschimpf-sql_1.4.0_all.deb
-	mv ../libschimpf-sql_1.4.0_all.deb ../../builds/1.4.0/libschimpf-sql_1.4.0_all.deb
+	chown hschimpf:root ../libschimpf-sql_1.4.1_all.deb
+	mv ../libschimpf-sql_1.4.1_all.deb ../../builds/1.4.1/libschimpf-sql_1.4.1_all.deb
 	rm -f ../../builds/current/libschimpf-sql_current_all.deb
-	ln -s "`dirname ../../builds/1.4.0/libschimpf-sql_1.4.0_all.deb`"/libschimpf-sql_1.4.0_all.deb ../../builds/current/libschimpf-sql_current_all.deb
+	ln -s "`dirname ../../builds/1.4.1/libschimpf-sql_1.4.1_all.deb`"/libschimpf-sql_1.4.1_all.deb ../../builds/current/libschimpf-sql_current_all.deb
