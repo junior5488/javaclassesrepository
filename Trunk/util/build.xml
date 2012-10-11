@@ -9,11 +9,17 @@
 		<!-- Valores de informacion del programa -->
 		<buildnumber file="Trunk/util/build.number"/>
 		<property name="jar.start" value="libschimpf-util"/>
-		<property name="jar.version" value="1.2.0"/>
+		<property name="jar.version" value="1.2.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
 		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
 		<property name="compile.debug" value="true"/>
+		<!-- Librerias para la compilacion -->
+		<path id="compile.classpath">
+			<fileset dir="/usr/share/java/">
+				<include name="commons-codec.jar"/>
+			</fileset>
+		</path>
    </target>
 
    <target name="clean" depends="init">
@@ -34,7 +40,9 @@
 
 	<target name="compile" depends="prepare">
 		<echo message="Compilando fuentes del proyecto"/>
-		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false"/>
+		<javac srcdir="${dir.src}" destdir="${dir.tmp}" debug="${compile.debug}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
    </target>
 
 	<target name="make" depends="compile">
