@@ -1,0 +1,94 @@
+*See in: * [http://code.google.com/p/javaclassesrepository/wiki/JImagePanel?tm=6&wl=es spanish] | _english_
+<wiki:toc/>
+=Introducción=
+Class which extends of [http://docs.oracle.com/javase/6/docs/api/javax/swing/JPanel.html javax.swing.JPanel] and allows the handling of images
+=Definición=
+{{{
+package org.schimpf.awt.image
+public class JImagePanel extends JPanel {
+   /**
+    * Constructor from a BufferedImage instance
+    * @param image Imagen precargada
+    */
+   public JImagePanel(BufferedImage image)
+
+   /**
+    * Constructor from a BufferedImage instance specifying the position of image in pixels
+    * @param image Imagen precargada
+    * @param x Horizontal position
+    * @param y Vertical position
+    */
+   public JImagePanel(BufferedImage image, int x, int y)
+
+   /**
+    * Constructor from a BufferedImage instance specifying the position of image in pixels and rotation
+    * @param image Imagen precargada
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @param degress Rotation degress
+    */
+   public JImagePanel(BufferedImage image, int x, int y, float degress)
+
+   /**
+    * Constructor specifying the path of a image
+    * @param imagePath Ruta de la imagen
+    * @throws IOException If the path to image don't exists
+    */
+   public JImagePanel(String imagePath) throws IOException
+
+   /**
+    * Constructor specifying the path of a image and the position in pixels
+    * @param imagePath Ruta de la imagen
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @throws IOException If the path to image don't exists
+    */
+   public JImagePanel(String imagePath, int x, int y) throws IOException
+
+   /**
+    * Constructor specifying the path of a image, the position in pixels and rotation
+    * @param imagePath Ruta de la imagen
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @param degress Rotation degress
+    * @throws IOException If the path to image don't exists
+    */
+   public JImagePanel(String imagePath, int x, int y, float degress) throws IOException
+
+   /**
+    * Reposition the imagen in panel
+    * @param x Horizontal position
+    * @param y Vertical position
+    */
+   public void positionate(float x, float y)
+
+   /**
+    * Rotates the image
+    * @param degress Rotation degress
+    */
+   public void rotate(float angle)
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JImagePanel.java last] ||
+
+=Usage=
+{{{
+public class UsageExample {
+   public static void main(String... arg) {
+      // make a JFrame
+      JFrame window = new JFrame("Test JImagePanel");
+      // add the image frame in position 50, 30 and rotated to 75 degress
+      window.add(new JImagePanel("/ruta/imagen/prueba.jpg", 50, 30, 75));
+      // set JFrame size
+      window.setSize(400, 300);
+      // show the JFrame
+      window.setVisible(true);
+   }
+}
+}}}
+
+[http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=en back to packages list]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@hds-solutions.net_
+ * *[http://hds-solutions.net HDS Solutions]* - _Soluciones Informáticas_

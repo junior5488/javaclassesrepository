@@ -1,0 +1,115 @@
+*See in: * [http://code.google.com/p/javaclassesrepository/wiki/JAnimatedImagePanel?tm=6&wl=es spanish] | _english_
+<wiki:toc/>
+=Introducción=
+Class which extends of JImagePanel but with animations on move and rotate
+=Definición=
+{{{
+package org.schimpf.awt.image
+public class JAnimatedImagePanel extends JImagePanel {
+   /**
+    * Constructor from a BufferedImage instance
+    * @param image Imagen precargada
+    */
+   public JImagePanel(BufferedImage image)
+
+   /**
+    * Constructor from a BufferedImage instance specifying the position of image in pixels
+    * @param image Imagen precargada
+    * @param x Horizontal position
+    * @param y Vertical position
+    */
+   public JImagePanel(BufferedImage image, int x, int y)
+
+   /**
+    * Constructor from a BufferedImage instance specifying the position of image in pixels and rotation
+    * @param image Imagen precargada
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @param degress Rotation degress
+    */
+   public JImagePanel(BufferedImage image, int x, int y, float degress)
+
+   /**
+    * Constructor specifying the path of a image
+    * @param imagePath Ruta de la imagen
+    * @throws IOException If the path to image don't exists
+    */
+   public JImagePanel(String imagePath) throws IOException
+
+   /**
+    * Constructor specifying the path of a image and the position in pixels
+    * @param imagePath Ruta de la imagen
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @throws IOException If the path to image don't exists
+    */
+   public JImagePanel(String imagePath, int x, int y) throws IOException
+
+   /**
+    * Constructor specifying the path of a image, the position in pixels and rotation
+    * @param imagePath Ruta de la imagen
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @param degress Rotation degress
+    * @throws IOException If the path to image don't exists
+    */
+   public JImagePanel(String imagePath, int x, int y, float degress) throws IOException
+
+   /**
+    * Reposition the imagen in panel
+    * @param x Horizontal position
+    * @param y Vertical position
+    */
+   public void positionate(float x, float y)
+
+   /**
+    * Reposition the imagen in panel specifying the speed
+    * @param x Horizontal position
+    * @param y Vertical position
+    * @param speed Move speed (in pixels for second)
+    */
+   public void positionate(float x, float y, float speed)
+
+   /**
+    * Rotates the image
+    * @param degress Rotation degress
+    */
+   public void rotate(float angle)
+
+   /**
+    * Rotates the image specifying the speed
+    * @param degress Rotation degress
+    * @param speed Rotate speed (in degrees for second)
+    */
+   public void rotate(float angle, float speed)
+}
+}}}
+|| *Sources* || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/awt/src/org/schimpf/awt/image/JAnimatedImagePanel.java last] ||
+
+=Usage=
+{{{
+public class UsageExample {
+   public static void main(String... arg) {
+      // make a JFrame
+      JFrame window = new JFrame("Test JAnimatedImagePanel");
+      // make a image panel in position 50, 30 and rotated to 75 degress
+      JImagePanel image = new JImagePanel("/ruta/imagen/prueba.jpg", 50, 30, 75)
+      // add the image panel to JFrame
+      window.add(image);
+      // set JFrame size
+      window.setSize(400, 300);
+      // show the window
+      window.setVisible(true);
+      // sleep a second
+      Thread.sleep(1000);
+      // rotate the image to 130 degrees
+      image.rotate(130);
+   }
+}
+}}}
+
+[http://code.google.com/p/javaclassesrepository/wiki/packages?tm=6&wl=en back to packages list]
+----
+ * *Hermann D. Schimpf*
+ * _hschimpf@hds-solutions.net_
+ * *[http://hds-solutions.net HDS Solutions]* - _Soluciones Informáticas_
