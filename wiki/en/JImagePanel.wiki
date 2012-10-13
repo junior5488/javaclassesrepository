@@ -1,8 +1,8 @@
 *See in: * [http://code.google.com/p/javaclassesrepository/wiki/JImagePanel?tm=6&wl=es spanish] | _english_
 <wiki:toc/>
-=Introducción=
+=Introduction=
 Class which extends of [http://docs.oracle.com/javase/6/docs/api/javax/swing/JPanel.html javax.swing.JPanel] and allows the handling of images
-=Definición=
+=Definition=
 {{{
 package org.schimpf.awt.image
 public class JImagePanel extends JPanel {

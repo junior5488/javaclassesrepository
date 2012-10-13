@@ -1,8 +1,8 @@
 *See in: * [http://code.google.com/p/javaclassesrepository/wiki/JAnimatedImagePanel?tm=6&wl=es spanish] | _english_
 <wiki:toc/>
-=Introducción=
+=Introduction=
 Class which extends of JImagePanel but with animations on move and rotate
-=Definición=
+=Definition=
 {{{
 package org.schimpf.awt.image
 public class JAnimatedImagePanel extends JImagePanel {
