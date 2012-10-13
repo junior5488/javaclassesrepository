@@ -76,6 +76,7 @@ Depende de los 5 (cinco) paquetes de librerias java Schimpf.
 
 ====libschimpf-util-java====
 Paquete con las clases contenidas en _*org.schimpf.util.`*`*_
+
 _*Depende de*_:
  * libcommons-codec-java
 
