@@ -5,7 +5,6 @@
 || *Clase* || *Descripcion* || *Fuentes* ||
 || [http://code.google.com/p/javaclassesrepository/wiki/MultiKeyMap?tm=6&wl=es org.schimpf.util.arrays.MultiKeyMap] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/HashMap.html java.util.HashMap] con claves multiples || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/MultiKeyMap.java último] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/SortableList?tm=6&wl=es org.schimpf.util.arrays.SortableList] || Implementacion de [http://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html java.util.ArrayList] ordenable por medio de la comparacion de los elementos en la lista || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableList.java último] ||
-|| [http://code.google.com/p/javaclassesrepository/wiki/SortableListMultithreaded?tm=6&wl=es org.schimpf.util.arrays.SortableListMultithreaded] || Implementacion de SortableList pero para el uso de varios threads para la ordenacion de los elementos || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/arrays/SortableListMultithreaded.java último] ||
 || || || ||
 || [http://code.google.com/p/javaclassesrepository/wiki/ParamsManager?tm=6&wl=es org.schimpf.util.managers.ParamsManager] || Administrador abstracto de parametros para aplicaciones || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/managers/ParamsManager.java último] ||
 || || || ||
@@ -77,6 +76,8 @@ Depende de los 5 (cinco) paquetes de librerias java Schimpf.
 
 ====libschimpf-util-java====
 Paquete con las clases contenidas en _*org.schimpf.util.`*`*_
+_*Depende de*_:
+ * libcommons-codec-java
 
 ====libschimpf-awt-java====
 Paquete con las clases contenidas en _*org.schimpf.awt.`*`*_
