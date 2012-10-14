@@ -66,6 +66,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	public static Level																	DEBUG_LEVEL		= Level.OFF;
 
 	/**
+	 * Tablas cacheadas
+	 * 
+	 * @version Oct 14, 2012 12:40:45 AM
+	 */
+	@SuppressWarnings("unchecked")
+	private static final HashMap<Class<?>, TableWrapper>						cachedTables	= new HashMap<Class<?>, TableWrapper>();
+
+	/**
 	 * Lista de PO's referenciados
 	 * 
 	 * @version Oct 10, 2012 6:35:44 PM
@@ -554,7 +562,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().debug("Finding table for " + clazz.getName());
 		// nombre de la tabla
-		TType table = null;
+		TType table = (TType) AbstractPersistentObject.cachedTables.get(clazz);
 		// superclase del PO
 		Class<?> superClazz = clazz;
 		// recorremos hasta encontrar la tabla
@@ -572,6 +580,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			}
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().debug("Table found: " + table);
+		// almacenamos la tabla
+		AbstractPersistentObject.cachedTables.put(clazz, table);
 		// retornamos la tabla
 		return table;
 	}
