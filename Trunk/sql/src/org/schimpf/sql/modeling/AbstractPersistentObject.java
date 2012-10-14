@@ -320,9 +320,9 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// mostramos el sql
 				AbstractPersistentObject.getSLogger().debug("SQL: " + sql);
 				// ejecutamos la consulta
-				AbstractPersistentObject.sqlConnector.executeQuery(AbstractPersistentObject.sqlConnector.prepareStatement(sql));
+				AbstractPersistentObject.sqlConnector.executeQuery(AbstractPersistentObject.sqlConnector.prepareStatement(sql, trxName), trxName);
 				// obtenemos el resultset
-				ResultSet result = AbstractPersistentObject.sqlConnector.getResultSet();
+				ResultSet result = AbstractPersistentObject.sqlConnector.getResultSet(trxName);
 				// creamos el hashpmap
 				Object[] identifier;
 				// recorremos los resultados
