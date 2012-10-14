@@ -10,7 +10,7 @@
  * |
  * | You should have received a copy of the GNU General Public License
  * | along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @author <B>Schimpf.NET</B>
@@ -34,6 +34,7 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,6 +116,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	private final TType																	table;
 
 	/**
+	 * Nombre de la transaccion del PO
+	 * 
+	 * @version Oct 13, 2012 8:46:14 PM
+	 */
+	private String																			trxName;
+
+	/**
 	 * Columnas y sus valores nuevos (modificados)
 	 * 
 	 * @version Jul 31, 2012 12:00:21 PM
@@ -176,26 +184,38 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	}
 
 	/**
-	 * Retorna una lista de instancias desde la DB
+	 * Constructor del PO
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
-	 * @version Oct 9, 2012 3:49:43 PM
-	 * @param <SQLConnector> Conector SQL
-	 * @param <MType> Tipo de sistema de base de datos
-	 * @param <DType> Tipo de base de datos
-	 * @param <SType> Tipo de esquema
-	 * @param <TType> Tipo de tabla
-	 * @param <CType> Tipo de columna
-	 * @param <PKType> Tipo de valor de las PK
-	 * @param <RType> Clase de las instancias a retornar
-	 * @param clazz Clase de las instancias a obtener
-	 * @param where Filtro SQL
-	 * @return Lista de instancias
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 10:20:08 PM
+	 * @param trxName Nombre de la transaccion
+	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
-	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String where) {
-		// retornamos los recibos
-		return AbstractPersistentObject.getFromDB(clazz, null, where, null);
+	protected AbstractPersistentObject(final String trxName) throws Exception {
+		// ejecutamos el constructor
+		this();
+		// almacenamos el nombre de la transaccion
+		this.trxName = trxName;
+	}
+
+	/**
+	 * Cargador del PO
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 10:21:39 PM
+	 * @param trxName Nombre de la transaccion
+	 * @param identifier Identificador del registro
+	 * @throws Exception Si no se pudo conectar a la base de datos
+	 */
+	protected AbstractPersistentObject(final String trxName, final PKType... identifier) throws Exception {
+		// ejecutamos el constructor
+		this(identifier);
+		// almacenamos el nombre de la transaccion
+		this.trxName = trxName;
 	}
 
 	/**
@@ -212,14 +232,39 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @param <CType> Tipo de columna
 	 * @param <PKType> Tipo de valor de las PK
 	 * @param <RType> Clase de las instancias a retornar
+	 * @param trxName Nombre de la transaccion
+	 * @param clazz Clase de las instancias a obtener
+	 * @param where Filtro SQL
+	 * @return Lista de instancias
+	 */
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final String trxName, final Class<RType> clazz, final String where) {
+		// retornamos los recibos
+		return AbstractPersistentObject.getFromDB(trxName, clazz, null, where, null);
+	}
+
+	/**
+	 * Retorna una lista de instancias desde la DB
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 9, 2012 3:49:43 PM
+	 * @param <SQLConnector> Conector SQL
+	 * @param <MType> Tipo de sistema de base de datos
+	 * @param <DType> Tipo de base de datos
+	 * @param <SType> Tipo de esquema
+	 * @param <TType> Tipo de tabla
+	 * @param <CType> Tipo de columna
+	 * @param <PKType> Tipo de valor de las PK
+	 * @param <RType> Clase de las instancias a retornar
+	 * @param trxName Nombre de la transaccion
 	 * @param clazz Clase de las instancias a obtener
 	 * @param join SQL Join
 	 * @param where Filtro SQL
 	 * @return Lista de instancias
 	 */
-	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String join, final String where) {
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final String trxName, final Class<RType> clazz, final String join, final String where) {
 		// retornamos los recibos
-		return AbstractPersistentObject.getFromDB(clazz, join, where, null);
+		return AbstractPersistentObject.getFromDB(trxName, clazz, join, where, null);
 	}
 
 	/**
@@ -236,6 +281,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @param <CType> Tipo de columna
 	 * @param <PKType> Tipo de valor de las PK
 	 * @param <RType> Clase de las instancias a retornar
+	 * @param trxName Nombre de la transaccion
 	 * @param clazz Clase de las instancias a obtener
 	 * @param join SQL Join
 	 * @param where Filtro SQL
@@ -243,7 +289,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @return Lista de instancias
 	 */
 	@SuppressWarnings("unchecked")
-	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final Class<RType> clazz, final String join, final String where, final String orderBy) {
+	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> ArrayList<RType> getFromDB(final String trxName, final Class<RType> clazz, final String join, final String where, final String orderBy) {
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().info("Obtaining Persistent Objects from DB");
 		// armamos una lista para los PO's
@@ -274,21 +320,23 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// mostramos el sql
 				AbstractPersistentObject.getSLogger().debug("SQL: " + sql);
 				// ejecutamos la consulta
-				AbstractPersistentObject.sqlConnector.executeSQL(sql);
+				AbstractPersistentObject.sqlConnector.executeQuery(AbstractPersistentObject.sqlConnector.prepareStatement(sql));
 				// obtenemos el resultset
 				ResultSet result = AbstractPersistentObject.sqlConnector.getResultSet();
 				// creamos el hashpmap
-				PKType[] identifier;
+				Object[] identifier;
 				// recorremos los resultados
 				while (result.next()) {
 					// iniciamos el array
-					identifier = (PKType[]) new Object[table.getPrimaryKeys().size()];
+					identifier = new Object[table.getPrimaryKeys().size() + 1];
 					// reiniciamos la posicion
 					Integer pos = 0;
+					// agregamos el nombre de la transaccion
+					identifier[pos++] = trxName;
 					// recorremos las PKs
 					for (String pkColumn: pks)
 						// seteamos el ID de la columna
-						identifier[pos++] = (PKType) result.getObject(pkColumn);
+						identifier[pos++] = result.getObject(pkColumn);
 					// agregamos el PO
 					list.add((RType) AbstractPersistentObject.getConstuctorOf(clazz).newInstance(identifier));
 				}
@@ -342,19 +390,27 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					// seteamos el ID de la columna
 					identifierLocalPO.add((PKType) localPO.getValue(pkColumn.getColumnName()));
 				// verificamos si tenemos el PO referenciado
-				RType referencedPO = AbstractPersistentObject.getSavedReferencedPO((Class<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>>) localPO.getClass(), identifierLocalPO, clazz, identifier);
+				RType referencedPO = AbstractPersistentObject.getSavedReferencedPO((Class<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>>) localPO.getClass(), identifierLocalPO, localPO.getTrxName(), clazz, identifier);
 				// verificamos si existe
 				if (referencedPO != null)
 					// retornamos el Objeto Persistente referenciado
 					return referencedPO;
+				// armamos el identificador con la transaccion
+				Object[] newIdentifier = new Object[identifier.length + 1];
+				// agregamos el nombre de la transaccion
+				newIdentifier[0] = localPO.getTrxName();
+				// recorremos el identificador
+				for (int i = 1; i <= identifier.length; i++)
+					// agregamos el valor del identificador
+					newIdentifier[i] = identifier[i - 1];
 				// obtenemos el PO referenciado
-				referencedPO = (RType) AbstractPersistentObject.getConstuctorOf(clazz).newInstance(identifier);
+				referencedPO = (RType) AbstractPersistentObject.getConstuctorOf(clazz).newInstance(newIdentifier);
 				// verificamos si es null
 				if (referencedPO == null)
 					// salimos con un error
 					throw new InstantiationException("Referenced Persistent Object can't be instantiated");
 				// agregamos el PO a la lista de referenciados
-				AbstractPersistentObject.referencedPOs.put(referencedPO, localPO.getClass(), identifierLocalPO, clazz);
+				AbstractPersistentObject.referencedPOs.put(referencedPO, localPO.getClass(), identifierLocalPO, localPO.getTrxName(), clazz);
 				// retornamos el PO referenciado
 				return referencedPO;
 			} catch (SQLException e) {
@@ -385,9 +441,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// obtenemos la tabla
 			TType table = AbstractPersistentObject.getTableOf(clazz);
 			// lista para los argumentos del constructor
-			Class<?>[] params = new Class<?>[table.getPrimaryKeys().size()];
+			Class<?>[] params = new Class<?>[table.getPrimaryKeys().size() + 1];
 			// posicion de los parametros
 			Integer pos = 0;
+			// agregamos el primer parametro como string (Nombre de la transaccion)
+			params[pos++] = String.class;
 			// recorremos las PKs
 			for (CType pkColumn: table.getPrimaryKeys())
 				// agregamos la clase a la lista
@@ -422,16 +480,17 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @version Oct 10, 2012 6:49:06 PM
 	 * @param poClass Clase del PO local que solicita el PO referenciado
 	 * @param identifierLocalPO Identificador del PO local
+	 * @param trxName Nombre de la transaccion
 	 * @param clazz Clase del PO referenciado
 	 * @param identifier Identificador del PO referenciado
 	 * @return PO referenciado o null si no existe o si el identificador referenciado no coincide
 	 */
 	@SuppressWarnings("unchecked")
-	private static <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> RType getSavedReferencedPO(final Class<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> poClass, final ArrayList<PKType> identifierLocalPO, final Class<RType> clazz, final PKType... identifier) {
+	private static <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> RType getSavedReferencedPO(final Class<? extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> poClass, final ArrayList<PKType> identifierLocalPO, final String trxName, final Class<RType> clazz, final PKType... identifier) {
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().debug("Finding preloaded Persistent Object");
 		// verificamos si tenemos el PO referenciado
-		RType referencedPO = (RType) AbstractPersistentObject.referencedPOs.get(poClass, identifierLocalPO, clazz);
+		RType referencedPO = (RType) AbstractPersistentObject.referencedPOs.get(poClass, identifierLocalPO, trxName, clazz);
 		try {
 			// verificamos si es null
 			if (referencedPO != null) {
@@ -525,9 +584,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @author <B>Schimpf.NET</B>
 	 * @version Jul 31, 2012 9:13:12 PM
 	 * @return True si se pudo eliminar
-	 * @throws Exception Si no se pudo eliminar
 	 */
-	public final boolean delete() throws Exception {
+	public final boolean delete() {
 		// mostramos un log
 		this.log.info("Starting delete of this Persisten Object");
 		// mostramos un log
@@ -545,28 +603,66 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		delete.append(" WHERE " + this.getPKsFilter(false) + ";");
 		// mostramos el SQL
 		this.log.debug("SQL: " + delete.toString());
-		// ejecutamos el SQL
-		final boolean saveOk = this.getConnector().executeUpdate(delete.toString()) == 1;
-		// verificamos si elimino
-		if (saveOk) {
-			// mostramos si se elimino
-			this.log.warning("Persisten Object deleted");
-			// ejecutamos el afterDelete
-			if (!this.afterDelete())
-				// mostramos un log
-				this.log.warning("afterDelete was failed!");
-		} else
-			// mostramos el error
-			this.log.error("Failed to delete Persisten Object!");
-		// seteamos la bandera en true
-		this.createNew = true;
-		// vaciamos los valores actuales
-		this.valuesOld.clear();
-		this.valuesNew.clear();
-		// cargamos las columnas PK
-		this.loadPKsColumns();
-		// retornamos si elimino ok
-		return saveOk;
+		try {
+			// ejecutamos el SQL
+			final boolean saveOk = this.getConnector().executeUpdate(this.getConnector().prepareStatement(delete.toString(), this.getTrxName()), this.getTrxName()) == 1;
+			// verificamos si elimino
+			if (saveOk) {
+				// mostramos si se elimino
+				this.log.warning("Persisten Object deleted");
+				// ejecutamos el afterDelete
+				if (!this.afterDelete())
+					// mostramos un log
+					this.log.warning("afterDelete was failed!");
+			} else
+				// mostramos el error
+				this.log.error("Failed to delete Persisten Object!");
+			// seteamos la bandera en true
+			this.createNew = true;
+			// vaciamos los valores actuales
+			this.valuesOld.clear();
+			this.valuesNew.clear();
+			// cargamos las columnas PK
+			this.loadPKsColumns();
+			// retornamos si elimino ok
+			return saveOk;
+		} catch (Exception e) {
+			// mostramos un log
+			this.log.error("Delete failed! Reason: " + e.getMessage());
+			// retornamos false
+			return false;
+		}
+	}
+
+	/**
+	 * Elimina el PO de la base de datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 10:15:04 PM
+	 * @param trxName Nombre de la transaccion
+	 * @return True si se pudo eliminar
+	 */
+	public final boolean delete(final String trxName) {
+		// almacenamos el nombre de la transaccion
+		this.trxName = trxName;
+		// eliminamos el PO
+		return this.delete();
+	}
+
+	/**
+	 * Retorna el nombre de la transaccion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 8:46:37 PM
+	 * @return Nombre de la transaccion
+	 */
+	public final String getTrxName() {
+		// retornamos el nombre de la transaccion
+		return this.trxName;
 	}
 
 	/**
@@ -626,6 +722,23 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// retornamos false
 			return false;
 		}
+	}
+
+	/**
+	 * Guarda el objeto persistente
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 10:13:30 PM
+	 * @param trxName Nombre de la transaccion
+	 * @return True si se guardo sin problemas
+	 */
+	public final boolean save(final String trxName) {
+		// almacenamos el nombre de la transaccion
+		this.trxName = trxName;
+		// guardamos el PO
+		return this.save();
 	}
 
 	@Override
@@ -863,7 +976,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// recorremos las columnas
 			for (final CType column: this.getTable().getColumns())
 				// verificamos si es la columna
-				if (columnName.equalsIgnoreCase(column.getColumnName())) {
+				if (columnName.equals(column.getColumnName())) {
 					// mostramos un log
 					this.log.debug("Column found!");
 					// retornamos la columna
@@ -894,7 +1007,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// recorremos las columnas
 		for (final String column: identifier.keySet())
 			// verificamos si es la columna
-			if (columnName.equalsIgnoreCase(column))
+			if (columnName.equals(column))
 				// retornamos el nombre de la columna
 				return column;
 		// si no encontramos, retornamos la columna original
@@ -1057,9 +1170,9 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// mostramos el SQL en el log
 			this.log.debug("SQL: " + sql);
 			// ejecutamos el SQL para obtener los valores de las columnas del registro
-			this.getConnector().executeSQL(sql);
+			this.getConnector().executeQuery(this.getConnector().prepareStatement(sql, this.getTrxName()), this.getTrxName());
 			// obtenemos el resultset
-			ResultSet loadData = this.getConnector().getResultSet();
+			ResultSet loadData = this.getConnector().getResultSet(this.getTrxName());
 			// verificamos si tenemos resultado
 			if (loadData.next()) {
 				// mostramos un log
@@ -1207,13 +1320,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// mostramos el SQL
 		this.log.debug("SQL: " + insert.toString());
 		// ejecutamos el SQL
-		final boolean saveOk = this.getConnector().executeUpdate(insert.toString()) == 1;
+		final boolean saveOk = this.getConnector().executeUpdate(this.getConnector().prepareStatement(insert.toString(), Statement.RETURN_GENERATED_KEYS, this.getTrxName()), this.getTrxName()) == 1;
 		// verificamos si elimino
 		if (!saveOk)
 			// mostramos el error
 			this.log.error("Failed to insert Persisten Object!");
 		// verificamos si inserto
-		if (saveOk && this.getConnector().loadGeneratedKeys() && this.getConnector().getResultSet().next()) {
+		if (saveOk && this.getConnector().getGeneratedKeys(this.getTrxName()) != null && this.getConnector().getGeneratedKeys(this.getTrxName()).next()) {
 			// mostramos un log
 			this.log.debug("Getting inserted PKs");
 			// vaciamos las PKs
@@ -1223,7 +1336,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// recorremos las columnas PK
 			for (final CType pkColumn: this.getTable().getPrimaryKeys())
 				// obtenemos el valor de la PK
-				this.primaryKeys.put(pkColumn, (PKType) this.getConnector().getResultSet().getObject(pos++));
+				this.primaryKeys.put(pkColumn, (PKType) this.getConnector().getGeneratedKeys(this.getTrxName()).getObject(pos++));
 		}
 		// retornamos y recargamos el PO
 		return this.saveFinish(saveOk);
@@ -1294,7 +1407,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// mostramos el SQL
 		this.log.debug("SQL: " + update.toString());
 		// ejecutamos el SQL
-		final boolean saveOk = this.getConnector().executeUpdate(update.toString()) == 1;
+		final boolean saveOk = this.getConnector().executeUpdate(this.getConnector().prepareStatement(update.toString(), Statement.RETURN_GENERATED_KEYS, this.getTrxName()), this.getTrxName()) == 1;
 		// verificamos si elimino
 		if (!saveOk)
 			// mostramos el error
