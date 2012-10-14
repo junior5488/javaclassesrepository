@@ -10,7 +10,7 @@
  * |
  * | You should have received a copy of the GNU General Public License
  * | along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @author <B>Schimpf.NET</B>
@@ -56,6 +56,12 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @version Oct 10, 2012 2:23:15 PM
 	 */
 	private Class<?>			dataClass;
+	/**
+	 * Tamaño maximo del campo
+	 * 
+	 * @version Oct 13, 2012 11:18:11 PM
+	 */
+	private Integer			dataLength;
 
 	/**
 	 * Tipo de dato de la columna
@@ -175,6 +181,25 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			this.loadMetaData();
 		// retornamos la clase de la columna
 		return this.dataClass;
+	}
+
+	/**
+	 * Retorna el tamaño maximo de la columna
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 11:19:49 PM
+	 * @return Tamaño maximo de la columna
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 */
+	public final Integer getDataLength() throws SQLException {
+		// verificamos si tenemos valor
+		if (this.dataLength == null)
+			// cargamos los datos
+			this.loadMetaData();
+		// retornamos el tamaño
+		return this.dataLength;
 	}
 
 	/**
@@ -325,7 +350,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	private synchronized void loadMetaData() throws SQLException {
 		// recorremos los metadatos
-		if (this.getSQLConnector().executeSQL("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " LIMIT 1")) {
+		if (this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " LIMIT 1"))) {
 			// almacenamos el tipo de dato
 			this.dataType = this.getSQLConnector().getResultSet().getMetaData().getColumnTypeName(this.getColumnPosition());
 			try {
@@ -340,6 +365,8 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			ResultSet moreData = this.getMetadata().getColumns(this.getTable().getSchema().getDataBase().getDataBaseName(), null, this.getTable().getTableName(), this.getColumnName());
 			// verificamos si tenemos datos
 			if (moreData.next()) {
+				// almacenamos el tamaño del campo
+				this.dataLength = moreData.getInt(7);
 				// almacenamos si es nullable
 				this.isNullable = moreData.getInt(11) == java.sql.DatabaseMetaData.columnNullable;
 				// almacenamos el valor por defecto
