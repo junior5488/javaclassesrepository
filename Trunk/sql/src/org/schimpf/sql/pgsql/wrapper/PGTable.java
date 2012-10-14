@@ -10,7 +10,7 @@
  * |
  * | You should have received a copy of the GNU General Public License
  * | along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @author <B>Schimpf.NET</B>
@@ -50,7 +50,7 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 		// creamos una lista para las columnas
 		final ArrayList<PGColumn> columns = new ArrayList<PGColumn>();
 		// ejecutamos el SQL para obtener la lista de las columnas
-		this.getSQLConnector().executeSQL("SELECT attname AS column_name FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax')");
+		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT attname AS column_name FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax')"));
 		// posicion de la columna
 		Integer colPos = 1;
 		// recorremos las columnas

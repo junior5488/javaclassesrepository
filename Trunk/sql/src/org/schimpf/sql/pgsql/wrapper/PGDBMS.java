@@ -10,7 +10,7 @@
  * |
  * | You should have received a copy of the GNU General Public License
  * | along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @author <B>Schimpf.NET</B>
@@ -50,7 +50,7 @@ public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDBMS, PGDataB
 		// armamos una lista para las bases de datos
 		final ArrayList<PGDataBase> dbs = new ArrayList<PGDataBase>();
 		// obtenemos las bases de datos
-		this.getSQLConnector().executeSQL("SELECT datname AS database_name FROM pg_database WHERE datname NOT ILIKE 'template%' ORDER BY datname");
+		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT datname AS database_name FROM pg_database WHERE datname NOT ILIKE 'template%' ORDER BY datname"));
 		// recorremos las bases de datos
 		while (this.getSQLConnector().getResultSet().next())
 			// agregamos la base de datos
