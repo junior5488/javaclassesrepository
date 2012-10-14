@@ -154,8 +154,6 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 
 	@Override
 	public final void setPort(final Integer port) {
-		// verificamos si es null
-		this.throwIfNull(port, "El puerto del servidor no puede ser nulo");
 		// almacenamos el puero del servidor
 		this.port = port;
 	}
