@@ -13,6 +13,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * Conexion a servidores SQL
@@ -23,46 +26,46 @@ import java.sql.SQLException;
  */
 public abstract class SQLLink extends DriverLoader implements DBConnection {
 	/**
-	 * Conexion abierta con el servidor
+	 * Conexiones a la base
 	 * 
-	 * @version Apr 15, 2011 4:48:03 PM
+	 * @version Oct 13, 2012 7:47:34 PM
 	 */
-	private Connection	connection;
+	private final HashMap<String, Connection>	connections	= new HashMap<String, Connection>();
 
 	/**
 	 * Nombre de la base de datos
 	 * 
 	 * @version Apr 15, 2011 5:10:38 PM
 	 */
-	private String			ddbb;
+	private String										ddbb;
 
 	/**
 	 * Servidor para la conexion
 	 * 
 	 * @version Apr 15, 2011 4:46:45 PM
 	 */
-	private String			host;
+	private String										host;
 
 	/**
 	 * Contraseña de conexion
 	 * 
 	 * @version Apr 15, 2011 4:46:48 PM
 	 */
-	private String			pass;
+	private String										pass;
 
 	/**
 	 * Puerto para la conexion
 	 * 
 	 * @version Apr 11, 2012 8:42:54 AM
 	 */
-	private Integer		port;
+	private Integer									port;
 
 	/**
 	 * Usuario para la conexion
 	 * 
 	 * @version Apr 15, 2011 4:46:47 PM
 	 */
-	private String			user;
+	private String										user;
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -82,7 +85,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			// salimos con una excepcion
 			throw new MissingConnectionDataException();
 		// conectamos al servidor
-		if (!this.newConnection())
+		if (this.getConnection() == null)
 			// retornamos false
 			return false;
 		// si llegamos aqui retornamos true
@@ -91,23 +94,14 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 
 	@Override
 	public final boolean disconnect() {
-		try {
-			// verificamos si esta deshabilitado el autocommit
-			if (!this.getConnection().getAutoCommit())
-				// cancelamos la transaccion en curso
-				this.getConnection().rollback();
-			// vaciamos los avisos
-			this.getConnection().clearWarnings();
-			// cerramos la conexion
-			this.getConnection().close();
-			// eliminamos la instancia
-			this.setConnection(null);
-		} catch (final SQLException e) {
-			// mostramos el detalle de la excepcion
-			this.SQLException(e);
-			// retornamos false
-			return false;
-		}
+		// obtenemos las conexiones
+		Iterator<Entry<String, Connection>> connections = this.connections.entrySet().iterator();
+		// recorremos todas las conexiones
+		while (connections.hasNext())
+			// eliminamos la conexion
+			if (!this.dropConnection(connections.next().getKey()))
+				// retornamos false
+				return false;
 		// retornamos true
 		return true;
 	}
@@ -115,10 +109,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	@Override
 	public final void setConnectionData(final ConnectionData data, final String ddbb) {
 		// almacenamos los datos de conexion
-		this.setHost(data.getHostname().getHostName());
-		this.setUser(data.getUsername());
-		this.setPass(data.getPassword());
-		this.setDDBB(ddbb);
+		this.setConnectionData(data.getHostname().getHostName(), data.getPort(), data.getUsername(), data.getPassword(), ddbb);
 	}
 
 	public void setConnectionData(final String host, final Integer port, final String user, final String pass, final String ddbb) {
@@ -178,19 +169,6 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	/**
-	 * Retorna la conexion actual
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:42:34 PM
-	 * @return Conexion con el servidor de Bases de Datos
-	 */
-	protected final Connection getConnection() {
-		// retornamos la conexion
-		return this.connection;
-	}
-
-	/**
 	 * Retorna el puerto por defecto de la conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -211,21 +189,6 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @return Typo de conexion del driver
 	 */
 	protected abstract String getDriverType();
-
-	/**
-	 * Muestra en consola el detalle de la excepcion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:44:47 PM
-	 * @param e SQL Exception
-	 */
-	protected final void SQLException(final SQLException e) {
-		// mostramos la descripcion del error
-		System.err.println(e.getMessage() + ", SQLState " + e.getSQLState() + ", Error " + e.getErrorCode());
-		// print the StackTrace
-		e.printStackTrace();
-	}
 
 	/**
 	 * Retorna el URL para la conexion
@@ -312,31 +275,16 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 5:22:01 PM
 	 */
-	private boolean newConnection() {
+	private Connection newConnection() {
 		try {
 			// generamos la conexion al servidor
-			this.setConnection(DriverManager.getConnection(this.getConnectionUrl(), this.getUser(), this.getPass()));
+			return DriverManager.getConnection(this.getConnectionUrl(), this.getUser(), this.getPass());
 		} catch (final SQLException e) {
 			// mostramos el detalle de la exception
 			this.SQLException(e);
-			// retornamos false
-			return false;
 		}
-		// si llegamos aqui, retornamos true
-		return true;
-	}
-
-	/**
-	 * Almacena la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:46:47 PM
-	 * @param conn Conexion al servidor
-	 */
-	private void setConnection(final Connection conn) {
-		// almacenamos la conexion
-		this.connection = conn;
+		// si llegamos aqui, retornamos null
+		return null;
 	}
 
 	/**
@@ -382,5 +330,103 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			return false;
 		// retornamos true
 		return true;
+	}
+
+	/**
+	 * Finaliza una conexion al servidor de base de datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 8:24:35 PM
+	 * @param trxName Nombre de la transaccion
+	 * @return True si se finalizo la conexion
+	 */
+	final boolean dropConnection(final String trxName) {
+		try {
+			// verificamos si existe la conexion
+			if (!this.existsTransaction(trxName))
+				// retornamos false
+				return false;
+			// verificamos si esta deshabilitado el autocommit
+			if (!this.getConnection(trxName).getAutoCommit())
+				// cancelamos la transaccion en curso
+				this.getConnection(trxName).rollback();
+			// vaciamos los avisos
+			this.getConnection(trxName).clearWarnings();
+			// cerramos la conexion
+			this.getConnection(trxName).close();
+			// eliminamos la conexion
+			this.connections.remove(trxName);
+		} catch (final SQLException e) {
+			// mostramos el detalle de la excepcion
+			this.SQLException(e);
+			// retornamos false
+			return false;
+		}
+		// retornamos true
+		return true;
+	}
+
+	/**
+	 * Retorna si existe la transaccion actual
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 8:06:07 PM
+	 * @param trxName Nombre de la transaccion
+	 * @return True si exista la conexion con la transaccion
+	 */
+	final boolean existsTransaction(final String trxName) {
+		// retornamos si existe la transaccion
+		return this.connections.containsKey(trxName);
+	}
+
+	/**
+	 * Retorna la conexion actual
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:42:34 PM
+	 * @return Conexion con el servidor de Bases de Datos
+	 */
+	final Connection getConnection() {
+		// retornamos una conexion vacia
+		return this.getConnection(null);
+	}
+
+	/**
+	 * Retorna la conexion especificada
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 13, 2012 7:53:13 PM
+	 * @param trxName Nombre de la transaccion
+	 * @return Conexion solicitada
+	 */
+	final Connection getConnection(final String trxName) {
+		// verificamos si existe la conexion
+		if (!this.existsTransaction(trxName))
+			// creamos la conexion
+			this.connections.put(trxName, this.newConnection());
+		// retornamos la conexion
+		return this.connections.get(trxName);
+	}
+
+	/**
+	 * Muestra en consola el detalle de la excepcion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:44:47 PM
+	 * @param e SQL Exception
+	 */
+	final void SQLException(final SQLException e) {
+		// mostramos la descripcion del error
+		System.err.println(e.getMessage() + ", SQLState " + e.getSQLState() + ", Error " + e.getErrorCode());
+		// print the StackTrace
+		e.printStackTrace();
 	}
 }
