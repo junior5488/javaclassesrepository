@@ -53,7 +53,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final boolean commitTransaction(final String trxName) {
+	public synchronized final boolean commitTransaction(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
 			if (this.existsTransaction(trxName))
@@ -74,13 +74,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final boolean executeQuery() {
+	public synchronized final boolean executeQuery() {
 		// ejecutamos la consulta
 		return this.executeQuery((String) null);
 	}
 
 	@Override
-	public final boolean executeQuery(final PreparedStatement query) {
+	public synchronized final boolean executeQuery(final PreparedStatement query) {
 		// almacenamos la sentencia SQL
 		this.setStatement(null, query);
 		// ejecutamos la consulta SQL
@@ -88,7 +88,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final boolean executeQuery(final PreparedStatement query, final String trxName) {
+	public synchronized final boolean executeQuery(final PreparedStatement query, final String trxName) {
 		// almacenamos la sentencia SQL
 		this.setStatement(trxName, query);
 		// ejecutamos la consulta SQL
@@ -96,7 +96,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final boolean executeQuery(final String trxName) {
+	public synchronized final boolean executeQuery(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
 			if (!this.existsTransaction(trxName))
@@ -119,13 +119,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final int executeUpdate() {
+	public synchronized final int executeUpdate() {
 		// ejecutamos la consulta
 		return this.executeUpdate((String) null);
 	}
 
 	@Override
-	public final int executeUpdate(final PreparedStatement query) {
+	public synchronized final int executeUpdate(final PreparedStatement query) {
 		// almacenamos la sentencia SQL
 		this.setStatement(null, query);
 		// ejecutamos la consulta
@@ -133,7 +133,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final int executeUpdate(final PreparedStatement query, final String trxName) {
+	public synchronized final int executeUpdate(final PreparedStatement query, final String trxName) {
 		// almacenamos la sentencia SQL
 		this.setStatement(trxName, query);
 		// ejecutamos la consulta SQL
@@ -141,7 +141,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final int executeUpdate(final String trxName) {
+	public synchronized final int executeUpdate(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
 			if (!this.existsTransaction(trxName))
@@ -256,7 +256,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final boolean rollbackTransaction(final String trxName) {
+	public synchronized final boolean rollbackTransaction(final String trxName) {
 		try {
 			// verificamos si existe la transaccion
 			if (!this.existsTransaction(trxName))
@@ -277,13 +277,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final String startTransaction() {
+	public synchronized final String startTransaction() {
 		// retornamos el inicio de transaccion
 		return this.startTransaction("Trx");
 	}
 
 	@Override
-	public final String startTransaction(final String prefix) {
+	public synchronized final String startTransaction(final String prefix) {
 		// creamos el nombre de la transaccion
 		String trxName = prefix + "_" + System.currentTimeMillis();
 		try {
