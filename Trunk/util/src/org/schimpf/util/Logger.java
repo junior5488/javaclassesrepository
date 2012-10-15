@@ -103,6 +103,24 @@ public final class Logger {
 		 */
 		FATAL(50),
 		/**
+		 * Nivel de mensajes finos
+		 * 
+		 * @version Oct 15, 2012 10:12:13 AM
+		 */
+		FINE(4),
+		/**
+		 * Nivel de mensajes mas finos
+		 * 
+		 * @version Oct 15, 2012 10:12:01 AM
+		 */
+		FINER(3),
+		/**
+		 * Nivel de mensajes detallados
+		 * 
+		 * @version Oct 15, 2012 10:11:35 AM
+		 */
+		FINEST(2),
+		/**
 		 * Nivel de informacion
 		 * 
 		 * @version Aug 1, 2012 5:04:02 PM
@@ -357,6 +375,90 @@ public final class Logger {
 	public void fatal(final String message) {
 		// ejecutamos el mensaje
 		this.log(Level.FATAL, message);
+	}
+
+	/**
+	 * Almacena una excepcion fina
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void fine(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.FINE, exception);
+	}
+
+	/**
+	 * Almacena un mensaje fina
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param message Mensaje a mostrar
+	 */
+	public void fine(final String message) {
+		// ejecutamos el mensaje
+		this.log(Level.FINE, message);
+	}
+
+	/**
+	 * Almacena una excepcion mas fina
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void finer(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.FINER, exception);
+	}
+
+	/**
+	 * Almacena un mensaje mas fina
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param message Mensaje a mostrar
+	 */
+	public void finer(final String message) {
+		// ejecutamos el mensaje
+		this.log(Level.FINER, message);
+	}
+
+	/**
+	 * Almacena una excepcion detallada
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param exception Excepcion a mostrar
+	 */
+	public void finest(final Exception exception) {
+		// ejecutamos el mensaje
+		this.log(Level.FINEST, exception);
+	}
+
+	/**
+	 * Almacena un mensaje detallado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:10:50 PM
+	 * @param message Mensaje a mostrar
+	 */
+	public void finest(final String message) {
+		// ejecutamos el mensaje
+		this.log(Level.FINEST, message);
 	}
 
 	/**
