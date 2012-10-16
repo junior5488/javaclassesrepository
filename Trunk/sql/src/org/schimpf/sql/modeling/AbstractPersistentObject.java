@@ -155,7 +155,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	protected AbstractPersistentObject() throws Exception {
 		// almacenamos la tabla
-		this.table = this.getTableInstance();
+		this.table = this.getTableInstance(this.getSQLConnector());
 		// iniciamos el logger
 		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// cargamos las columnas PK
@@ -178,7 +178,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	protected AbstractPersistentObject(final PKType... identifier) throws Exception {
 		// almacenamos la tabla
-		this.table = this.getTableInstance();
+		this.table = this.getTableInstance(this.getSQLConnector());
 		// iniciamos el logger
 		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// cargamos las columnas PK
@@ -224,6 +224,19 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		this(identifier);
 		// almacenamos el nombre de la transaccion
 		this.trxName = trxName;
+	}
+
+	/**
+	 * Inicializa el conector SQL a la base
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Oct 16, 2012 1:30:39 PM
+	 * @param conn Conector SQL
+	 */
+	public static final void initSQLConnector(final SQLProcess conn) {
+		// almacenamos el conector
+		AbstractPersistentObject.sqlConnector = conn;
 	}
 
 	/**
@@ -308,14 +321,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			return list;
 		try {
 			// nombre de la tabla
-			TType table = AbstractPersistentObject.getTableOf(clazz);
+			final TType table = AbstractPersistentObject.getTableOf(clazz);
 			try {
 				// creamos una lista de las PKs
 				final ArrayList<String> pks = new ArrayList<String>();
 				// columnas para el select
-				StringBuffer selectPKs = new StringBuffer();
+				final StringBuffer selectPKs = new StringBuffer();
 				// recorremos las PKs
-				for (CType pkColumn: table.getPrimaryKeys()) {
+				for (final CType pkColumn: table.getPrimaryKeys()) {
 					// agregamos la columna a la lista
 					pks.add(pkColumn.getColumnName());
 					// agregamos la columna al select
@@ -324,13 +337,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// mostramos un log
 				AbstractPersistentObject.getSLogger().debug("Primary Keys to select: " + selectPKs.toString());
 				// armamos el sql
-				String sql = "SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : "") + (orderBy != null ? " ORDER BY " + orderBy : "");
+				final String sql = "SELECT " + selectPKs + " FROM " + table.getTableName() + (join != null ? " " + (join.toUpperCase().indexOf("JOIN") == -1 ? "JOIN " + join : join) : "") + (where != null ? " WHERE " + where : "") + (orderBy != null ? " ORDER BY " + orderBy : "");
 				// mostramos el sql
 				AbstractPersistentObject.getSLogger().debug("SQL: " + sql);
 				// ejecutamos la consulta
 				AbstractPersistentObject.sqlConnector.executeQuery(AbstractPersistentObject.sqlConnector.prepareStatement(sql, trxName), trxName);
 				// obtenemos el resultset
-				ResultSet result = AbstractPersistentObject.sqlConnector.getResultSet(trxName);
+				final ResultSet result = AbstractPersistentObject.sqlConnector.getResultSet(trxName);
 				// creamos el hashpmap
 				Object[] identifier;
 				// recorremos los resultados
@@ -342,7 +355,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					// agregamos el nombre de la transaccion
 					identifier[pos++] = trxName;
 					// recorremos las PKs
-					for (String pkColumn: pks)
+					for (final String pkColumn: pks)
 						// seteamos el ID de la columna
 						identifier[pos++] = result.getObject(pkColumn);
 					// agregamos el PO
@@ -354,7 +367,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// mostramos el error
 				AbstractPersistentObject.getSLogger().error(e);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// mostramos el trace de la excepcion
 			AbstractPersistentObject.getSLogger().fatal(e);
 		}
@@ -392,9 +405,9 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		try {
 			try {
 				// creamos el identificador
-				ArrayList<PKType> identifierLocalPO = new ArrayList<PKType>();
+				final ArrayList<PKType> identifierLocalPO = new ArrayList<PKType>();
 				// recorremos las PKs
-				for (CType pkColumn: localPO.getTable().getPrimaryKeys())
+				for (final CType pkColumn: localPO.getTable().getPrimaryKeys())
 					// seteamos el ID de la columna
 					identifierLocalPO.add((PKType) localPO.getValue(pkColumn.getColumnName()));
 				// verificamos si tenemos el PO referenciado
@@ -404,7 +417,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					// retornamos el Objeto Persistente referenciado
 					return referencedPO;
 				// armamos el identificador con la transaccion
-				Object[] newIdentifier = new Object[identifier.length + 1];
+				final Object[] newIdentifier = new Object[identifier.length + 1];
 				// agregamos el nombre de la transaccion
 				newIdentifier[0] = localPO.getTrxName();
 				// recorremos el identificador
@@ -421,11 +434,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				AbstractPersistentObject.referencedPOs.put(referencedPO, localPO.getClass(), identifierLocalPO, localPO.getTrxName(), clazz);
 				// retornamos el PO referenciado
 				return referencedPO;
-			} catch (SQLException e) {
+			} catch (final SQLException e) {
 				// mostramos el error
 				AbstractPersistentObject.getSLogger().error(e);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// mostramos el trace de la excepcion
 			AbstractPersistentObject.getSLogger().error(e);
 		}
@@ -447,15 +460,15 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// mostramos un log
 			AbstractPersistentObject.getSLogger().debug("Finding constructor of Persistent Object for class " + clazz.getName());
 			// obtenemos la tabla
-			TType table = AbstractPersistentObject.getTableOf(clazz);
+			final TType table = AbstractPersistentObject.getTableOf(clazz);
 			// lista para los argumentos del constructor
-			Class<?>[] params = new Class<?>[table.getPrimaryKeys().size() + 1];
+			final Class<?>[] params = new Class<?>[table.getPrimaryKeys().size() + 1];
 			// posicion de los parametros
 			Integer pos = 0;
 			// agregamos el primer parametro como string (Nombre de la transaccion)
 			params[pos++] = String.class;
 			// recorremos las PKs
-			for (CType pkColumn: table.getPrimaryKeys())
+			for (final CType pkColumn: table.getPrimaryKeys())
 				// agregamos la clase a la lista
 				params[pos++] = pkColumn.getDataClass();
 			// obtenemos el constructor
@@ -464,13 +477,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			AbstractPersistentObject.getSLogger().debug("Constructor found to instanciate Persistent Objects: " + constructor);
 			// retornamos el constructor
 			return constructor;
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// mostramos el error
 			AbstractPersistentObject.getSLogger().error(e);
-		} catch (NoSuchMethodException e) {
+		} catch (final NoSuchMethodException e) {
 			// mostramos el error
 			AbstractPersistentObject.getSLogger().error(e);
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			// mostramos el error
 			AbstractPersistentObject.getSLogger().error(e);
 		}
@@ -498,7 +511,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().debug("Finding preloaded Persistent Object");
 		// verificamos si tenemos el PO referenciado
-		RType referencedPO = (RType) AbstractPersistentObject.referencedPOs.get(poClass, identifierLocalPO, trxName, clazz);
+		final RType referencedPO = (RType) AbstractPersistentObject.referencedPOs.get(poClass, identifierLocalPO, trxName, clazz);
 		try {
 			// verificamos si es null
 			if (referencedPO != null) {
@@ -507,7 +520,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// reiniciamos la posicion
 				Integer pos = 0;
 				// verificamos si es el mismo ID
-				for (CType pkColumn: AbstractPersistentObject.getTableOf(clazz).getPrimaryKeys())
+				for (final CType pkColumn: AbstractPersistentObject.getTableOf(clazz).getPrimaryKeys())
 					// verificamos si es el mismo ID
 					if (!identifier[pos++].equals(referencedPO.getValue(pkColumn.getColumnName()))) {
 						// modificamos la bandera
@@ -523,7 +536,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 					return referencedPO;
 				}
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// mostramos el error
 			AbstractPersistentObject.getSLogger().error(e);
 		}
@@ -569,12 +582,12 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		while (table == null)
 			try {
 				// obtenemos el metodo
-				Method tableInstance = superClazz.getDeclaredMethod("getTableInstance", new Class[] {});
+				final Method tableInstance = superClazz.getDeclaredMethod("getTableInstance", new Class[] { SQLProcess.class });
 				// lo setamos como accesible
 				tableInstance.setAccessible(true);
 				// obtenemos el nombre de la tabla
-				table = (TType) tableInstance.invoke(clazz.getDeclaredConstructor(new Class[] {}).newInstance());
-			} catch (Exception ignored) {
+				table = (TType) tableInstance.invoke(clazz.getDeclaredConstructor(new Class[] {}).newInstance(), AbstractPersistentObject.sqlConnector);
+			} catch (final Exception e) {
 				// obtenemos el padre
 				superClazz = superClazz.getSuperclass();
 			}
@@ -615,7 +628,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		this.log.debug("SQL: " + delete.toString());
 		try {
 			// ejecutamos el SQL
-			final boolean saveOk = this.getConnector().executeUpdate(this.getConnector().prepareStatement(delete.toString(), this.getTrxName()), this.getTrxName()) == 1;
+			final boolean saveOk = this.getSQLConnector().executeUpdate(this.getSQLConnector().prepareStatement(delete.toString(), this.getTrxName()), this.getTrxName()) == 1;
 			// verificamos si elimino
 			if (saveOk) {
 				// mostramos si se elimino
@@ -636,7 +649,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			this.loadPKsColumns();
 			// retornamos si elimino ok
 			return saveOk;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// mostramos un log
 			this.log.error("Delete failed! Reason: " + e.getMessage());
 			// retornamos false
@@ -813,28 +826,17 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	}
 
 	/**
-	 * Retorna la instancia del conector SQL a la DB
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Jul 31, 2012 9:33:58 PM
-	 * @return Conector SQL a la DB
-	 * @throws Exception Si no se puede obtener el conector
-	 */
-	protected abstract SQLConnector getSQLConnector() throws Exception;
-
-	/**
 	 * Retorna el nombre de la tabla
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
 	 * @version Jul 31, 2012 12:11:01 PM
+	 * @param connector Conector SQL a la base
 	 * @return Nombre de la tabla
 	 * @throws Exception Si no se pudo instanciar la tabla
 	 */
-	protected abstract TType getTableInstance() throws Exception;
+	protected abstract TType getTableInstance(final SQLProcess connector) throws Exception;
 
 	/**
 	 * Retorna el valor de una columna
@@ -1025,28 +1027,6 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	}
 
 	/**
-	 * Retorna el conector SQL local
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Jul 31, 2012 9:36:13 PM
-	 * @return Conector SQL
-	 * @throws Exception Si no se puede obtener el conector
-	 */
-	private final SQLProcess getConnector() throws Exception {
-		// verificamos si tiene valor
-		if (AbstractPersistentObject.sqlConnector == null) {
-			// mostramos un log
-			this.log.debug("Loading SQL Connector");
-			// cargamos el conector SQL
-			AbstractPersistentObject.sqlConnector = this.getSQLConnector();
-		}
-		// retornamos el conector SQL
-		return AbstractPersistentObject.sqlConnector;
-	}
-
-	/**
 	 * Retorna el filtro del registro con las PKs
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -1107,13 +1087,37 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// posicion de la PK
 		Integer pkPos = 0;
 		// recorremos las columnas PK
-		for (CType pkColumn: this.getTable().getPrimaryKeys())
+		for (final CType pkColumn: this.getTable().getPrimaryKeys())
 			// agregamos la PK
 			pks.put(pkColumn.getColumnName(), PrimaryKeys[pkPos++]);
 		// mostramos un log
 		this.log.debug("Loaded Primary Keys are: " + this.getPKsFilter(true));
 		// retornamos las PKs
 		return pks;
+	}
+
+	/**
+	 * Retorna el conector SQL local
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 31, 2012 9:36:13 PM
+	 * @return Conector SQL
+	 * @throws Exception Si no se puede obtener el conector
+	 */
+	private SQLProcess getSQLConnector() throws Exception {
+		// verificamos si tiene valor
+		if (AbstractPersistentObject.sqlConnector == null) {
+			// generamos una excepcion
+			final Exception e = new Exception("SQL Connector is not initializated! Please call AbstractPersistentObject.initSQLConnector(SQLProcess)");
+			// mostramos un log
+			this.log.error(e);
+			// salimos con la excepcion
+			throw e;
+		}
+		// retornamos el conector SQL
+		return AbstractPersistentObject.sqlConnector;
 	}
 
 	/**
@@ -1145,11 +1149,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// retornamos true
 			return true;
 		// obtenemos los campos
-		Iterator<Entry<CType, Object>> columns = this.valuesNew.entrySet().iterator();
+		final Iterator<Entry<CType, Object>> columns = this.valuesNew.entrySet().iterator();
 		// recorremos los campos
 		while (columns.hasNext()) {
 			// obtenemos el campo
-			Entry<CType, Object> value = columns.next();
+			final Entry<CType, Object> value = columns.next();
 			// verificamos si la columna cambio de valor
 			if (!this.valuesOld.get(value.getKey()).equals(this.valuesNew.get(value.getKey())))
 				// retornamos false
@@ -1176,13 +1180,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			this.valuesOld.clear();
 			this.valuesNew.clear();
 			// armamos el SQL
-			String sql = "SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " WHERE " + this.getPKsFilter(false);
+			final String sql = "SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " WHERE " + this.getPKsFilter(false);
 			// mostramos el SQL en el log
 			this.log.debug("SQL: " + sql);
 			// ejecutamos el SQL para obtener los valores de las columnas del registro
-			this.getConnector().executeQuery(this.getConnector().prepareStatement(sql, this.getTrxName()), this.getTrxName());
+			this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement(sql, this.getTrxName()), this.getTrxName());
 			// obtenemos el resultset
-			ResultSet loadData = this.getConnector().getResultSet(this.getTrxName());
+			final ResultSet loadData = this.getSQLConnector().getResultSet(this.getTrxName());
 			// verificamos si tenemos resultado
 			if (loadData.next()) {
 				// mostramos un log
@@ -1198,11 +1202,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// mostramos un log
 				this.log.warning("Persistent Object " + this.getPKsFilter(true) + " doesn't exists!");
 				// obtenemos las PKs
-				Iterator<Entry<CType, PKType>> pks = this.getPrimaryKeys().entrySet().iterator();
+				final Iterator<Entry<CType, PKType>> pks = this.getPrimaryKeys().entrySet().iterator();
 				// recorremos las columnas PK
 				while (pks.hasNext()) {
 					// obtenemos la columna PK
-					Entry<CType, PKType> pkColumn = pks.next();
+					final Entry<CType, PKType> pkColumn = pks.next();
 					// almacenamos la clave primaria
 					this.valuesNew.put(pkColumn.getKey(), this.getPrimaryKeys().get(pkColumn.getKey()));
 				}
@@ -1330,13 +1334,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// mostramos el SQL
 		this.log.debug("SQL: " + insert.toString());
 		// ejecutamos el SQL
-		final boolean saveOk = this.getConnector().executeUpdate(this.getConnector().prepareStatement(insert.toString(), Statement.RETURN_GENERATED_KEYS, this.getTrxName()), this.getTrxName()) == 1;
+		final boolean saveOk = this.getSQLConnector().executeUpdate(this.getSQLConnector().prepareStatement(insert.toString(), Statement.RETURN_GENERATED_KEYS, this.getTrxName()), this.getTrxName()) == 1;
 		// verificamos si elimino
 		if (!saveOk)
 			// mostramos el error
 			this.log.error("Failed to insert Persisten Object!");
 		// verificamos si inserto
-		if (saveOk && this.getConnector().getGeneratedKeys(this.getTrxName()) != null && this.getConnector().getGeneratedKeys(this.getTrxName()).next()) {
+		if (saveOk && this.getSQLConnector().getGeneratedKeys(this.getTrxName()) != null && this.getSQLConnector().getGeneratedKeys(this.getTrxName()).next()) {
 			// mostramos un log
 			this.log.debug("Getting inserted PKs");
 			// vaciamos las PKs
@@ -1346,7 +1350,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			// recorremos las columnas PK
 			for (final CType pkColumn: this.getTable().getPrimaryKeys())
 				// obtenemos el valor de la PK
-				this.primaryKeys.put(pkColumn, (PKType) this.getConnector().getGeneratedKeys(this.getTrxName()).getObject(pos++));
+				this.primaryKeys.put(pkColumn, (PKType) this.getSQLConnector().getGeneratedKeys(this.getTrxName()).getObject(pos++));
 		}
 		// retornamos y recargamos el PO
 		return this.saveFinish(saveOk);
@@ -1417,7 +1421,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// mostramos el SQL
 		this.log.debug("SQL: " + update.toString());
 		// ejecutamos el SQL
-		final boolean saveOk = this.getConnector().executeUpdate(this.getConnector().prepareStatement(update.toString(), Statement.RETURN_GENERATED_KEYS, this.getTrxName()), this.getTrxName()) == 1;
+		final boolean saveOk = this.getSQLConnector().executeUpdate(this.getSQLConnector().prepareStatement(update.toString(), Statement.RETURN_GENERATED_KEYS, this.getTrxName()), this.getTrxName()) == 1;
 		// verificamos si elimino
 		if (!saveOk)
 			// mostramos el error
