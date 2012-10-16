@@ -381,10 +381,16 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		if (this.pkColumns.size() == 0) {
 			// obtenemos las columnas PKs
 			ResultSet primaryKeys = this.getSQLConnector().getMetadata().getPrimaryKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
+			// creamos una lista temporal
+			HashMap<Short, String> unsortedPKs = new HashMap<Short, String>();
 			// recorremos las columnas
 			while (primaryKeys.next())
+				// agregamos la columna PK con su posicion
+				unsortedPKs.put(primaryKeys.getShort(5), primaryKeys.getString(4));
+			// recorremos las columnas en orden
+			for (short i = 1; i <= unsortedPKs.size(); i++)
 				// agregamos la columna PK
-				this.pkColumns.add(this.getColumn(primaryKeys.getString(4)));
+				this.pkColumns.add(this.getColumn(unsortedPKs.get(i)));
 		}
 		// retornamos las columnas PK
 		return this.pkColumns;
