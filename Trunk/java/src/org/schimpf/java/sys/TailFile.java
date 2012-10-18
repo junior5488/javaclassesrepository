@@ -112,10 +112,8 @@ public final class TailFile extends File implements Runnable {
 	 * @version Sep 19, 2011 11:42:34 PM
 	 */
 	public void startTail() {
-		// creamos el thread
-		final Thread thread = new Thread(this);
 		// iniciamos la captura de modificaciones
-		thread.start();
+		new Thread(this).start();
 	}
 
 	/**
