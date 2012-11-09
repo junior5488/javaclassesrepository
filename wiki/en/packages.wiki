@@ -10,6 +10,8 @@
 || || || ||
 || [http://code.google.com/p/javaclassesrepository/wiki/Base64Crypter?tm=6&wl=en org.schimpf.util.crypt.Base64Crypter] || Class to encrypt strings in DES-BASE64 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java latest] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/AbruptCrypter?tm=6&wl=en org.schimpf.util.crypt.AbruptCrypter] || Implementation of more complex encryption Base64Crypter || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java latest] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/OSIdentifier?tm=6&wl=en org.schimpf.util.os.OSIdentifier] || Class to identify running OS || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/os/OSIdentifier.java latest] ||
 
 ==Package _org.schimpf.awt_==
 || *Class* || *Description* || *Sources* ||
@@ -52,6 +54,10 @@
 || [http://code.google.com/p/javaclassesrepository/wiki/PGSchema?tm=6&wl=en org.schimpf.sql.pgsql.wrapper.PGSchema] || Class to retrieve data from PostgreSQL Schemas (_Tables, columns, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGSchema.java latest] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/PGTable?tm=6&wl=en org.schimpf.sql.pgsql.wrapper.PGTable] || Class to retrieve data from PostgreSQL Tables (_Columns, primary keys, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java latest] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/PGColumn?tm=6&wl=en org.schimpf.sql.pgsql.wrapper.PGColumn] || Class to retrieve data from PostgreSQL Columns (_Data type, length, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java latest] ||
+
+==Package _org.schimpf.sys_==
+|| *Class* || *Description* || *Sources* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Motherboard?tm=6&wl=en org.schimpf.sys.motherboard.Motherboard] || Class to get serian no of motherboard || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sys/src/org/schimpf/sys/motherboard/Motherboard.java latest] ||
 
 [http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=en back to index]
 ----

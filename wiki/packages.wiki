@@ -10,6 +10,8 @@
 || || || ||
 || [http://code.google.com/p/javaclassesrepository/wiki/Base64Crypter?tm=6&wl=es org.schimpf.util.crypt.Base64Crypter] || Clase para cifrar cadenas de texto en cifrado DES-BASE64 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/AbruptCrypter?tm=6&wl=es org.schimpf.util.crypt.AbruptCrypter] || Implementacion de Base64Crypter con cifrado mas complejo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/OSIdentifier?tm=6&wl=es org.schimpf.util.os.OSIdentifier] || Clase para identificar el sistema operativo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/os/OSIdentifier.java último] ||
 
 ==Paquete _org.schimpf.awt_==
 || *Clase* || *Descripcion* || *Fuentes* ||
@@ -52,6 +54,10 @@
 || [http://code.google.com/p/javaclassesrepository/wiki/PGSchema?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGSchema] || Clase para obtener datos de esquemas PostgreSQL (_tablas, columnas, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGSchema.java último] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/PGTable?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGTable] || Clase para obtener datos de tablas PostgreSQL (_Columnas, claves primarias, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java último] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/PGColumn?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGColumn] || Clase para obtener datos de columnas PostgreSQL (_Tipo de datos, longitud, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java último] ||
+
+==Paquete _org.schimpf.sys_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Motherboard?tm=6&wl=es org.schimpf.sys.motherboard.Motherboard] || Clase para obtener el numero de serie de la placa madre || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sys/src/org/schimpf/sys/motherboard/Motherboard.java último] ||
 
 [http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=es Volver al inicio]
 ----
