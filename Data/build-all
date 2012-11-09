@@ -9,7 +9,7 @@ cd "$SAVED_DIR"
 sudo ls > /dev/null
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/util/build.xml
-cd "$DIR"/Data/deb/libschimpf-util_1.2.1 && sudo debian/rules
+cd "$DIR"/Data/deb/libschimpf-util_1.3.0 && sudo debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/awt/build.xml
 cd "$DIR"/Data/deb/libschimpf-awt_1.2.0 && sudo debian/rules
@@ -26,7 +26,7 @@ cd "$DIR"/Data/deb/libschimpf-sql_1.4.1 && sudo debian/rules
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sys/build.xml
 cd "$DIR"/Data/deb/libschimpf-sys_1.0.0 && sudo debian/rules
 
-cd "$DIR"/Data/deb/libschimpf-all_1.0.0 && sudo debian/rules
+cd "$DIR"/Data/deb/libschimpf-all_1.0.1 && sudo debian/rules
 
 sudo chown -R hschimpf:root "$DIR"/Data/builds
 sudo chmod -R a-wx,u+wx,a+r "$DIR"/Data/builds
