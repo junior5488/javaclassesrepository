@@ -10,6 +10,8 @@
 || || || ||
 || [http://code.google.com/p/javaclassesrepository/wiki/Base64Crypter?tm=6&wl=es org.schimpf.util.crypt.Base64Crypter] || Clase para cifrar cadenas de texto en cifrado DES-BASE64 || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/Base64Crypter.java último] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/AbruptCrypter?tm=6&wl=es org.schimpf.util.crypt.AbruptCrypter] || Implementacion de Base64Crypter con cifrado mas complejo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/crypt/AbruptCrypter.java último] ||
+|| || || ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/OSIdentifier?tm=6&wl=es org.schimpf.util.os.OSIdentifier] || Clase para identificar el sistema operativo || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/util/src/org/schimpf/util/os/OSIdentifier.java último] ||
 
 ==Paquete _org.schimpf.awt_==
 || *Clase* || *Descripcion* || *Fuentes* ||
@@ -53,6 +55,10 @@
 || [http://code.google.com/p/javaclassesrepository/wiki/PGTable?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGTable] || Clase para obtener datos de tablas PostgreSQL (_Columnas, claves primarias, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGTable.java último] ||
 || [http://code.google.com/p/javaclassesrepository/wiki/PGColumn?tm=6&wl=es org.schimpf.sql.pgsql.wrapper.PGColumn] || Clase para obtener datos de columnas PostgreSQL (_Tipo de datos, longitud, etc_) || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sql/src/org/schimpf/sql/pgsql/wrapper/PGColumn.java último] ||
 
+==Paquete _org.schimpf.sys_==
+|| *Clase* || *Descripcion* || *Fuentes* ||
+|| [http://code.google.com/p/javaclassesrepository/wiki/Motherboard?tm=6&wl=es org.schimpf.sys.motherboard.Motherboard] || Clase para obtener el numero de serie de la placa madre || [http://code.google.com/p/javaclassesrepository/source/browse/Trunk/sys/src/org/schimpf/sys/motherboard/Motherboard.java último] ||
+
 =Descarga de paquetes=
 ==Desde Google Code==
 Puede descargar los paquetes _JAR_ directamente desde el [http://code.google.com/p/javaclassesrepository/downloads/list Directorio de Descargas].
@@ -72,7 +78,7 @@ wget -q http://downloads.hds-solutions.net/hds-solutions.gpg.key -O - | apt-key 
 }}}
 ===Paquetes disponibles===
 ====libschimpf-all-java====
-Depende de los 5 (cinco) paquetes de librerias java Schimpf.
+Depende de los 6 (seis) paquetes de librerias java Schimpf.
 
 ====libschimpf-util-java====
 Paquete con las clases contenidas en _*org.schimpf.util.`*`*_
@@ -103,6 +109,13 @@ _*Depende de*_:
  * libpg-java
  * _libschimpf-util-java_
  * _libschimpf-net-java_
+
+====libschimpf-sys-java====
+Paquete con las clases contenidas en _*org.schimpf.sys.`*`*_
+
+_*Depende de*_:
+ * libjsch-java
+ * _libschimpf-util-java_
 
 ----
  * *Hermann D. Schimpf*
