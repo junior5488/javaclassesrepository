@@ -1,0 +1,14 @@
+Source: libschimpf-sys
+Section: libs
+Priority: extra
+Maintainer: Hermann D. Schimpf <hschimpf@hds-solutions.net>
+Standards-Version: 3.8.0
+Build-Depends: debhelper (>= 5), oracle-java7-installer
+Homepage: http://hds-solutions.net/
+
+Package: libschimpf-sys
+Architecture: all
+Depends: java7-runtime
+Provides: libschimpf-osidentifier-java, libjsch-java
+Description: Schimpf Java Library
+ Paquete Java de librerias Java
