@@ -1,0 +1,11 @@
+libschimpf-all (1.0.1) stable; urgency=low
+
+  * Agregamos la dependencia del paquete SYS
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Fri, 09 Nov 2012 09:11:53 -0300
+
+libschimpf-all (1.0.0) stable; urgency=low
+
+  * Creado el paquete para instalacion
+
+ -- Hermann D. Schimpf <hschimpf@gschimpf.com>  Mon, 09 Apr 2012 22:11:05 -0300

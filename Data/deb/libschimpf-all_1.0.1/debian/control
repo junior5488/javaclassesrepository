@@ -8,6 +8,6 @@ Homepage: http://lanparty.sytes.net/
 
 Package: libschimpf-all
 Architecture: all
-Depends: libschimpf-util, libschimpf-awt, libschimpf-java, libschimpf-net, libschimpf-sql
+Depends: libschimpf-util, libschimpf-awt, libschimpf-java, libschimpf-net, libschimpf-sql, libschimpf-sys
 Description: Schimpf All Libraries
  Paquete Java de librerias Schimpf

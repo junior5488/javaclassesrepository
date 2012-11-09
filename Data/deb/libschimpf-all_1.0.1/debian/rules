@@ -30,8 +30,8 @@ post-clean:
 	dh_clean
 	rm -f build-stamp
 	rm -Rf debian/input/*
-	chown hschimpf:root ../libschimpf-all_1.0.0_all.deb
-	mkdir -p ../../builds/1.0.0
-	mv ../libschimpf-all_1.0.0_all.deb ../../builds/1.0.0/libschimpf-all_1.0.0_all.deb
+	chown hschimpf:root ../libschimpf-all_1.0.1_all.deb
+	mkdir -p ../../builds/1.0.1
+	mv ../libschimpf-all_1.0.1_all.deb ../../builds/1.0.1/libschimpf-all_1.0.1_all.deb
 	rm -f ../../builds/current/libschimpf-all_current_all.deb
-	ln -s "`dirname ../../builds/1.0.0/libschimpf-all_1.0.0_all.deb`"/libschimpf-all_1.0.0_all.deb ../../builds/current/libschimpf-all_current_all.deb
+	ln -s "`dirname ../../builds/1.0.1/libschimpf-all_1.0.1_all.deb`"/libschimpf-all_1.0.1_all.deb ../../builds/current/libschimpf-all_current_all.deb
