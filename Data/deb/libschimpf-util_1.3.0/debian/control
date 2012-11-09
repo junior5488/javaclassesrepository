@@ -9,6 +9,6 @@ Homepage: http://hds-solutions.net/
 Package: libschimpf-util
 Architecture: all
 Depends: java7-runtime, libcommons-codec-java
-Provides: libschimpf-multikeymap-java, libschimpf-sortablelist-java, libschimpf-abrupt-crypter-java, libschimpf-base64-crypter-java, libschimpf-exceptions-java, libschimpf-params-manager-java, libschimpf-logger-java
+Provides: libschimpf-multikeymap-java, libschimpf-sortablelist-java, libschimpf-abrupt-crypter-java, libschimpf-base64-crypter-java, libschimpf-exceptions-java, libschimpf-params-manager-java, libschimpf-logger-java, libschimpf-osidentifier-java
 Description: Schimpf Util Library
  Paquete Java de librerias Util
