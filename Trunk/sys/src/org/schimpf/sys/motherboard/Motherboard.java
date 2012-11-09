@@ -17,17 +17,12 @@
  */
 package org.schimpf.sys.motherboard;
 
+import org.schimpf.sys.util.RootCommand;
 import org.schimpf.util.os.OSIdentifier;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
 
 /**
  * Clase para obtener datos de la placa madre
@@ -100,6 +95,10 @@ public final class Motherboard {
 		else
 			// mostramos un error en consola
 			System.err.println("Sorry: OS not implemented!");
+		// verificamos si hay numero de serie
+		if (Motherboard.serialNo != null)
+			// limpiamos el nro de serie
+			Motherboard.serialNo = Motherboard.serialNo.trim();
 	}
 
 	/**
@@ -110,50 +109,8 @@ public final class Motherboard {
 	 * @version Nov 9, 2012 8:10:27 AM
 	 */
 	private static void loadUnix() {
-		try {
-			// iniciamos el ssh
-			JSch ssh = new JSch();
-			// 
-			ssh.setKnownHosts("/home/" + System.getProperty("user.name") + "/.ssh/known_hosts");
-			// iniciamos la sesion
-			Session session = ssh.getSession(System.getProperty("user.name"), "localhost", 22);
-			// seteamos la contraseña
-			session.setPassword(Motherboard.rootPasswd);
-			// conectamos la session
-			session.connect();
-			// iniciamos un canal
-			Channel channel = session.openChannel("exec");
-			// ejecutamos el comando
-			((ChannelExec) channel).setCommand("sudo -S -p '' lshw -c bus | head | grep serial | awk -F ':' '{print $2}' | tr -d ' '");
-			// obtenemos los streams
-			InputStream in = channel.getInputStream();
-			OutputStream out = channel.getOutputStream();
-			((ChannelExec) channel).setErrStream(System.err);
-			// conectamos
-			channel.connect();
-			// enviamos la contraseña de root
-			out.write((Motherboard.rootPasswd + "\n").getBytes());
-			out.flush();
-			// leemos el resultado
-			byte[] tmp = new byte[1024];
-			while (true) {
-				while (in.available() > 0) {
-					int i = in.read(tmp, 0, 1024);
-					if (i < 0)
-						break;
-					// almacenamos el nro de serie
-					Motherboard.serialNo = (Motherboard.serialNo == null ? "" : Motherboard.serialNo) + new String(tmp, 0, i);
-				}
-				if (channel.isClosed())
-					break;
-				try {
-					Thread.sleep(50);
-				} catch (Exception ee) {}
-			}
-			// desconectamos
-			channel.disconnect();
-			session.disconnect();
-		} catch (Exception ignored) {}
+		// almacenamos el numero de serie
+		Motherboard.serialNo = RootCommand.runSudoCommand(Motherboard.rootPasswd, "dmidecode -s baseboard-serial-number");
 	}
 
 	/**
