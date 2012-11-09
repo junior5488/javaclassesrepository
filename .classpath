@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="Trunk/java/src"/>
 	<classpathentry kind="src" path="Trunk/net/src"/>
 	<classpathentry kind="src" path="Trunk/sql/src"/>
+	<classpathentry kind="src" path="Trunk/sys/src"/>
 	<classpathentry kind="src" path="Data/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Commons Codec"/>
@@ -13,5 +14,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PostgreSQL Driver"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SSH Library"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SSH Library (JSch)"/>
 	<classpathentry kind="output" path=".bin"/>
 </classpath>
