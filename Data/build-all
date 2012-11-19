@@ -21,7 +21,7 @@ ant -Dbasedir="$DIR" -f "$DIR"/Trunk/net/build.xml
 cd "$DIR"/Data/deb/libschimpf-net_1.1.1 && sudo debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sql/build.xml
-cd "$DIR"/Data/deb/libschimpf-sql_1.4.1 && sudo debian/rules
+cd "$DIR"/Data/deb/libschimpf-sql_1.4.2 && sudo debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sys/build.xml
 cd "$DIR"/Data/deb/libschimpf-sys_1.0.0 && sudo debian/rules
