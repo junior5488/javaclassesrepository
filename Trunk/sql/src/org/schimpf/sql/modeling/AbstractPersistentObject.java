@@ -27,8 +27,9 @@ import org.schimpf.sql.base.TableWrapper;
 import org.schimpf.util.Logger;
 import org.schimpf.util.Logger.Level;
 import org.schimpf.util.arrays.MultiKeyMap;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
@@ -56,14 +57,14 @@ import java.util.Map.Entry;
  * @param <CType> Tipo de columna
  * @param <PKType> Tipo de valor de las PK
  */
-public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType> {
+public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType> implements Serializable {
 	/**
 	 * Nivel de mesajes de depuracion<BR/>
 	 * Apagado por defecto
 	 * 
 	 * @version Aug 2, 2012 2:26:32 PM
 	 */
-	public static Level																	DEBUG_LEVEL		= Level.OFF;
+	public static Level																	DEBUG_LEVEL			= Level.OFF;
 
 	/**
 	 * Tablas cacheadas
@@ -71,7 +72,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @version Oct 14, 2012 12:40:45 AM
 	 */
 	@SuppressWarnings("unchecked")
-	private static final HashMap<Class<?>, TableWrapper>						cachedTables	= new HashMap<Class<?>, TableWrapper>();
+	private static final HashMap<Class<?>, TableWrapper>						cachedTables		= new HashMap<Class<?>, TableWrapper>();
 
 	/**
 	 * Lista de PO's referenciados
@@ -79,7 +80,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @version Oct 10, 2012 6:35:44 PM
 	 */
 	@SuppressWarnings("unchecked")
-	private static final MultiKeyMap<Object, AbstractPersistentObject>	referencedPOs	= new MultiKeyMap<Object, AbstractPersistentObject>();
+	private static final MultiKeyMap<Object, AbstractPersistentObject>	referencedPOs		= new MultiKeyMap<Object, AbstractPersistentObject>();
+
+	/**
+	 * Version de la clase
+	 * 
+	 * @version Nov 19, 2012 8:06:23 AM
+	 */
+	private static final long															serialVersionUID	= 1L;
 
 	/**
 	 * Instancia del conector SQL
@@ -93,14 +101,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * 
 	 * @version Oct 10, 2012 3:01:21 PM
 	 */
-	private static final Logger														static_log		= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL, null);
+	private static final Logger														static_log			= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL, null);
 
 	/**
 	 * Bandera de creacion para nuevo registro
 	 * 
 	 * @version Jul 31, 2012 3:32:28 PM
 	 */
-	private boolean																		createNew		= false;
+	private boolean																		createNew			= false;
 
 	/**
 	 * Instancia del Logger
@@ -110,18 +118,18 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	private final Logger																	log;
 
 	/**
-	 * Identificador del registro
-	 * 
-	 * @version Jul 31, 2012 11:56:57 AM
-	 */
-	private final HashMap<CType, PKType>											primaryKeys		= new HashMap<CType, PKType>();
-
-	/**
 	 * Tabla a la que pertenece el registro
 	 * 
 	 * @version Jul 31, 2012 12:09:33 PM
 	 */
-	private final TType																	table;
+	private final TType																	poPhysicalTable;
+
+	/**
+	 * Identificador del registro
+	 * 
+	 * @version Jul 31, 2012 11:56:57 AM
+	 */
+	private final HashMap<CType, PKType>											primaryKeys			= new HashMap<CType, PKType>();
 
 	/**
 	 * Nombre de la transaccion del PO
@@ -135,14 +143,14 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * 
 	 * @version Jul 31, 2012 12:00:21 PM
 	 */
-	private final HashMap<CType, Object>											valuesNew		= new HashMap<CType, Object>();
+	private final HashMap<CType, Object>											valuesNew			= new HashMap<CType, Object>();
 
 	/**
 	 * Columnas y sus valores originales
 	 * 
 	 * @version Jul 31, 2012 3:34:39 PM
 	 */
-	private final HashMap<CType, Object>											valuesOld		= new HashMap<CType, Object>();
+	private final HashMap<CType, Object>											valuesOld			= new HashMap<CType, Object>();
 
 	/**
 	 * Constructor del PO
@@ -157,13 +165,13 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// iniciamos el logger
 		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// almacenamos la tabla
-		this.table = this.getTableInstance(this.getSQLConnector());
+		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// modificamos la bandera de creacion
 		this.createNew = true;
 		// mostramos un log
-		this.log.info("New Persisten Object initiated [" + this + "]");
+		this.log.info("New Persisten Object initiated [" + this.getTable() + " {" + this.getPKsFilter(true) + "}" + "]");
 	}
 
 	/**
@@ -180,7 +188,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// iniciamos el logger
 		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// almacenamos la tabla
-		this.table = this.getTableInstance(this.getSQLConnector());
+		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// almacenamos las PKs
@@ -188,7 +196,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// cargamos el registro
 		this.load();
 		// mostramos un log
-		this.log.info("Persisten Object loaded [" + this + "]");
+		this.log.info("Persisten Object loaded [" + this.getTable() + " {" + this.getPKsFilter(true) + "}" + "]");
 	}
 
 	/**
@@ -397,7 +405,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	@SuppressWarnings("unchecked")
 	protected static final <SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType, RType extends AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType>> RType getReferencedPO(final AbstractPersistentObject<SQLConnector, MType, DType, SType, TType, CType, PKType> localPO, final Class<RType> clazz, final PKType... identifier) {
 		// mostramos un log
-		AbstractPersistentObject.getSLogger().info("Getting referenced Persistent Object in " + localPO + " to " + clazz.getName());
+		AbstractPersistentObject.getSLogger().info("Getting referenced Persistent Object in " + localPO.getTable() + " {" + localPO.getPKsFilter(true) + "} to " + clazz.getName());
 		// verificamos si hay identificadores
 		if (identifier == null)
 			// retornamos null
@@ -582,11 +590,11 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		while (table == null)
 			try {
 				// obtenemos el metodo
-				final Method tableInstance = superClazz.getDeclaredMethod("getTableInstance", new Class[] { SQLProcess.class });
+				final Field tableInstance = superClazz.getDeclaredField("poPhysicalTable");
 				// lo setamos como accesible
 				tableInstance.setAccessible(true);
 				// obtenemos el nombre de la tabla
-				table = (TType) tableInstance.invoke(clazz.getDeclaredConstructor(new Class[] {}).newInstance(), AbstractPersistentObject.sqlConnector);
+				table = (TType) tableInstance.get(clazz.getDeclaredConstructor(new Class[] {}).newInstance());
 			} catch (final Exception e) {
 				// obtenemos el padre
 				superClazz = superClazz.getSuperclass();
@@ -1131,7 +1139,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 */
 	private TType getTable() {
 		// retornamos la tabla
-		return this.table;
+		return this.poPhysicalTable;
 	}
 
 	/**
@@ -1213,7 +1221,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 				// marcamos como nuevo registro
 				this.createNew = true;
 				// mostramos un log
-				this.log.info("New Persisten Object initiated [" + this + "]");
+				this.log.info("New Persisten Object initiated [" + this.getTable() + " {" + this.getPKsFilter(true) + "}" + "]");
 			}
 		} catch (final Exception e) {
 			// mostramos un log
