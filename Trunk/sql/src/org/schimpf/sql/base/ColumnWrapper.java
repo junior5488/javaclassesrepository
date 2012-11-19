@@ -146,6 +146,50 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 		return this.getTable().compareTo(column.getTable()) == 0 && this.getColumnName().equals(column.getColumnName()) ? 0 : 1;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean equals(final Object obj) {
+		// generamos una bandera
+		boolean equals = true;
+		try {
+			// columna con la cual comparar
+			CType column = (CType) obj;
+			// verificamos si la columna es nula
+			if (column == null)
+				// retornamos false
+				return false;
+			// verificamos si la columna esta en la misma posicion
+			if (equals && !this.getColumnPosition().equals(column.getColumnPosition()))
+				// modificamos la bandera
+				equals = false;
+			// verificamos si las columna son de la misma clase
+			if (equals && !this.getDataClass().equals(column.getDataClass()))
+				// modificamos la bandera
+				equals = false;
+			// verificamos si las columna son del mismo tamaño
+			if (equals && !this.getDataLength().equals(column.getDataLength()))
+				// modificamos la bandera
+				equals = false;
+			// verificamos si las columna son del mismo tamaño
+			if (equals && this.getDataPrecision() != null && !this.getDataPrecision().equals(column.getDataPrecision()))
+				// modificamos la bandera
+				equals = false;
+			// verificamos si las columna son del mismo tipo
+			if (equals && !this.getDataType().equals(column.getDataType()))
+				// modificamos la bandera
+				equals = false;
+			// verificamos si las columna tienen el mismo valor por defecto
+			if (equals && (this.getDefaultValue() != null && column.getDefaultValue() != null || !this.getDefaultValue().equals(column.getDefaultValue())))
+				// modificamos la bandera
+				equals = false;
+		} catch (Exception e) {
+			// retornamos false
+			return false;
+		}
+		// retornamos la bandera
+		return equals;
+	}
+
 	/**
 	 * Retorna el nombre de la columna
 	 * 
@@ -278,6 +322,12 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	public final TType getTable() {
 		// retornamos la tabla
 		return this.table;
+	}
+
+	@Override
+	public int hashCode() {
+		// enviamos el padre
+		return super.hashCode();
 	}
 
 	/**
