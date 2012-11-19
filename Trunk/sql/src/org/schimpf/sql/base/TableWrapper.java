@@ -262,6 +262,118 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		return this.getSchema().compareTo(table.getSchema()) == 0 && this.getTableName().equals(table.getTableName()) ? 0 : 1;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean equals(final Object obj) {
+		// generamos una bandera
+		boolean equals = true;
+		try {
+			// tabla
+			TType table = null;
+			// obtenemos la tabla
+			table = (TType) obj;
+			// verificamos si la tabla es null
+			if (table == null)
+				// retornamos false
+				return false;
+			// comparamos la cantidad de columnas
+			if (equals && this.getColumns().size() != table.getColumns().size())
+				// modificamos la bandera
+				equals = false;
+			// comparamos la cantidad de columnas PK
+			if (equals && this.getPrimaryKeys().size() != table.getPrimaryKeys().size())
+				// modificamos la bandera
+				equals = false;
+			// comparamos la cantidad de columnas FK
+			if (equals && this.getForeignKeys().size() != table.getForeignKeys().size())
+				// modificamos la bandera
+				equals = false;
+			// verificamos si sigue igual
+			if (equals)
+				// recorremos las columnas
+				for (CType column: this.getColumns()) {
+					// verificamos si existe una columna con el mismo nombre en la otra tabla
+					if (equals && table.getColumn(column.getColumnName()) == null)
+						// modificamos la bandera
+						equals = false;
+					// verificamos si la columna esta en la misma posicion
+					if (equals && !column.getColumnPosition().equals(table.getColumn(column.getColumnName()).getColumnPosition()))
+						// modificamos la bandera
+						equals = false;
+					// verificamos si las columna son de la misma clase
+					if (equals && !column.getDataClass().equals(table.getColumn(column.getColumnName()).getDataClass()))
+						// modificamos la bandera
+						equals = false;
+					// verificamos si las columna son del mismo tamaño
+					if (equals && !column.getDataLength().equals(table.getColumn(column.getColumnName()).getDataLength()))
+						// modificamos la bandera
+						equals = false;
+					// verificamos si las columna son del mismo tamaño
+					if (equals && column.getDataPrecision() != null && !column.getDataPrecision().equals(table.getColumn(column.getColumnName()).getDataPrecision()))
+						// modificamos la bandera
+						equals = false;
+					// verificamos si las columna son del mismo tipo
+					if (equals && !column.getDataType().equals(table.getColumn(column.getColumnName()).getDataType()))
+						// modificamos la bandera
+						equals = false;
+					// verificamos si las columna tienen el mismo valor por defecto
+					if (equals && column.getDefaultValue() != null && table.getColumn(column.getColumnName()).getDefaultValue() != null && !column.getDefaultValue().equals(table.getColumn(column.getColumnName()).getDefaultValue()))
+						// modificamos la bandera
+						equals = false;
+				}
+			// verificamos si continua igual
+			if (equals)
+				// recorremos las columnas FK
+				for (ForeignKey<CType> column: this.getForeignKeys()) {
+					// obtenemos la columna FK de la otra tabla
+					ForeignKey<CType> lastColumn = table.getForeignKeys().get(this.getForeignKeys().indexOf(column));
+					// verificamos si la FK tiene el mismo nombre
+					if (!column.getForeignKeyName().equals(lastColumn.getForeignKeyName()))
+						// modificamos la bandera
+						equals = false;
+					// verificamos si tienen la misma cantidad de columnas
+					if (equals && column.getColumns().size() != lastColumn.getColumns().size())
+						// modificamos la bandera
+						equals = false;
+					// obtenemos las columnas relacionadas
+					Iterator<Entry<CType, CType>> fkColumns = column.getColumns().entrySet().iterator();
+					// recorremos las columnas
+					while (fkColumns.hasNext()) {
+						// obtenemos la tupla de columnas
+						Entry<CType, CType> fks = fkColumns.next();
+						// generamos una bandera
+						boolean fkEqual = false;
+						// obtenemos las columnas relacionadas de la otra tabla
+						Iterator<Entry<CType, CType>> lastFKColumns = lastColumn.getColumns().entrySet().iterator();
+						// recorremoas las columnas de la otra tabla
+						while (lastFKColumns.hasNext()) {
+							// obtenemos la tupla de columnas
+							Entry<CType, CType> lastKFs = lastFKColumns.next();
+							// verificamos si es la tupla correcta
+							if (fks.getKey().getColumnName().equals(lastKFs.getKey().getColumnName()) && fks.getValue().getColumnName().equals(lastKFs.getValue().getColumnName())) {
+								// modificamos la bandera
+								fkEqual = true;
+								// finalizamos el bucle
+								break;
+							}
+						}
+						// verificamos si se encontro la tupla
+						if (!fkEqual) {
+							// modificamos la bandera
+							equals = false;
+							// finalizamos el bucle
+							break;
+						}
+					}
+				}
+		} catch (Exception e) {
+			// retornamos false
+			return false;
+		}
+		// retornamos la bandera
+		return equals;
+	}
+
 	/**
 	 * Retorna una columna
 	 * 
@@ -422,6 +534,12 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	public final String getTableName() {
 		// retornamos el nombre de la tabla
 		return this.tableName;
+	}
+
+	@Override
+	public int hashCode() {
+		// enviamos el padre
+		return super.hashCode();
 	}
 
 	@Override
