@@ -146,50 +146,6 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 		return this.getTable().compareTo(column.getTable()) == 0 && this.getColumnName().equals(column.getColumnName()) ? 0 : 1;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean equals(final Object obj) {
-		// generamos una bandera
-		boolean equals = true;
-		try {
-			// columna con la cual comparar
-			CType column = (CType) obj;
-			// verificamos si la columna es nula
-			if (column == null)
-				// retornamos false
-				return false;
-			// verificamos si la columna esta en la misma posicion
-			if (equals && !this.getColumnPosition().equals(column.getColumnPosition()))
-				// modificamos la bandera
-				equals = false;
-			// verificamos si las columna son de la misma clase
-			if (equals && !this.getDataClass().equals(column.getDataClass()))
-				// modificamos la bandera
-				equals = false;
-			// verificamos si las columna son del mismo tamaño
-			if (equals && !this.getDataLength().equals(column.getDataLength()))
-				// modificamos la bandera
-				equals = false;
-			// verificamos si las columna son del mismo tamaño
-			if (equals && this.getDataPrecision() != null && !this.getDataPrecision().equals(column.getDataPrecision()))
-				// modificamos la bandera
-				equals = false;
-			// verificamos si las columna son del mismo tipo
-			if (equals && !this.getDataType().equals(column.getDataType()))
-				// modificamos la bandera
-				equals = false;
-			// verificamos si las columna tienen el mismo valor por defecto
-			if (equals && (this.getDefaultValue() != null && column.getDefaultValue() != null || !this.getDefaultValue().equals(column.getDefaultValue())))
-				// modificamos la bandera
-				equals = false;
-		} catch (Exception e) {
-			// retornamos false
-			return false;
-		}
-		// retornamos la bandera
-		return equals;
-	}
-
 	/**
 	 * Retorna el nombre de la columna
 	 * 
@@ -403,6 +359,60 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			this.loadMetaData();
 		// retornamos el tamaño de la columna
 		return this.isUnique;
+	}
+
+	/**
+	 * Compara fisicamente la columna actual con la columna especificada
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 19, 2012 6:50:14 PM
+	 * @param column Columna a comparar
+	 * @return True si la columna especificada es igual a la columna actual
+	 */
+	public boolean physicalEquals(final CType column) {
+		try {
+			// verificamos si la columna es nula
+			if (column == null)
+				// retornamos false
+				return false;
+			// verificamos si la columna esta en la misma posicion
+			if (!this.getColumnPosition().equals(column.getColumnPosition()))
+				// retornamos false
+				return false;
+			// verificamos si las columna son de la misma clase
+			if (!this.getDataClass().equals(column.getDataClass()))
+				// retornamos false
+				return false;
+			// verificamos si las columna son del mismo tamaño
+			if (!this.getDataLength().equals(column.getDataLength()))
+				// retornamos false
+				return false;
+			// verificamos si las columna son del mismo tamaño
+			if (this.getDataPrecision() != null && !this.getDataPrecision().equals(column.getDataPrecision()))
+				// retornamos false
+				return false;
+			// verificamos si las columna son del mismo tipo
+			if (!this.getDataType().equals(column.getDataType()))
+				// retornamos false
+				return false;
+			// verificamos si alguna de las columas tiene valor por defecto
+			if (this.getDefaultValue() != null || column.getDefaultValue() != null) {
+				// verificamos si alguna columna tiene valor por defecto y la otra no
+				if (this.getDefaultValue() != null && column.getDefaultValue() == null || this.getDefaultValue() == null && column.getDefaultValue() != null)
+					// retornamos false
+					return false;
+				// verificamos si las columna 2 tienen el valor por defecto y son diferentes
+				if (this.getDefaultValue() != null && column.getDefaultValue() != null && !this.getDefaultValue().equals(column.getDefaultValue()))
+					// retornamos false
+					return false;
+			}
+		} catch (Exception e) {
+			// retornamos false
+			return false;
+		}
+		// retornamos true
+		return true;
 	}
 
 	@Override
