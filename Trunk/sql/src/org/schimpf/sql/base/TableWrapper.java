@@ -139,6 +139,63 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 			this.onDelete = onDelete;
 		}
 
+		@Override
+		public boolean equals(final Object obj) {
+			// creamos una bandera
+			boolean equals = true;
+			try {
+				// obtenemos la columna FK a comparar
+				ForeignKey<FKCType> foreignKey = (ForeignKey<FKCType>) obj;
+				// verificamos si es null
+				if (foreignKey == null)
+					// retornamos false
+					return false;
+				// verificamos si la FK tiene el mismo nombre
+				if (!this.getForeignKeyName().equals(foreignKey.getForeignKeyName()))
+					// modificamos la bandera
+					equals = false;
+				// verificamos si tienen la misma cantidad de columnas
+				if (equals && this.getColumns().size() != foreignKey.getColumns().size())
+					// modificamos la bandera
+					equals = false;
+				// obtenemos las columnas relacionadas
+				Iterator<Entry<FKCType, FKCType>> fkColumns = this.getColumns().entrySet().iterator();
+				// recorremos las columnas
+				while (fkColumns.hasNext()) {
+					// obtenemos la tupla de columnas
+					Entry<FKCType, FKCType> fks = fkColumns.next();
+					// generamos una bandera
+					boolean fkEqual = false;
+					// obtenemos las columnas relacionadas de la otra tabla
+					Iterator<Entry<FKCType, FKCType>> lastFKColumns = foreignKey.getColumns().entrySet().iterator();
+					// recorremoas las columnas de la otra tabla
+					while (lastFKColumns.hasNext()) {
+						// obtenemos la tupla de columnas
+						Entry<FKCType, FKCType> lastKFs = lastFKColumns.next();
+						// verificamos si es la tupla correcta
+						if (fks.getKey().getColumnName().equals(lastKFs.getKey().getColumnName()) && fks.getValue().getColumnName().equals(lastKFs.getValue().getColumnName())) {
+							// modificamos la bandera
+							fkEqual = true;
+							// finalizamos el bucle
+							break;
+						}
+					}
+					// verificamos si se encontro la tupla
+					if (!fkEqual) {
+						// modificamos la bandera
+						equals = false;
+						// finalizamos el bucle
+						break;
+					}
+				}
+			} catch (Exception e) {
+				// retornamos false
+				return false;
+			}
+			// retornamos la bandera
+			return equals;
+		}
+
 		/**
 		 * Retorna las columnas de la clave foranea
 		 * 
@@ -163,6 +220,12 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		public String getForeignKeyName() {
 			// retornamos el nombre
 			return this.foreignKeyName;
+		}
+
+		@Override
+		public int hashCode() {
+			// enviamos el padre
+			return super.hashCode();
 		}
 
 		/**
@@ -296,76 +359,26 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 					if (equals && table.getColumn(column.getColumnName()) == null)
 						// modificamos la bandera
 						equals = false;
-					// verificamos si la columna esta en la misma posicion
-					if (equals && !column.getColumnPosition().equals(table.getColumn(column.getColumnName()).getColumnPosition()))
+					// comparamos las columnas
+					if (equals && !column.equals(table.getColumn(column.getColumnName())))
 						// modificamos la bandera
 						equals = false;
-					// verificamos si las columna son de la misma clase
-					if (equals && !column.getDataClass().equals(table.getColumn(column.getColumnName()).getDataClass()))
-						// modificamos la bandera
-						equals = false;
-					// verificamos si las columna son del mismo tamaño
-					if (equals && !column.getDataLength().equals(table.getColumn(column.getColumnName()).getDataLength()))
-						// modificamos la bandera
-						equals = false;
-					// verificamos si las columna son del mismo tamaño
-					if (equals && column.getDataPrecision() != null && !column.getDataPrecision().equals(table.getColumn(column.getColumnName()).getDataPrecision()))
-						// modificamos la bandera
-						equals = false;
-					// verificamos si las columna son del mismo tipo
-					if (equals && !column.getDataType().equals(table.getColumn(column.getColumnName()).getDataType()))
-						// modificamos la bandera
-						equals = false;
-					// verificamos si las columna tienen el mismo valor por defecto
-					if (equals && column.getDefaultValue() != null && table.getColumn(column.getColumnName()).getDefaultValue() != null && !column.getDefaultValue().equals(table.getColumn(column.getColumnName()).getDefaultValue()))
-						// modificamos la bandera
-						equals = false;
+					// verificamos si hay diferencias
+					if (!equals)
+						// salimos del bucle
+						break;
 				}
 			// verificamos si continua igual
 			if (equals)
 				// recorremos las columnas FK
-				for (ForeignKey<CType> column: this.getForeignKeys()) {
-					// obtenemos la columna FK de la otra tabla
-					ForeignKey<CType> lastColumn = table.getForeignKeys().get(this.getForeignKeys().indexOf(column));
-					// verificamos si la FK tiene el mismo nombre
-					if (!column.getForeignKeyName().equals(lastColumn.getForeignKeyName()))
+				for (ForeignKey<CType> column: this.getForeignKeys())
+					// verificamos si son iguales
+					if (!column.equals(table.getForeignKeys().get(this.getForeignKeys().indexOf(column)))) {
 						// modificamos la bandera
 						equals = false;
-					// verificamos si tienen la misma cantidad de columnas
-					if (equals && column.getColumns().size() != lastColumn.getColumns().size())
-						// modificamos la bandera
-						equals = false;
-					// obtenemos las columnas relacionadas
-					Iterator<Entry<CType, CType>> fkColumns = column.getColumns().entrySet().iterator();
-					// recorremos las columnas
-					while (fkColumns.hasNext()) {
-						// obtenemos la tupla de columnas
-						Entry<CType, CType> fks = fkColumns.next();
-						// generamos una bandera
-						boolean fkEqual = false;
-						// obtenemos las columnas relacionadas de la otra tabla
-						Iterator<Entry<CType, CType>> lastFKColumns = lastColumn.getColumns().entrySet().iterator();
-						// recorremoas las columnas de la otra tabla
-						while (lastFKColumns.hasNext()) {
-							// obtenemos la tupla de columnas
-							Entry<CType, CType> lastKFs = lastFKColumns.next();
-							// verificamos si es la tupla correcta
-							if (fks.getKey().getColumnName().equals(lastKFs.getKey().getColumnName()) && fks.getValue().getColumnName().equals(lastKFs.getValue().getColumnName())) {
-								// modificamos la bandera
-								fkEqual = true;
-								// finalizamos el bucle
-								break;
-							}
-						}
-						// verificamos si se encontro la tupla
-						if (!fkEqual) {
-							// modificamos la bandera
-							equals = false;
-							// finalizamos el bucle
-							break;
-						}
+						// salimos del bucle
+						break;
 					}
-				}
 		} catch (Exception e) {
 			// retornamos false
 			return false;
