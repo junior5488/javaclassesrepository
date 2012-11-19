@@ -56,12 +56,20 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @version Oct 10, 2012 2:23:15 PM
 	 */
 	private Class<?>			dataClass;
+
 	/**
 	 * Tamaño maximo del campo
 	 * 
 	 * @version Oct 13, 2012 11:18:11 PM
 	 */
 	private Integer			dataLength;
+
+	/**
+	 * Tamaño de precision del campo
+	 * 
+	 * @version Nov 19, 2012 6:12:05 PM
+	 */
+	private Integer			dataPrecision;
 
 	/**
 	 * Tipo de dato de la columna
@@ -200,6 +208,24 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			this.loadMetaData();
 		// retornamos el tamaño
 		return this.dataLength;
+	}
+
+	/**
+	 * Retorna el la precision del tamaño de la columna
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 19, 2012 6:12:22 PM
+	 * @return Tamaño de la precision de la columna
+	 * @throws SQLException Si se produjo un error al cargar los metadatos
+	 */
+	public final Integer getDataPrecision() throws SQLException {
+		// verificamos si tenemos valor
+		if (this.dataPrecision == null)
+			// cargamos los datos
+			this.loadMetaData();
+		// retornamos el tamaño
+		return this.dataPrecision;
 	}
 
 	/**
@@ -367,6 +393,8 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			if (moreData.next()) {
 				// almacenamos el tamaño del campo
 				this.dataLength = moreData.getInt(7);
+				// almacenamos el tamaño del campo
+				this.dataPrecision = moreData.getInt(9);
 				// almacenamos si es nullable
 				this.isNullable = moreData.getInt(11) == java.sql.DatabaseMetaData.columnNullable;
 				// almacenamos el valor por defecto
