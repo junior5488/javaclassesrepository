@@ -462,6 +462,19 @@ public final class Logger {
 	}
 
 	/**
+	 * Retorna el nombre del fichero log
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 19, 2012 9:28:59 PM
+	 * @return Nombre del fichero log
+	 */
+	public String getLogFileName() {
+		// retornamos el nombre del fichero
+		return this.logFile.getAbsolutePath();
+	}
+
+	/**
 	 * Almacena una excepcion de informacion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
