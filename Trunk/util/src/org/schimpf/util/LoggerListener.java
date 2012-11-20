@@ -32,7 +32,7 @@ public interface LoggerListener {
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
-	 * @version Nov 20, 2012 10:17:19 AM
+	 * @version Nov 20, 2012 10:17:20 AM
 	 * @param message Mensaje
 	 * @param level Nivel del mensaje
 	 * @param isException True si es excepcion
