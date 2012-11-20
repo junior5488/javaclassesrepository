@@ -43,6 +43,13 @@ public final class Logger {
 	private static final ArrayList<LoggerListener>	listeners		= new ArrayList<LoggerListener>();
 
 	/**
+	 * Clase desde la que se inicia el logger
+	 * 
+	 * @version Nov 20, 2012 10:19:55 AM
+	 */
+	private final Class<?>									clazz;
+
+	/**
 	 * Nivel de mensajes en consola
 	 * 
 	 * @version Aug 1, 2012 5:15:53 PM
@@ -230,7 +237,9 @@ public final class Logger {
 	 */
 	public Logger(final Class<? extends Object> clazz, final String logFile) {
 		// almacenamos la clase
-		this.name = clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
+		this.clazz = clazz;
+		// almacenamos el nombre
+		this.name = this.getLogClass().getName().substring(this.getLogClass().getName().lastIndexOf(".") + 1);
 		// almacenamos el fichero log
 		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
 		// verificamos si se especifico el fichero log
@@ -279,6 +288,8 @@ public final class Logger {
 	 * @param logFile Ruta al fichero log
 	 */
 	public Logger(final String name, final String logFile) {
+		// FIXME por ahora almacenamos null
+		this.clazz = null;
 		// almacenamos la clase
 		this.name = name;
 		// almacenamos el fichero log
@@ -736,5 +747,18 @@ public final class Logger {
 	public void warning(final String message) {
 		// ejecutamos el mensaje
 		this.log(Level.WARN, message);
+	}
+
+	/**
+	 * Retorna la clase desde la que se inicio el Logger
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 20, 2012 10:21:03 AM
+	 * @return Clase
+	 */
+	private Class<?> getLogClass() {
+		// retornamos la clase
+		return this.clazz;
 	}
 }
