@@ -214,8 +214,8 @@ public final class ThreadsManager<TType extends Thread> {
 			final ArrayList<TType> terminatedThreads = new ArrayList<TType>();
 			// recorremos los threads
 			for (final TType thread: this.getThreads()) {
-				// intentamos cerrar el thread
-				thread.interrupt();
+				// finalizamos el thread
+				thread.shutdown();
 				try {
 					// esperamos a que el thread finalize
 					thread.join(500);
