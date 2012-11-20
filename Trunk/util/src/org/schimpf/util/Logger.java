@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -35,39 +36,46 @@ import java.util.Date;
  */
 public final class Logger {
 	/**
+	 * Capturadores de mensajes
+	 * 
+	 * @version Nov 20, 2012 10:05:05 AM
+	 */
+	private static final ArrayList<LoggerListener>	listeners		= new ArrayList<LoggerListener>();
+
+	/**
 	 * Nivel de mensajes en consola
 	 * 
 	 * @version Aug 1, 2012 5:15:53 PM
 	 */
-	private Level			consoleLevel	= Level.WARN;
+	private Level												consoleLevel	= Level.WARN;
 
 	/**
 	 * Nivel de mensajes en fichero log
 	 * 
 	 * @version Aug 1, 2012 5:16:06 PM
 	 */
-	private Level			fileLevel		= Level.INFO;
+	private Level												fileLevel		= Level.INFO;
 
 	/**
 	 * Fichero log
 	 * 
 	 * @version Aug 2, 2012 9:16:38 AM
 	 */
-	private final File	logFile;
+	private final File										logFile;
 
 	/**
 	 * Bandera para habilitar el log en el fichero
 	 * 
 	 * @version Aug 2, 2012 9:22:52 AM
 	 */
-	private boolean		logToFile		= false;
+	private boolean											logToFile		= false;
 
 	/**
 	 * Nombre del logger
 	 * 
 	 * @version Aug 1, 2012 5:39:11 PM
 	 */
-	private final String	name;
+	private final String										name;
 
 	/**
 	 * Niveles para el log
@@ -277,6 +285,33 @@ public final class Logger {
 		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
 		// verificamos si se especifico el fichero log
 		this.enableLogFile(logFile != null);
+	}
+
+	/**
+	 * Agrega un listener
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 20, 2012 10:06:15 AM
+	 * @param listener Listener
+	 */
+	public static void addListener(final LoggerListener listener) {
+		// agregamos el listener
+		Logger.listeners.add(listener);
+	}
+
+	/**
+	 * Elimina un listener
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 20, 2012 10:07:19 AM
+	 * @param listener Listener
+	 * @return True si existe el listener y se elimino
+	 */
+	public static boolean removeListener(final LoggerListener listener) {
+		// eliminamos el listener
+		return Logger.listeners.remove(listener);
 	}
 
 	/**
@@ -527,7 +562,7 @@ public final class Logger {
 			// agregamos el elemento
 			log.append("\n" + logStart + "\t" + stackTrace.getClassName() + "." + stackTrace.getMethodName() + "(" + stackTrace.getFileName() + ":" + stackTrace.getLineNumber() + ")");
 		// verificamos si mostramos en consola
-		if (level.isEnabled(this.consoleLevel))
+		if (level.isEnabled(this.consoleLevel)) {
 			// verificamos si es >= ERROR
 			if (level.isEnabled(Level.ERROR))
 				// mostrar el mensaje en consola de error
@@ -535,8 +570,13 @@ public final class Logger {
 			else
 				// mostrar el mensaje en consola de error
 				System.out.println(log);
+			// recorremos los listeners
+			for (LoggerListener listener: Logger.listeners)
+				// enviamos el mensaje
+				listener.consoleLog(log.toString(), level, true);
+		}
 		// verificamos si mostramos en el fichero
-		if (level.isEnabled(this.fileLevel) && this.logToFile)
+		if (level.isEnabled(this.fileLevel) && this.logToFile) {
 			try {
 				// abrimos el fichero log
 				final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
@@ -552,6 +592,11 @@ public final class Logger {
 				// mostramos un log en consola
 				this.debug("Log can't be save on file. Reason: " + e.getMessage());
 			}
+			// recorremos los listeners
+			for (LoggerListener listener: Logger.listeners)
+				// enviamos el mensaje
+				listener.fileLog(log.toString(), level, true);
+		}
 	}
 
 	/**
@@ -572,7 +617,7 @@ public final class Logger {
 		// generamos el mensaje
 		final String log = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " " + this.name + " [" + level.name() + "] " + message;
 		// verificamos si mostramos en consola
-		if (level.isEnabled(this.consoleLevel))
+		if (level.isEnabled(this.consoleLevel)) {
 			// verificamos si es >= ERROR
 			if (level.isEnabled(Level.ERROR))
 				// mostrar el mensaje en consola de error
@@ -580,8 +625,13 @@ public final class Logger {
 			else
 				// mostrar el mensaje en consola de error
 				System.out.println(log);
+			// recorremos los listeners
+			for (LoggerListener listener: Logger.listeners)
+				// enviamos el mensaje
+				listener.consoleLog(log.toString(), level, false);
+		}
 		// verificamos si mostramos en el fichero
-		if (level.isEnabled(this.fileLevel) && this.logToFile)
+		if (level.isEnabled(this.fileLevel) && this.logToFile) {
 			try {
 				// abrimos el fichero log
 				final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
@@ -597,6 +647,11 @@ public final class Logger {
 				// mostramos un log en consola
 				this.debug("Log can't be save on file. Reason: " + e.getMessage());
 			}
+			// recorremos los listeners
+			for (LoggerListener listener: Logger.listeners)
+				// enviamos el mensaje
+				listener.fileLog(log.toString(), level, true);
+		}
 	}
 
 	/**
