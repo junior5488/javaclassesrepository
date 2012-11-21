@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="Data/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Commons Codec"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Oracle SwingX"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Email Library"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Java MSN Messenger Library"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
