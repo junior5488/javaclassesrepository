@@ -162,10 +162,10 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
 	protected AbstractPersistentObject() throws Exception {
-		// iniciamos el logger
-		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// almacenamos la tabla
 		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
+		// iniciamos el logger
+		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// modificamos la bandera de creacion
@@ -185,10 +185,10 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
 	protected AbstractPersistentObject(final PKType... identifier) throws Exception {
-		// iniciamos el logger
-		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// almacenamos la tabla
 		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
+		// iniciamos el logger
+		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// almacenamos las PKs
