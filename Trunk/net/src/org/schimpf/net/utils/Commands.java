@@ -99,23 +99,4 @@ public enum Commands {
 	 * @version Oct 14, 2011 1:07:40 PM
 	 */
 	SIZE;
-	/**
-	 * Retorna el comando desde su nombre
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 5, 2011 12:06:24 AM
-	 * @param command Nombre del comando
-	 * @return Comando
-	 */
-	public static Commands get(final String command) {
-		try {
-			// retornamos el comando
-			return Commands.valueOf(command);
-		} catch (final IllegalArgumentException e) {
-			// retornamos null
-			return null;
-		}
-	}
 }
