@@ -18,8 +18,9 @@ import java.net.Socket;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @author Schimpf.NET
  * @version Aug 5, 2011 10:56:08 AM
+ * @param <SType> Tipo para los estados
  */
-public abstract class AbstractServerSocket extends AbstractSingleSocket {
+public abstract class AbstractServerSocket<SType> extends AbstractSingleSocket<SType> {
 	/**
 	 * Bandera de autenticacion correcta
 	 * 
@@ -50,7 +51,7 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 	 * @param port Puerto para inicar el socket
 	 * @throws IOException Si no se puede crear el socket
 	 */
-	public AbstractServerSocket(final Class<? extends AbstractServerSocket> name, final Integer port) throws IOException {
+	public AbstractServerSocket(final Class<? extends AbstractServerSocket<SType>> name, final Integer port) throws IOException {
 		// enviamos el constructor
 		super(name, port);
 		try {
@@ -100,7 +101,7 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 		// vaciamos la bandera de autenticacion
 		this.autenticated = !this.needsAuthentication();
 		// cambiamos a la etapa inicial
-		this.setStage(Stage.INIT);
+		this.setLocalStage(Stage.INIT);
 		// esperamos una conexion
 		this.waitForConnection();
 	}
@@ -127,22 +128,22 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 		switch (stage) {
 			case INIT:
 				// verificamos si es el saludo
-				if (Commands.get(data.toString()).equals(Commands.HELO))
+				if (((Commands) data).equals(Commands.HELO))
 					// saludamos
 					this.send(Commands.HELO);
 				// verificamos si es la solicitud de datos
-				else if (Commands.get(data.toString()).equals(Commands.DATA))
+				else if (((Commands) data).equals(Commands.DATA))
 					// verificamos si no estamos autenticados
 					if (!this.isAutenticated() && this.needsAuthentication()) {
 						// modificamos la etapa al proceso de autenticacion
-						this.setStage(Stage.AUTH);
+						this.setLocalStage(Stage.AUTH);
 						// solicitamos autenticacion
 						this.send(Commands.AUTH);
 					} else {
 						// enviamos ok para aceptar datos
 						this.send(Commands.ACK);
 						// modificamos la etapa al proceso externo
-						this.setStage(Stage.POST);
+						this.setLocalStage(Stage.POST);
 					}
 				// finalizamos la etapa
 				break;
@@ -150,10 +151,10 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 				// verificamos si el comando anterior fue solicitud de autenticacion
 				if (this.getLastCommand().equals(Commands.AUTH)) {
 					// verificamos si se acepto la autenticacion
-					if (Commands.get(data.toString()).equals(Commands.ACK))
+					if (((Commands) data).equals(Commands.ACK))
 						// solicitamos los datos de autenticacion
 						this.send(Commands.DATA);
-					else if (Commands.get(data.toString()).equals(Commands.NAK))
+					else if (((Commands) data).equals(Commands.NAK))
 						// retornamos autenticacion fallida
 						this.send(Commands.NAK);
 					// verificamos si solicitamos los datos de autenticacion
@@ -170,17 +171,17 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 						// enviamos autenticacion fallida
 						this.send(Commands.NAK);
 					}
-				} else if (Commands.get(data.toString()).equals(Commands.DATA))
+				} else if (((Commands) data).equals(Commands.DATA))
 					// verificamos si estamos autenticados
 					if (this.isAutenticated()) {
 						// retornamos ok
 						this.send(Commands.ACK);
 						// cambiamos a la etapa externa
-						this.setStage(Stage.POST);
+						this.setLocalStage(Stage.POST);
 					} else
 						// retonamos false
 						this.send(Commands.NAK);
-				else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+				else if (((Commands) data).equals(Commands.BYE)) {
 					// modificamos la bandera
 					continuar = false;
 					try {
@@ -192,7 +193,7 @@ public abstract class AbstractServerSocket extends AbstractSingleSocket {
 				break;
 			// en cualquier otro caso
 			default:
-				if (Commands.get(data.toString()).equals(Commands.BYE)) {
+				if (((Commands) data).equals(Commands.BYE)) {
 					// modificamos la bandera
 					continuar = false;
 					// cerramos la conexion esperando por una nueva

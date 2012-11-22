@@ -23,8 +23,9 @@ import java.net.SocketException;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @author Schimpf.NET
  * @version Aug 5, 2011 9:11:16 AM
+ * @param <SType> Clase para los estados
  */
-public abstract class AbstractSingleSocket extends AbstractSocket {
+public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 	/**
 	 * Fichero a enviar
 	 * 
@@ -61,6 +62,13 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	private Commands				lastCommand;
 
 	/**
+	 * Etapa actual de datos
+	 * 
+	 * @version Oct 21, 2011 10:38:02 AM
+	 */
+	private Stage					localStage	= Stage.INIT;
+
+	/**
 	 * Stream de salida de mensajes
 	 * 
 	 * @version Aug 5, 2011 9:17:09 AM
@@ -68,11 +76,11 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	private ObjectOutputStream	outputStream;
 
 	/**
-	 * Etapa actual de datos
+	 * Estado
 	 * 
-	 * @version Oct 21, 2011 10:38:02 AM
+	 * @version Nov 22, 2012 10:31:13 AM
 	 */
-	private Stage					stage	= Stage.INIT;
+	private SType					stage;
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -82,7 +90,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	 * @param name Nombre del thread
 	 * @param port Numero de puerto a conectar
 	 */
-	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket> name, final Integer port) {
+	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket<SType>> name, final Integer port) {
 		// enviamos el constructor
 		super(name, port);
 	}
@@ -183,30 +191,30 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			// verificamos si hay datos
 			if (data != null)
 				// verificamos si no es la etapa final
-				if (!this.getStage().equals(Stage.POST)) {
+				if (!this.getLocalStage().equals(Stage.POST)) {
 					// mostramos un log
-					this.getLogger().debug("=>> " + (this.getStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
+					this.getLogger().debug("=>> " + (this.getLocalStage().equals(Stage.AUTH) && this.getLastCommand().equals(Commands.DATA) && !(data instanceof Commands) ? Commands.AUTH_DATA : data));
 					// verificamos si estamos en la etapa de transferencia de un fichero
-					if (this.getStage().equals(Stage.FILE))
+					if (this.getLocalStage().equals(Stage.FILE))
 						// procesamos el paso del fichero
 						continuar = this.processFileStage(data);
 					else
 						// procesamos la etapa
-						continuar = this.processStage(this.getStage(), data);
+						continuar = this.processStage(this.getLocalStage(), data);
 					// verificamos si directamente pasamos al proceso externo
 				} else {
 					// mostramos un log
-					this.getLogger().debug(Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE)) ? "=>> " + Commands.get(data.toString()) : ">>> " + data);
+					this.getLogger().debug(data instanceof Commands && (((Commands) data).equals(Commands.EXIT) || ((Commands) data).equals(Commands.SHUTDOWN) || ((Commands) data).equals(Commands.FILE) || ((Commands) data).equals(Commands.BYE)) ? "=>> " + data : ">>> " + data);
 					// verificamos si es un comando de finalizacion
-					if (Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE))) {
+					if (data instanceof Commands && (((Commands) data).equals(Commands.EXIT) || ((Commands) data).equals(Commands.SHUTDOWN) || ((Commands) data).equals(Commands.FILE) || ((Commands) data).equals(Commands.BYE))) {
 						// verificamos si el comando es transferencia de archivo
-						if (Commands.get(data.toString()).equals(Commands.FILE)) {
+						if (((Commands) data).equals(Commands.FILE)) {
 							// cambiamos al modo transferencia
-							this.setStage(Stage.FILE);
+							this.setLocalStage(Stage.FILE);
 							// respondemos OK
 							this.send(Commands.ACK);
 							// verificamos si el comando es transferencia de archivo
-						} else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+						} else if (((Commands) data).equals(Commands.BYE)) {
 							// modificamos la bandera
 							continuar = false;
 							// cerramos el puerto
@@ -217,7 +225,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 							// enviamos adios
 							this.send(Commands.BYE);
 							// cerramos el puerto
-							this.close(Commands.get(data.toString()).equals(Commands.EXIT));
+							this.close(((Commands) data).equals(Commands.EXIT));
 						}
 					} else
 						// procesamos los datos
@@ -227,7 +235,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 		// verificamos la bandera
 		if (this.isContinue())
 			// verificamos si el comando fue finalizar
-			if (data == null || Commands.get(data.toString()) != null && !Commands.get(data.toString()).equals(Commands.SHUTDOWN))
+			if (data == null || data instanceof Commands && !((Commands) data).equals(Commands.SHUTDOWN))
 				synchronized (this) {
 					// pausamos el trhead
 					this.wait();
@@ -276,16 +284,15 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 	}
 
 	/**
-	 * Retorna la etapa actual
+	 * Retorna el estado
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 10:43:19 AM
-	 * @return Etapa actual
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 22, 2012 10:31:00 AM
+	 * @return Estado
 	 */
-	protected final Stage getStage() {
-		// retrnamos la etapa actual
+	protected final SType getStage() {
+		// retornamos el estado
 		return this.stage;
 	}
 
@@ -347,11 +354,11 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 				// retornamos false
 				return false;
 			// mostramos un mensaje
-			this.getLogger().debug((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
+			this.getLogger().debug((data instanceof Commands || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
 			// verificamos si es un comando
-			if (!this.getStage().equals(Stage.POST) && Commands.get(data.toString()) != null || overWrite != null)
+			if (!this.getLocalStage().equals(Stage.POST) && data instanceof Commands || overWrite != null)
 				// almacenamos el ultimo comando enviado
-				this.lastCommand = overWrite != null ? overWrite : Commands.get(data.toString());
+				this.lastCommand = overWrite != null ? overWrite : (Commands) data;
 			// enviamos el dato
 			this.getOutputStream().writeObject(data);
 			// escribimos el dato
@@ -379,21 +386,20 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 		// almacenamos el fichero a enviar
 		this.file = file;
 		// cambiamos al modo transferencia
-		this.setStage(Stage.FILE);
+		this.setLocalStage(Stage.FILE);
 		// soliticamos el envio del fichero
 		this.send(Commands.FILE);
 	}
 
 	/**
-	 * Almacena la nueva etapa
+	 * Almacena el estado
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 10:44:25 AM
-	 * @param newStage Nueva etapa
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 22, 2012 10:31:52 AM
+	 * @param newStage Nuevo estado
 	 */
-	protected final void setStage(final Stage newStage) {
+	protected final void setStage(final SType newStage) {
 		// almacenamos la nueva etapa
 		this.stage = newStage;
 		// mostramos un mensaje
@@ -503,7 +509,7 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 		// verificamos si el comando anterior fue la solicitud de envio de fichero
 		if (this.getLastCommand().equals(Commands.FILE)) {
 			// verificamos si respondio OK
-			if (Commands.get(data.toString()).equals(Commands.ACK))
+			if (((Commands) data).equals(Commands.ACK))
 				// solicitamos el envio del nombre del fichero
 				this.send(Commands.DATA);
 			// verificamos si pedimos el nombre
@@ -525,13 +531,13 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 			// obtenemos el fichero
 			final File receivedFile = this.receiveFile();
 			// modficamos la etapa
-			this.setStage(Stage.POST);
+			this.setLocalStage(Stage.POST);
 			// retornamos ok
 			this.send(Commands.ACK);
 			// recibimos el fichero y lo procesamos
 			this.fileReceived(receivedFile);
 			// verificamos si es solicitud de datos del fichero
-		} else if (Commands.get(data.toString()).equals(Commands.DATA)) {
+		} else if (((Commands) data).equals(Commands.DATA)) {
 			// verificamos si es solicitud de envio de nombre
 			if (this.getLastCommand().equals(Commands.ACK))
 				// solicitamos el nombre del fichero
@@ -540,17 +546,17 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 				// enviamos el fichero
 				this.sendFileContents();
 			// verificamos si se pidio el nombre
-		} else if (Commands.get(data.toString()).equals(Commands.NAME))
+		} else if (((Commands) data).equals(Commands.NAME))
 			// enviamos el nombre del fichero
 			this.send(this.getFile().getName());
 		// verificamos si se pidio el tamano del fichero
-		else if (Commands.get(data.toString()).equals(Commands.SIZE))
+		else if (((Commands) data).equals(Commands.SIZE))
 			// retornamos el tamano del fichero
 			this.send(this.getFile().length());
 		// verificamos si se pidio el tamano del fichero
-		else if (Commands.get(data.toString()).equals(Commands.ACK))
+		else if (((Commands) data).equals(Commands.ACK))
 			// cambiamos al modo normal
-			this.setStage(Stage.POST);
+			this.setLocalStage(Stage.POST);
 		// retornamos true para continuar
 		return true;
 	}
@@ -735,5 +741,35 @@ public abstract class AbstractSingleSocket extends AbstractSocket {
 		this.outputStream = stream;
 		// limpiamos el stream
 		this.getOutputStream().flush();
+	}
+
+	/**
+	 * Retorna la etapa actual
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 10:43:19 AM
+	 * @return Etapa actual
+	 */
+	final Stage getLocalStage() {
+		// retrnamos la etapa actual
+		return this.localStage;
+	}
+
+	/**
+	 * Almacena la nueva etapa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 10:44:25 AM
+	 * @param newStage Nueva etapa
+	 */
+	final void setLocalStage(final Stage newStage) {
+		// almacenamos la nueva etapa
+		this.localStage = newStage;
+		// mostramos un mensaje
+		this.getLogger().debug("Changing Local Stage to: " + this.getLocalStage());
 	}
 }

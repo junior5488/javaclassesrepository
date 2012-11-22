@@ -270,17 +270,17 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 					// verificamos si directamente pasamos al proceso externo
 				} else {
 					// mostramos un log
-					this.getLogger().debug(Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE)) ? "=>> " + Commands.get(data.toString()) : ">>> " + data);
+					this.getLogger().debug(data instanceof Commands && (((Commands) data).equals(Commands.EXIT) || ((Commands) data).equals(Commands.SHUTDOWN) || ((Commands) data).equals(Commands.FILE) || ((Commands) data).equals(Commands.BYE)) ? "=>> " + data : ">>> " + data);
 					// verificamos si es un comando de finalizacion
-					if (Commands.get(data.toString()) != null && (Commands.get(data.toString()).equals(Commands.EXIT) || Commands.get(data.toString()).equals(Commands.SHUTDOWN) || Commands.get(data.toString()).equals(Commands.FILE) || Commands.get(data.toString()).equals(Commands.BYE))) {
+					if (data instanceof Commands && (((Commands) data).equals(Commands.EXIT) || ((Commands) data).equals(Commands.SHUTDOWN) || ((Commands) data).equals(Commands.FILE) || ((Commands) data).equals(Commands.BYE))) {
 						// verificamos si el comando es transferencia de archivo
-						if (Commands.get(data.toString()).equals(Commands.FILE)) {
+						if (((Commands) data).equals(Commands.FILE)) {
 							// respondemos OK
 							this.send(Commands.ACK);
 							// cambiamos al modo transferencia
 							this.setLocalStage(Stage.FILE);
 							// verificamos si el comando es transferencia de archivo
-						} else if (Commands.get(data.toString()).equals(Commands.BYE))
+						} else if (((Commands) data).equals(Commands.BYE))
 							// modificamos la bandera
 							continuar = false;
 						else {
@@ -429,11 +429,11 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		switch (stage) {
 			case INIT:
 				// verificamos si es el saludo
-				if (Commands.get(data.toString()).equals(Commands.HELO))
+				if (((Commands) data).equals(Commands.HELO))
 					// saludamos
 					this.send(Commands.HELO);
 				// verificamos si es la solicitud de datos
-				else if (Commands.get(data.toString()).equals(Commands.DATA))
+				else if (((Commands) data).equals(Commands.DATA))
 					// verificamos si no estamos autenticados
 					if (!this.isAutenticated() && this.needsAuthentication()) {
 						// modificamos la etapa al proceso de autenticacion
@@ -452,10 +452,10 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				// verificamos si el comando anterior fue solicitud de autenticacion
 				if (this.getLastCommand().equals(Commands.AUTH)) {
 					// verificamos si se acepto la autenticacion
-					if (Commands.get(data.toString()).equals(Commands.ACK))
+					if (((Commands) data).equals(Commands.ACK))
 						// solicitamos los datos de autenticacion
 						this.send(Commands.DATA);
-					else if (Commands.get(data.toString()).equals(Commands.NAK))
+					else if (((Commands) data).equals(Commands.NAK))
 						// retornamos autenticacion fallida
 						this.send(Commands.NAK);
 					// verificamos si solicitamos los datos de autenticacion
@@ -472,7 +472,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 						// enviamos autenticacion fallida
 						this.send(Commands.NAK);
 					}
-				} else if (Commands.get(data.toString()).equals(Commands.DATA))
+				} else if (((Commands) data).equals(Commands.DATA))
 					// verificamos si estamos autenticados
 					if (this.isAutenticated()) {
 						// retornamos ok
@@ -482,7 +482,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 					} else
 						// retonamos false
 						this.send(Commands.NAK);
-				else if (Commands.get(data.toString()).equals(Commands.BYE)) {
+				else if (((Commands) data).equals(Commands.BYE)) {
 					// modificamos la bandera
 					continuar = false;
 					try {
@@ -494,7 +494,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				break;
 			// en cualquier otro caso
 			default:
-				if (Commands.get(data.toString()).equals(Commands.BYE))
+				if (((Commands) data).equals(Commands.BYE))
 					// modificamos la bandera
 					continuar = false;
 				// finalizamos la etapa
@@ -537,11 +537,11 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				// retornamos false
 				return false;
 			// mostramos un mensaje
-			this.getLogger().debug((Commands.get(data.toString()) != null || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
+			this.getLogger().debug((data instanceof Commands || overWrite != null ? "<<= " : "<<< ") + (overWrite != null ? overWrite : data));
 			// verificamos si es un comando
-			if (!this.getLocalStage().equals(Stage.POST) && Commands.get(data.toString()) != null || overWrite != null)
+			if (!this.getLocalStage().equals(Stage.POST) && data instanceof Commands || overWrite != null)
 				// almacenamos el ultimo comando enviado
-				this.lastCommand = overWrite != null ? overWrite : Commands.get(data.toString());
+				this.lastCommand = overWrite != null ? overWrite : (Commands) data;
 			// enviamos el dato
 			this.getOutputStream().writeObject(data);
 			// escribimos el dato
@@ -747,7 +747,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// verificamos si el comando anterior fue la solicitud de envio de fichero
 		if (this.getLastCommand().equals(Commands.FILE)) {
 			// verificamos si respondio OK
-			if (Commands.get(data.toString()).equals(Commands.ACK))
+			if (((Commands) data).equals(Commands.ACK))
 				// solicitamos el envio del nombre del fichero
 				this.send(Commands.DATA);
 			// verificamos si pedimos el nombre
@@ -775,7 +775,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			// recibimos el fichero y lo procesamos
 			this.fileReceived(receivedFile);
 			// verificamos si es solicitud de datos del fichero
-		} else if (Commands.get(data.toString()).equals(Commands.DATA)) {
+		} else if (((Commands) data).equals(Commands.DATA)) {
 			// verificamos si es solicitud de envio de nombre
 			if (this.getLastCommand().equals(Commands.ACK))
 				// solicitamos el nombre del fichero
@@ -784,15 +784,15 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 				// enviamos el fichero
 				this.sendFileContents();
 			// verificamos si se pidio el nombre
-		} else if (Commands.get(data.toString()).equals(Commands.NAME))
+		} else if (((Commands) data).equals(Commands.NAME))
 			// enviamos el nombre del fichero
 			this.send(this.getFile().getName());
 		// verificamos si se pidio el tamano del fichero
-		else if (Commands.get(data.toString()).equals(Commands.SIZE))
+		else if (((Commands) data).equals(Commands.SIZE))
 			// retornamos el tamano del fichero
 			this.send(this.getFile().length());
 		// verificamos si se pidio el tamano del fichero
-		else if (Commands.get(data.toString()).equals(Commands.ACK))
+		else if (((Commands) data).equals(Commands.ACK))
 			// cambiamos al modo normal
 			this.setLocalStage(Stage.POST);
 		// retornamos true para continuar

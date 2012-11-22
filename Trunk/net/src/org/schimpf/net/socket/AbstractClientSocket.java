@@ -18,8 +18,9 @@ import java.net.Socket;
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @author <B>Schimpf.NET</B>
  * @version Aug 5, 2011 11:13:27 AM
+ * @param <SType> Tipo para los estados
  */
-public abstract class AbstractClientSocket extends AbstractSingleSocket {
+public abstract class AbstractClientSocket<SType> extends AbstractSingleSocket<SType> {
 	/**
 	 * Socket principal de conexion
 	 * 
@@ -37,7 +38,7 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 	 * @param port Puerto para iniciar el socket
 	 * @throws IOException Si no se puede crear la conexion al socket
 	 */
-	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final InetAddress host, final Integer port) throws IOException {
+	public AbstractClientSocket(final Class<? extends AbstractClientSocket<SType>> name, final InetAddress host, final Integer port) throws IOException {
 		// enviamos el constructor
 		super(name, port);
 		try {
@@ -60,7 +61,7 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 	 * @param port Puerto para iniciar el socket
 	 * @throws IOException Si no se puede crear la conexion al socket
 	 */
-	public AbstractClientSocket(final Class<? extends AbstractClientSocket> name, final Integer port) throws IOException {
+	public AbstractClientSocket(final Class<? extends AbstractClientSocket<SType>> name, final Integer port) throws IOException {
 		// enviamos el constructor
 		this(name, AbstractSocket.HOST, port);
 	}
@@ -119,13 +120,13 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 			// si estamos en la etapa inicial
 			case INIT:
 				// verificamos si obtuvimos helo
-				if (Commands.get(data.toString()).equals(Commands.HELO))
+				if (((Commands) data).equals(Commands.HELO))
 					// solicitamos datos
 					this.send(Commands.DATA);
 				// verificamos si solicito autenticacion
-				else if (Commands.get(data.toString()).equals(Commands.AUTH)) {
+				else if (((Commands) data).equals(Commands.AUTH)) {
 					// modificamos a la etapa de autenticacion
-					this.setStage(Stage.AUTH);
+					this.setLocalStage(Stage.AUTH);
 					// verificamos si tenemos autenticacion
 					if (this.autenticate() != null)
 						// aceptamos la autenticacion
@@ -133,9 +134,9 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 					else
 						// avisamos que no tenemos autenticacion
 						this.send(Commands.NAK);
-				} else if (Commands.get(data.toString()).equals(Commands.ACK)) {
+				} else if (((Commands) data).equals(Commands.ACK)) {
 					// cambiamos a la etapa de proceso externo
-					this.setStage(Stage.POST);
+					this.setLocalStage(Stage.POST);
 					// iniciamos el proceso externo
 					this.processData(null);
 				}
@@ -144,11 +145,11 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 			// si estamos en la etapa de autenticacion
 			case AUTH:
 				// verificamos si recibimos la solicitud de datos de autenticacion
-				if (Commands.get(data.toString()).equals(Commands.DATA))
+				if (((Commands) data).equals(Commands.DATA))
 					// enviamos los datos de autenticacion
 					this.send(this.autenticate(), Commands.AUTH_DATA);
 				// verificamos si recibimos autenticacion fallida
-				else if (Commands.get(data.toString()).equals(Commands.NAK)) {
+				else if (((Commands) data).equals(Commands.NAK)) {
 					// modificamos la bandera
 					continuar = false;
 					// enviamos bye
@@ -158,14 +159,14 @@ public abstract class AbstractClientSocket extends AbstractSingleSocket {
 					// ejecutamos el proceso de autenticacion rechazada
 					this.autenticationRejected();
 					// verificamos si recibimos autenticacion correcta
-				} else if (Commands.get(data.toString()).equals(Commands.ACK))
+				} else if (((Commands) data).equals(Commands.ACK))
 					// verificamos si el comando anterior fue datos de autenticacion
 					if (this.getLastCommand().equals(Commands.AUTH_DATA))
 						// solitamos permiso para datos
 						this.send(Commands.DATA);
 					else {
 						// cambiamos a la etapa de proceso externo
-						this.setStage(Stage.POST);
+						this.setLocalStage(Stage.POST);
 						// iniciamos el proceso externo
 						this.processData(null);
 					}

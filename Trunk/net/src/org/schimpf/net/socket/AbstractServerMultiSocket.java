@@ -104,9 +104,23 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	 * @version Jul 31, 2012 10:38:56 AM
 	 * @return Cantdad de conexiones activas
 	 */
-	public final int getActiveConnections() {
+	public final int getActiveConnectionsCount() {
 		// retornamos la cantidad de conexiones activas
 		return this.getOpenConnections().size();
+	}
+
+	/**
+	 * Retorna las conexiones abiertas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Jul 19, 2012 1:25:01 PM
+	 * @return Lista de conexiones abiertas
+	 */
+	public final ArrayList<CType> getOpenConnections() {
+		// retornamos las conexiones abiertas
+		return this.openConnections;
 	}
 
 	/**
@@ -213,19 +227,19 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	}
 
 	@Override
-	protected Socket getConnection() {
+	protected final Socket getConnection() {
 		// retornamos la conexion abierta
 		return this.connection;
 	}
 
 	@Override
-	protected MainSocket getSocket() {
+	protected final MainSocket getSocket() {
 		// retornamos el socket principal
 		return this.getServerSocket();
 	}
 
 	@Override
-	protected void initConnection() {
+	protected final void initConnection() {
 		try {
 			// mostramos un mensaje en consola
 			this.getLogger().debug("Waiting for connection..");
@@ -254,20 +268,6 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	 * @return Nueva conexion en el socket
 	 */
 	protected abstract CType makeNewConnection(SType parentServer, Socket socket, ServerSocket mainSocket);
-
-	/**
-	 * Retorna las conexiones abiertas
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Jul 19, 2012 1:25:01 PM
-	 * @return Lista de conexiones abiertas
-	 */
-	private ArrayList<CType> getOpenConnections() {
-		// retornamos las conexiones abiertas
-		return this.openConnections;
-	}
 
 	/**
 	 * Retorna el socket servidor para las conexiones
