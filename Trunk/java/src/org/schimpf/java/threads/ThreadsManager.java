@@ -169,6 +169,27 @@ public final class ThreadsManager<TType extends Thread> {
 	}
 
 	/**
+	 * Retorna la lista de los threads en ejecucion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 22, 2012 10:19:45 AM
+	 * @return Lista de threads en ejecucion
+	 */
+	public ArrayList<TType> getRunningThreads() {
+		// generamos la lista de los threads
+		ArrayList<TType> runningThreads = new ArrayList<TType>();
+		// recorremos los threads
+		for (final TType thread: this.getThreads())
+			// verificamos si esta en ejecucion
+			if (!thread.getState().equals(Thread.State.NEW) || thread.getState().equals(Thread.State.TERMINATED))
+				// agregamos el thread
+				runningThreads.add(thread);
+		// retornamos los threads
+		return runningThreads;
+	}
+
+	/**
 	 * Retorna si existen threads en ejecucion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
