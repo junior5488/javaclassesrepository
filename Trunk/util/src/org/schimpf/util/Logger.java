@@ -563,7 +563,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el inicio del mensaje
-		String logStart = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " ";
+		String logStart = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " ";
 		// iniciamos el mensaje
 		final StringBuffer log = new StringBuffer(logStart);
 		// agregamos el mensaje de la excepcion
@@ -626,7 +626,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el mensaje
-		final String log = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " " + message;
+		final String log = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " " + message;
 		// verificamos si mostramos en consola
 		if (level.isEnabled(this.consoleLevel)) {
 			// verificamos si es >= ERROR
