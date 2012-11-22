@@ -117,7 +117,7 @@ public abstract class Thread extends java.lang.Thread {
 	 * @version Aug 2, 2011 4:41:23 PM
 	 * @param interrupted True si el thread se interrumpio
 	 */
-	protected void halt(final boolean interrupted) {}
+	protected synchronized void halt(final boolean interrupted) {}
 
 	/**
 	 * Retorna el estado del thread
