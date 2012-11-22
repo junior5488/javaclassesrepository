@@ -21,7 +21,6 @@ package org.schimpf.net.socket;
 import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
 import org.schimpf.util.Logger;
-import org.schimpf.util.Logger.Level;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -195,7 +194,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// almacenamos el socket de conexion
 		this.connection = connection;
 		// instanciamos el logger
-		this.log = new Logger(this.getName(), Level.ALL, null);
+		this.log = new Logger(this.getName(), null);
 		// registramos el capturador de señal de apagado
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
 			@Override

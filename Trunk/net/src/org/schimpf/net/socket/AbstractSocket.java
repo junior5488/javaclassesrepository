@@ -20,7 +20,6 @@ package org.schimpf.net.socket;
 
 import org.schimpf.java.threads.Thread;
 import org.schimpf.util.Logger;
-import org.schimpf.util.Logger.Level;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -109,7 +108,7 @@ public abstract class AbstractSocket<MSocket extends MainSocket> extends Thread 
 		// enviamos el constructor
 		super(name, port.toString());
 		// instanciamos el logger
-		this.log = new Logger(this.getName(), Level.ALL, null);
+		this.log = new Logger(this.getName(), null);
 		// generamos el thread para capturar la señal de apagado
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
 			@Override
