@@ -20,7 +20,7 @@ import java.net.Socket;
  * @version Aug 5, 2011 10:56:08 AM
  * @param <SType> Tipo para los estados
  */
-public abstract class AbstractServerSocket<SType> extends AbstractSingleSocket<SType> {
+public abstract class AbstractServerSocket<SType> extends AbstractSingleSocket<SType, ServerSocket> {
 	/**
 	 * Bandera de autenticacion correcta
 	 * 
@@ -78,34 +78,6 @@ public abstract class AbstractServerSocket<SType> extends AbstractSingleSocket<S
 	 */
 	protected void connectionReceived(final InetAddress source, final Integer localPort, final Integer sourcePort) {}
 
-	@Override
-	protected final Object firstData() {
-		// retornamos null
-		return null;
-	}
-
-	@Override
-	protected final Socket getConnection() {
-		// retornamos la conexion abierta
-		return this.connection;
-	}
-
-	@Override
-	protected final MainSocket getSocket() {
-		// retornamos el socket principal
-		return this.getServerSocket();
-	}
-
-	@Override
-	protected final void initConnection() {
-		// vaciamos la bandera de autenticacion
-		this.autenticated = !this.needsAuthentication();
-		// cambiamos a la etapa inicial
-		this.setLocalStage(Stage.INIT);
-		// esperamos una conexion
-		this.waitForConnection();
-	}
-
 	/**
 	 * Retorna si se requiere autenticacion para la conexion
 	 * 
@@ -120,8 +92,89 @@ public abstract class AbstractServerSocket<SType> extends AbstractSingleSocket<S
 		return false;
 	}
 
+	/**
+	 * Valida la autenticacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:57:06 AM
+	 * @param data Datos de autenticacion recibidos
+	 * @return True para aceptar la validacion
+	 */
+	protected boolean validateAutentication(final Object data) {
+		// por defecto enviamos false
+		return false;
+	}
+
+	/**
+	 * Retorna si ya se realizo la autenticacion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 12:00:27 PM
+	 * @return Bandera de autenticacion
+	 */
+	private boolean isAutenticated() {
+		// retornamos la banderta
+		return this.autenticated;
+	}
+
+	/**
+	 * Abre el socket y espera por una conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 9:37:25 AM
+	 */
+	private void waitForConnection() {
+		try {
+			// mostramos un mensaje en consola
+			this.getLogger().debug("Waiting for connection..");
+			// abrimos el socket
+			this.connection = this.serverSocket.accept();
+			// mostramos quien se conecto
+			this.getLogger().info("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
+			// ejecutamos el proceso de conexion recivida
+			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
+		} catch (final IOException e) {
+			// mostramos el stackTrace
+			e.printStackTrace();
+		}
+	}
+
 	@Override
-	protected final boolean processStage(final Stage stage, final Object data) {
+	final Object firstData() {
+		// retornamos null
+		return null;
+	}
+
+	@Override
+	final Socket getConnection() {
+		// retornamos la conexion abierta
+		return this.connection;
+	}
+
+	@Override
+	final ServerSocket getSocket() {
+		// retornamos el socket principal
+		return this.serverSocket;
+	}
+
+	@Override
+	final void initConnection() {
+		// vaciamos la bandera de autenticacion
+		this.autenticated = !this.needsAuthentication();
+		// cambiamos a la etapa inicial
+		this.setLocalStage(Stage.INIT);
+		// esperamos una conexion
+		this.waitForConnection();
+	}
+
+	@Override
+	final boolean processStage(final Stage stage, final Object data) {
 		// generamos una bandera
 		boolean continuar = true;
 		// verificamos en que etapa estamos
@@ -204,86 +257,5 @@ public abstract class AbstractServerSocket<SType> extends AbstractSingleSocket<S
 		}
 		// retornamos la bandera
 		return continuar;
-	}
-
-	/**
-	 * Valida la autenticacion
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 6, 2011 11:57:06 AM
-	 * @param data Datos de autenticacion recibidos
-	 * @return True para aceptar la validacion
-	 */
-	protected boolean validateAutentication(final Object data) {
-		// por defecto enviamos false
-		return false;
-	}
-
-	/**
-	 * Retorna el socket principal
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:22:43 AM
-	 * @return ServerSoket
-	 */
-	private ServerSocket getServerSocket() {
-		// retornamos el socket
-		return this.serverSocket;
-	}
-
-	/**
-	 * Retorna si ya se realizo la autenticacion
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 6, 2011 12:00:27 PM
-	 * @return Bandera de autenticacion
-	 */
-	private boolean isAutenticated() {
-		// retornamos la banderta
-		return this.autenticated;
-	}
-
-	/**
-	 * Almacena la conexion del socket abierta
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:37:47 AM
-	 * @param openSocket Socket abierto
-	 */
-	private void setConnection(final Socket openSocket) {
-		// almacenamos la conexion
-		this.connection = openSocket;
-	}
-
-	/**
-	 * Abre el socket y espera por una conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:37:25 AM
-	 */
-	private void waitForConnection() {
-		try {
-			// mostramos un mensaje en consola
-			this.getLogger().debug("Waiting for connection..");
-			// abrimos el socket
-			this.setConnection(this.getServerSocket().accept());
-			// mostramos quien se conecto
-			this.getLogger().info("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
-			// ejecutamos el proceso de conexion recivida
-			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
-		} catch (final IOException e) {
-			// mostramos el stackTrace
-			e.printStackTrace();
-		}
 	}
 }

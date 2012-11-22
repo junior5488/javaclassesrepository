@@ -21,6 +21,7 @@ package org.schimpf.net.socket;
 import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.Commands;
 import org.schimpf.util.Logger;
+import org.schimpf.util.Logger.Level;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -136,13 +137,6 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	private final SType			parent;
 
 	/**
-	 * Socket principal de conexion
-	 * 
-	 * @version Aug 5, 2011 9:17:23 AM
-	 */
-	private final ServerSocket	serverSocket;
-
-	/**
 	 * Etapa POST actual
 	 * 
 	 * @version Oct 1, 2012 11:55:41 AM
@@ -192,19 +186,16 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	 * @param name Nombre del thread
 	 * @param parent Socket servidor en el que se inicio esta conexion
 	 * @param connection Socket en el que se establecio la conexion
-	 * @param serverSocket Socket principal de conexion
 	 */
-	public AbstractServerMultiSocketConnection(final Class<? extends CType> name, final SType parent, final Socket connection, final ServerSocket serverSocket) {
+	public AbstractServerMultiSocketConnection(final Class<? extends CType> name, final SType parent, final Socket connection) {
 		// enviamos el constructor
 		super(name, new Integer(connection.getPort()).toString());
 		// almacenamos el socket padre
 		this.parent = parent;
 		// almacenamos el socket de conexion
 		this.connection = connection;
-		// almacenamos el socket principal
-		this.serverSocket = serverSocket;
 		// instanciamos el logger
-		this.log = new Logger(this.getName(), null);
+		this.log = new Logger(this.getName(), Level.ALL, null);
 		// registramos el capturador de señal de apagado
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
 			@Override
@@ -216,28 +207,17 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	}
 
 	/**
-	 * Retorna el estado de la conexion
+	 * Retorna si existe una conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 3:50:09 PM
-	 * @return True si hay conexion
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 22, 2012 2:36:59 PM
+	 * @return True si existe una conexion
 	 */
 	public final boolean isConnected() {
 		// retornamos si existe una conexion
 		return this.getConnection() != null;
 	}
-
-	/**
-	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Nov 1, 2011 11:04:59 AM
-	 */
-	public abstract void shutdownRequest();
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -316,48 +296,6 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	protected void fileReceived(final File fileReceived) {}
 
 	/**
-	 * Retorna el socket con la conexion abierta para el traslado de datos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:24:11 AM
-	 * @return Conexion para el traslado de datos
-	 */
-	protected final Socket getConnection() {
-		// retornamos la conexion abierta
-		return this.connection;
-	}
-
-	/**
-	 * Retorna el ultimo comando
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 6, 2011 11:45:11 AM
-	 * @return Ultimo comando enviado
-	 */
-	protected final Commands getLastCommand() {
-		// retornamos el ultimo comando enviado
-		return this.lastCommand;
-	}
-
-	/**
-	 * Retorna el socket principal
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 11:00:03 AM
-	 * @return Socket principal
-	 */
-	protected final MainSocket getSocket() {
-		// retornamos el socket principal
-		return this.getServerSocket();
-	}
-
-	/**
 	 * Retorna la etapa POST actual
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -368,21 +306,6 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	protected final StageType getStage() {
 		// reornamos la etapa actual
 		return this.stage;
-	}
-
-	/**
-	 * Iniciador del socket
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 10:58:17 AM
-	 */
-	protected void initConnection() {
-		// vaciamos la bandera de autenticacion
-		this.autenticated = !this.needsAuthentication();
-		// cambiamos a la etapa inicial
-		this.setLocalStage(Stage.INIT);
 	}
 
 	/**
@@ -410,99 +333,6 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	 * @return True para continuar recibiendo
 	 */
 	protected abstract boolean processData(Object data);
-
-	/**
-	 * Procesa los datos de la etapa
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 11:47:51 AM
-	 * @param stage Etapa actual
-	 * @param data Datos
-	 * @return True para continuar
-	 */
-	protected final boolean processStage(final Stage stage, final Object data) {
-		// generamos una bandera
-		boolean continuar = true;
-		// verificamos en que etapa estamos
-		switch (stage) {
-			case INIT:
-				// verificamos si es el saludo
-				if (((Commands) data).equals(Commands.HELO))
-					// saludamos
-					this.send(Commands.HELO);
-				// verificamos si es la solicitud de datos
-				else if (((Commands) data).equals(Commands.DATA))
-					// verificamos si no estamos autenticados
-					if (!this.isAutenticated() && this.needsAuthentication()) {
-						// modificamos la etapa al proceso de autenticacion
-						this.setLocalStage(Stage.AUTH);
-						// solicitamos autenticacion
-						this.send(Commands.AUTH);
-					} else {
-						// enviamos ok para aceptar datos
-						this.send(Commands.ACK);
-						// modificamos la etapa al proceso externo
-						this.setLocalStage(Stage.POST);
-					}
-				// finalizamos la etapa
-				break;
-			case AUTH:
-				// verificamos si el comando anterior fue solicitud de autenticacion
-				if (this.getLastCommand().equals(Commands.AUTH)) {
-					// verificamos si se acepto la autenticacion
-					if (((Commands) data).equals(Commands.ACK))
-						// solicitamos los datos de autenticacion
-						this.send(Commands.DATA);
-					else if (((Commands) data).equals(Commands.NAK))
-						// retornamos autenticacion fallida
-						this.send(Commands.NAK);
-					// verificamos si solicitamos los datos de autenticacion
-				} else if (this.getLastCommand().equals(Commands.DATA)) {
-					// validamos la autenticacion
-					if (this.validateAutentication(data)) {
-						// modificamos la bandera de autenticacion
-						this.autenticated = true;
-						// enviamos autenticacion correcta
-						this.send(Commands.ACK);
-					} else {
-						// modificamos la bandera de autenticacion
-						this.autenticated = false;
-						// enviamos autenticacion fallida
-						this.send(Commands.NAK);
-					}
-				} else if (((Commands) data).equals(Commands.DATA))
-					// verificamos si estamos autenticados
-					if (this.isAutenticated()) {
-						// retornamos ok
-						this.send(Commands.ACK);
-						// cambiamos a la etapa externa
-						this.setLocalStage(Stage.POST);
-					} else
-						// retonamos false
-						this.send(Commands.NAK);
-				else if (((Commands) data).equals(Commands.BYE)) {
-					// modificamos la bandera
-					continuar = false;
-					try {
-						// finalizamos la conexion
-						this.getConnection().close();
-					} catch (final IOException ignored) {}
-				}
-				// finalizamos la etapa
-				break;
-			// en cualquier otro caso
-			default:
-				if (((Commands) data).equals(Commands.BYE))
-					// modificamos la bandera
-					continuar = false;
-				// finalizamos la etapa
-				break;
-		}
-		// retornamos la bandera
-		return continuar;
-	}
 
 	/**
 	 * Envia datos al output
@@ -586,6 +416,16 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// almcenamos la etapa actual
 		this.stage = stage;
 	}
+
+	/**
+	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Nov 1, 2011 11:04:59 AM
+	 */
+	protected abstract void shutdownRequest();
 
 	/**
 	 * Valida la autenticacion
@@ -687,20 +527,6 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 	}
 
 	/**
-	 * Retorna el socket principal
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 9:22:43 AM
-	 * @return ServerSoket
-	 */
-	private ServerSocket getServerSocket() {
-		// retornamos el socket
-		return this.serverSocket;
-	}
-
-	/**
 	 * Retorna si ya se realizo la autenticacion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -797,6 +623,99 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 			this.setLocalStage(Stage.POST);
 		// retornamos true para continuar
 		return true;
+	}
+
+	/**
+	 * Procesa los datos de la etapa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 11:47:51 AM
+	 * @param stage Etapa actual
+	 * @param data Datos
+	 * @return True para continuar
+	 */
+	private boolean processStage(final Stage stage, final Object data) {
+		// generamos una bandera
+		boolean continuar = true;
+		// verificamos en que etapa estamos
+		switch (stage) {
+			case INIT:
+				// verificamos si es el saludo
+				if (((Commands) data).equals(Commands.HELO))
+					// saludamos
+					this.send(Commands.HELO);
+				// verificamos si es la solicitud de datos
+				else if (((Commands) data).equals(Commands.DATA))
+					// verificamos si no estamos autenticados
+					if (!this.isAutenticated() && this.needsAuthentication()) {
+						// modificamos la etapa al proceso de autenticacion
+						this.setLocalStage(Stage.AUTH);
+						// solicitamos autenticacion
+						this.send(Commands.AUTH);
+					} else {
+						// enviamos ok para aceptar datos
+						this.send(Commands.ACK);
+						// modificamos la etapa al proceso externo
+						this.setLocalStage(Stage.POST);
+					}
+				// finalizamos la etapa
+				break;
+			case AUTH:
+				// verificamos si el comando anterior fue solicitud de autenticacion
+				if (this.getLastCommand().equals(Commands.AUTH)) {
+					// verificamos si se acepto la autenticacion
+					if (((Commands) data).equals(Commands.ACK))
+						// solicitamos los datos de autenticacion
+						this.send(Commands.DATA);
+					else if (((Commands) data).equals(Commands.NAK))
+						// retornamos autenticacion fallida
+						this.send(Commands.NAK);
+					// verificamos si solicitamos los datos de autenticacion
+				} else if (this.getLastCommand().equals(Commands.DATA)) {
+					// validamos la autenticacion
+					if (this.validateAutentication(data)) {
+						// modificamos la bandera de autenticacion
+						this.autenticated = true;
+						// enviamos autenticacion correcta
+						this.send(Commands.ACK);
+					} else {
+						// modificamos la bandera de autenticacion
+						this.autenticated = false;
+						// enviamos autenticacion fallida
+						this.send(Commands.NAK);
+					}
+				} else if (((Commands) data).equals(Commands.DATA))
+					// verificamos si estamos autenticados
+					if (this.isAutenticated()) {
+						// retornamos ok
+						this.send(Commands.ACK);
+						// cambiamos a la etapa externa
+						this.setLocalStage(Stage.POST);
+					} else
+						// retonamos false
+						this.send(Commands.NAK);
+				else if (((Commands) data).equals(Commands.BYE)) {
+					// modificamos la bandera
+					continuar = false;
+					try {
+						// finalizamos la conexion
+						this.getConnection().close();
+					} catch (final IOException ignored) {}
+				}
+				// finalizamos la etapa
+				break;
+			// en cualquier otro caso
+			default:
+				if (((Commands) data).equals(Commands.BYE))
+					// modificamos la bandera
+					continuar = false;
+				// finalizamos la etapa
+				break;
+		}
+		// retornamos la bandera
+		return continuar;
 	}
 
 	/**
@@ -979,6 +898,34 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		this.outputStream = stream;
 		// limpiamos el stream
 		this.getOutputStream().flush();
+	}
+
+	/**
+	 * Retorna el socket con la conexion abierta para el traslado de datos
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 9:24:11 AM
+	 * @return Conexion para el traslado de datos
+	 */
+	final Socket getConnection() {
+		// retornamos la conexion abierta
+		return this.connection;
+	}
+
+	/**
+	 * Retorna el ultimo comando
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:45:11 AM
+	 * @return Ultimo comando enviado
+	 */
+	final Commands getLastCommand() {
+		// retornamos el ultimo comando enviado
+		return this.lastCommand;
 	}
 
 	/**

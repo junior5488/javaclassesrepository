@@ -34,7 +34,7 @@ import java.util.ArrayList;
  * @param <CType> Clase para las conexiones a generar
  * @param <StageType> Enum para las etapas POST
  */
-public abstract class AbstractServerMultiSocket<SType extends AbstractServerMultiSocket<SType, CType, StageType>, CType extends AbstractServerMultiSocketConnection<SType, CType, StageType>, StageType extends Enum<StageType>> extends AbstractSocket {
+public abstract class AbstractServerMultiSocket<SType extends AbstractServerMultiSocket<SType, CType, StageType>, CType extends AbstractServerMultiSocketConnection<SType, CType, StageType>, StageType extends Enum<StageType>> extends AbstractSocket<ServerSocket> {
 	/**
 	 * Socket de conexion abierto en el puerto
 	 * 
@@ -79,20 +79,25 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 		}
 	}
 
-	/**
-	 * Se ejecuta cuando finaliza una conexion
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Jul 19, 2012 3:15:55 PM
-	 * @param connection Conexion que finalizo
-	 */
-	public final void connectionFinished(final CType connection) {
-		// eliminamos la conexion de la lista
-		this.getOpenConnections().remove(connection);
-		// ejecutamos el proceso de finalizacion de la conexion
-		this.connectionEnded(connection.getConnection().getInetAddress(), connection.getConnection().getLocalPort(), connection.getConnection().getPort());
+	@Override
+	public final void close(final boolean isContinue) {
+		// finalizamos las conexiones
+		this.shutdownRequest();
+		// modificamos la bandera
+		this.setIsContinue(isContinue);
+		try {
+			// mostramos un log
+			this.getLogger().debug("Clossing connection port..");
+			// verificamos si hay conexion
+			if (this.getConnection() != null)
+				// cerramos la conexion
+				this.getConnection().close();
+			// cerramos el socket
+			this.serverSocket.close();
+		} catch (final IOException e) {
+			// print the StackTrace
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -121,66 +126,6 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	public final ArrayList<CType> getOpenConnections() {
 		// retornamos las conexiones abiertas
 		return this.openConnections;
-	}
-
-	/**
-	 * Inicia el puerto y el thread
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 12:57:06 PM
-	 * @throws InterruptedException Si el thread ya finalizo
-	 */
-	public final void open() throws InterruptedException {
-		// verificamos si esta finalizado
-		if (this.getState().equals(State.TERMINATED))
-			// salimos con una excepcion
-			throw new InterruptedException("El thread ya esta finalizado");
-		// modificamos la bandera
-		this.setIsContinue(true);
-		// verificamos si el estado es nuevo
-		if (this.getState().equals(State.NEW))
-			// iniciamos el thread
-			this.start();
-		else
-			synchronized (this) {
-				// continuamos la ejecucion
-				this.notify();
-			}
-	}
-
-	/**
-	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Nov 1, 2011 11:04:59 AM
-	 */
-	@Override
-	public final void shutdownRequest() {
-		// recorremos las conexiones existentes
-		for (final CType connection: this.getOpenConnections())
-			// finalizamos la conexion
-			connection.shutdownRequest();
-	}
-
-	@Override
-	protected final void close(final boolean isContinue) {
-		// finalizamos las conexiones
-		this.shutdownRequest();
-		// modificamos la bandera
-		this.setIsContinue(isContinue);
-		try {
-			// mostramos un log
-			this.getLogger().debug("Clossing connection port..");
-			// cerramos la conexion
-			this.getConnection().close();
-		} catch (final IOException e) {
-			// print the StackTrace
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -216,43 +161,17 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 		this.getLogger().debug("Starting connections..");
 		// iniciamos las conexiones
 		this.initConnection();
-		// creamos una nueva conexion
-		final CType newConnection = this.makeNewConnection((SType) this, this.getConnection(), (ServerSocket) this.getSocket());
-		// agregamos la conexion a las existentes
-		this.getOpenConnections().add(newConnection);
-		// iniciamos la conexion
-		newConnection.start();
+		// verificamos si se tiene una conexion
+		if (this.getConnection() != null) {
+			// creamos una nueva conexion
+			final CType newConnection = this.makeNewConnection((SType) this, this.getConnection());
+			// agregamos la conexion a las existentes
+			this.getOpenConnections().add(newConnection);
+			// iniciamos la conexion
+			newConnection.start();
+		}
 		// retornamos si seguimos con el puerto abierto
 		return this.isContinue();
-	}
-
-	@Override
-	protected final Socket getConnection() {
-		// retornamos la conexion abierta
-		return this.connection;
-	}
-
-	@Override
-	protected final MainSocket getSocket() {
-		// retornamos el socket principal
-		return this.getServerSocket();
-	}
-
-	@Override
-	protected final void initConnection() {
-		try {
-			// mostramos un mensaje en consola
-			this.getLogger().debug("Waiting for connection..");
-			// abrimos el socket
-			this.setConnection(this.getServerSocket().accept());
-			// mostramos quien se conecto
-			this.getLogger().info("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
-			// ejecutamos el proceso de conexion recivida
-			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
-		} catch (final IOException e) {
-			// mostramos el stackTrace
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -264,27 +183,59 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	 * @version Jul 19, 2012 1:54:40 PM
 	 * @param parentServer Socket padre de la conexion
 	 * @param socket Socket en el que se recibio la conexion
-	 * @param mainSocket Socket principal de conexion
 	 * @return Nueva conexion en el socket
 	 */
-	protected abstract CType makeNewConnection(SType parentServer, Socket socket, ServerSocket mainSocket);
+	protected abstract CType makeNewConnection(SType parentServer, Socket socket);
+
+	@Override
+	protected final void shutdownRequest() {
+		// recorremos las conexiones existentes
+		for (final CType connection: this.getOpenConnections())
+			// finalizamos la conexion
+			connection.shutdownRequest();
+	}
 
 	/**
-	 * Retorna el socket servidor para las conexiones
+	 * Se ejecuta cuando finaliza una conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
-	 * @version Jul 19, 2012 2:00:28 PM
-	 * @return Socket servidor
+	 * @version Jul 19, 2012 3:15:55 PM
+	 * @param connection Conexion que finalizo
 	 */
-	private ServerSocket getServerSocket() {
-		// retornamos el socket
+	final void connectionFinished(final CType connection) {
+		// eliminamos la conexion de la lista
+		this.getOpenConnections().remove(connection);
+		// ejecutamos el proceso de finalizacion de la conexion
+		this.connectionEnded(connection.getConnection().getInetAddress(), connection.getConnection().getLocalPort(), connection.getConnection().getPort());
+	}
+
+	@Override
+	final Socket getConnection() {
+		// retornamos la conexion abierta
+		return this.connection;
+	}
+
+	@Override
+	final ServerSocket getSocket() {
+		// retornamos el socket principal
 		return this.serverSocket;
 	}
 
-	private void setConnection(final Socket openSocket) {
-		// almacenamos la conexion
-		this.connection = openSocket;
+	@Override
+	final void initConnection() {
+		// vaciamos la conexion actual
+		this.connection = null;
+		try {
+			// mostramos un mensaje en consola
+			this.getLogger().debug("Waiting for connection..");
+			// abrimos el socket
+			this.connection = this.serverSocket.accept();
+			// mostramos quien se conecto
+			this.getLogger().info("Connection received from " + this.getConnection().getInetAddress().getHostAddress() + ":" + this.getConnection().getLocalPort() + (this.getConnection().getInetAddress().getHostAddress() != this.getConnection().getInetAddress().getHostName() ? " (" + this.getConnection().getInetAddress().getHostName() + ")" : ""));
+			// ejecutamos el proceso de conexion recivida
+			this.connectionReceived(this.getConnection().getInetAddress(), this.getConnection().getLocalPort(), this.getConnection().getPort());
+		} catch (final IOException ignored) {}
 	}
 }

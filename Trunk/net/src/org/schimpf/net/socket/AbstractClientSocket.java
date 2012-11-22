@@ -20,7 +20,7 @@ import java.net.Socket;
  * @version Aug 5, 2011 11:13:27 AM
  * @param <SType> Tipo para los estados
  */
-public abstract class AbstractClientSocket<SType> extends AbstractSingleSocket<SType> {
+public abstract class AbstractClientSocket<SType> extends AbstractSingleSocket<SType, ClientSocket> {
 	/**
 	 * Socket principal de conexion
 	 * 
@@ -91,28 +91,28 @@ public abstract class AbstractClientSocket<SType> extends AbstractSingleSocket<S
 	protected void autenticationRejected() {}
 
 	@Override
-	protected final Object firstData() {
+	final Object firstData() {
 		// retornamos el comando de saludo
 		return Commands.HELO;
 	}
 
 	@Override
-	protected final Socket getConnection() {
+	final Socket getConnection() {
 		// retornamos el socket local
-		return this.getClientSocket();
+		return this.clientSocket;
 	}
 
 	@Override
-	protected final MainSocket getSocket() {
+	final ClientSocket getSocket() {
 		// retornamos el socket principal
-		return this.getClientSocket();
+		return this.clientSocket;
 	}
 
 	@Override
-	protected final void initConnection() {}
+	final void initConnection() {}
 
 	@Override
-	protected final boolean processStage(final Stage stage, final Object data) {
+	final boolean processStage(final Stage stage, final Object data) {
 		// generamos una bandera
 		boolean continuar = true;
 		// verificamos la etapa
@@ -179,19 +179,5 @@ public abstract class AbstractClientSocket<SType> extends AbstractSingleSocket<S
 		}
 		// retornamos la bandera
 		return continuar;
-	}
-
-	/**
-	 * Retorna el socket principal
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Aug 5, 2011 9:22:43 AM
-	 * @return ClientSoket
-	 */
-	private ClientSocket getClientSocket() {
-		// retornamos el socket
-		return this.clientSocket;
 	}
 }

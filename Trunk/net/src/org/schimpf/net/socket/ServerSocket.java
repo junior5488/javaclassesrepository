@@ -27,6 +27,6 @@ public final class ServerSocket extends java.net.ServerSocket implements MainSoc
 	 */
 	public ServerSocket(final int port) throws IOException {
 		// enviamos el constructor
-		super(port, 10);
+		super(port);
 	}
 }

@@ -24,8 +24,9 @@ import java.net.SocketException;
  * @author Schimpf.NET
  * @version Aug 5, 2011 9:11:16 AM
  * @param <SType> Clase para los estados
+ * @param <MSocket> Tipo de socket principal
  */
-public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
+public abstract class AbstractSingleSocket<SType, MSocket extends MainSocket> extends AbstractSocket<MSocket> {
 	/**
 	 * Fichero a enviar
 	 * 
@@ -90,63 +91,13 @@ public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 	 * @param name Nombre del thread
 	 * @param port Numero de puerto a conectar
 	 */
-	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket<SType>> name, final Integer port) {
+	public AbstractSingleSocket(final Class<? extends AbstractSingleSocket<SType, MSocket>> name, final Integer port) {
 		// enviamos el constructor
 		super(name, port);
 	}
 
-	/**
-	 * Retorna el estado de la conexion
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 3:50:09 PM
-	 * @return True si hay conexion
-	 */
-	public final boolean isConnected() {
-		// retornamos si existe una conexion
-		return this.getConnection() != null;
-	}
-
-	/**
-	 * Inicia el puerto y el thread
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 4, 2011 12:57:06 PM
-	 * @throws InterruptedException Si el thread ya finalizo
-	 */
-	public final void open() throws InterruptedException {
-		// verificamos si esta finalizado
-		if (this.getState().equals(State.TERMINATED))
-			// salimos con una excepcion
-			throw new InterruptedException("El thread ya esta finalizado");
-		// modificamos la bandera
-		this.setIsContinue(true);
-		// verificamos si el estado es nuevo
-		if (this.getState().equals(State.NEW))
-			// iniciamos el thread
-			this.start();
-		else
-			synchronized (this) {
-				// continuamos la ejecucion
-				this.notify();
-			}
-	}
-
-	/**
-	 * Cierra el socket
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 10:40:53 AM
-	 * @param isContinue False para finalizar el thread
-	 */
 	@Override
-	protected final void close(final boolean isContinue) {
+	public final void close(final boolean isContinue) {
 		// modificamos la bandera
 		this.setIsContinue(isContinue);
 		synchronized (this) {
@@ -164,6 +115,19 @@ public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 			// print the StackTrace
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Retorna si existe una conexion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 22, 2012 2:36:59 PM
+	 * @return True si existe una conexion
+	 */
+	public final boolean isConnected() {
+		// retornamos si existe una conexion
+		return this.getConnection() != null;
 	}
 
 	@Override
@@ -253,34 +217,9 @@ public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 	 * @version Oct 14, 2011 12:33:00 PM
 	 * @param fileReceived Fichero recibido
 	 */
-	protected void fileReceived(final File fileReceived) {}
-
-	/**
-	 * Envia el primer dato al server
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @author Schimpf.NET
-	 * @version Aug 5, 2011 11:53:31 AM
-	 * @return Datos a enviar
-	 */
-	protected Object firstData() {
-		// por defecto enviamos null
-		return null;
-	}
-
-	/**
-	 * Retorna el ultimo comando
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 6, 2011 11:45:11 AM
-	 * @return Ultimo comando enviado
-	 */
-	protected final Commands getLastCommand() {
-		// retornamos el ultimo comando enviado
-		return this.lastCommand;
+	protected void fileReceived(final File fileReceived) {
+		// eliminamos el fichero recibido
+		fileReceived.delete();
 	}
 
 	/**
@@ -307,19 +246,6 @@ public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 	 * @return True para continuar recibiendo
 	 */
 	protected abstract boolean processData(Object data);
-
-	/**
-	 * Procesa los datos de la etapa
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 21, 2011 11:47:51 AM
-	 * @param stage Etapa actual
-	 * @param data Datos
-	 * @return True para continuar
-	 */
-	protected abstract boolean processStage(Stage stage, Object data);
 
 	/**
 	 * Envia datos al output
@@ -744,6 +670,34 @@ public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 	}
 
 	/**
+	 * Envia el primer dato al server
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @author Schimpf.NET
+	 * @version Aug 5, 2011 11:53:31 AM
+	 * @return Datos a enviar
+	 */
+	Object firstData() {
+		// por defecto enviamos null
+		return null;
+	}
+
+	/**
+	 * Retorna el ultimo comando
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 6, 2011 11:45:11 AM
+	 * @return Ultimo comando enviado
+	 */
+	final Commands getLastCommand() {
+		// retornamos el ultimo comando enviado
+		return this.lastCommand;
+	}
+
+	/**
 	 * Retorna la etapa actual
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -756,6 +710,19 @@ public abstract class AbstractSingleSocket<SType> extends AbstractSocket {
 		// retrnamos la etapa actual
 		return this.localStage;
 	}
+
+	/**
+	 * Procesa los datos de la etapa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Oct 21, 2011 11:47:51 AM
+	 * @param stage Etapa actual
+	 * @param data Datos
+	 * @return True para continuar
+	 */
+	abstract boolean processStage(Stage stage, Object data);
 
 	/**
 	 * Almacena la nueva etapa
