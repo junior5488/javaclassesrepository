@@ -198,6 +198,45 @@ public final class Logger {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:08:04 PM
+	 * @param clazz Clase que registra el logger
+	 */
+	public Logger(final Class<? extends Object> clazz) {
+		// enviamos el constructor
+		this(clazz, (String) null);
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:22:27 PM
+	 * @param clazz Clase que registra el logger
+	 * @param consoleLevel Nivel de mensajes en consola
+	 */
+	public Logger(final Class<? extends Object> clazz, final Level consoleLevel) {
+		// enviamos el constructor
+		this(clazz, consoleLevel, (String) null);
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:22:43 PM
+	 * @param clazz Clase que registra el logger
+	 * @param consoleLevel Nivel de mensajes en consola
+	 * @param fileLevel Nivel de mensajes en el fichero
+	 */
+	public Logger(final Class<? extends Object> clazz, final Level consoleLevel, final Level fileLevel) {
+		// enviamos el constructor
+		this(clazz, consoleLevel, fileLevel, null);
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
 	 * @version Aug 1, 2012 5:22:43 PM
 	 * @param clazz Clase que registra el logger
 	 * @param consoleLevel Nivel de mensajes en consola
@@ -244,6 +283,33 @@ public final class Logger {
 		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
 		// verificamos si se especifico el fichero log
 		this.enableLogFile(logFile != null);
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 6:14:17 PM
+	 * @param name Nombre para el logger
+	 * @param consoleLevel Nivel de mensajes en consola
+	 */
+	public Logger(final String name, final Level consoleLevel) {
+		// enviamos el constructir
+		this(name, consoleLevel, (String) null);
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 5:22:43 PM
+	 * @param name Nombre para el logger
+	 * @param consoleLevel Nivel de mensajes en consola
+	 * @param fileLevel Nivel de mensajes en el fichero
+	 */
+	public Logger(final String name, final Level consoleLevel, final Level fileLevel) {
+		// enviamos el constructor
+		this(name, consoleLevel, fileLevel, null);
 	}
 
 	/**
