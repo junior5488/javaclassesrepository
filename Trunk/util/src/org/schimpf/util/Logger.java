@@ -691,21 +691,8 @@ public final class Logger {
 		}
 		// verificamos si mostramos en el fichero
 		if (level.isEnabled(this.fileLevel) && this.logToFile) {
-			try {
-				// abrimos el fichero log
-				final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
-				// agregamos el log
-				output.write(log.toString());
-				// agregamos una linea
-				output.newLine();
-				// finalizamos el output
-				output.flush();
-				// cerramos el fichero
-				output.close();
-			} catch (final IOException e) {
-				// mostramos un log en consola
-				this.debug("Log can't be save on file. Reason: " + e.getMessage());
-			}
+			// escribimos la linea en el fichero
+			this.writeToFile(log.toString());
 			// recorremos los listeners
 			for (LoggerListener listener: Logger.listeners)
 				// enviamos el mensaje
@@ -746,21 +733,8 @@ public final class Logger {
 		}
 		// verificamos si mostramos en el fichero
 		if (level.isEnabled(this.fileLevel) && this.logToFile) {
-			try {
-				// abrimos el fichero log
-				final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
-				// agregamos el log
-				output.write(log);
-				// agregamos una linea
-				output.newLine();
-				// finalizamos el output
-				output.flush();
-				// cerramos el fichero
-				output.close();
-			} catch (final IOException e) {
-				// mostramos un log en consola
-				this.debug("Log can't be save on file. Reason: " + e.getMessage());
-			}
+			// escribimos la linea en el fichero
+			this.writeToFile(log);
 			// recorremos los listeners
 			for (LoggerListener listener: Logger.listeners)
 				// enviamos el mensaje
@@ -863,5 +837,33 @@ public final class Logger {
 	private Class<?> getLogClass() {
 		// retornamos la clase
 		return this.clazz;
+	}
+
+	/**
+	 * Escribe una linea al fichero
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 26, 2012 1:28:08 PM
+	 * @param message Mensaje a escribir
+	 */
+	private void writeToFile(final String message) {
+		try {
+			// abrimos el fichero log
+			final BufferedWriter output = new BufferedWriter(new FileWriter(this.logFile, true));
+			// agregamos el log
+			output.write(message);
+			// agregamos una linea
+			output.newLine();
+			// finalizamos el output
+			output.flush();
+			// cerramos el fichero
+			output.close();
+		} catch (final IOException e) {
+			// verificamos si esta habilitado el nivel de depuracion
+			if (Level.DEBUG.isEnabled(this.consoleLevel))
+				// mostramos un log en consola
+				System.err.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + Level.DEBUG.name() + "] " + this.name + " Log can't be save on file. Reason: " + e.getMessage());
+		}
 	}
 }
