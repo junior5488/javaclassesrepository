@@ -29,25 +29,39 @@ import java.util.ArrayList;
  */
 public final class ThreadsManager<TType extends Thread> {
 	/**
+	 * Cantidad maxima de threads en ejecucion
+	 * 
+	 * @version Nov 26, 2012 3:10:41 PM
+	 */
+	protected static int										MAX_CONCURRENT_THREADS	= 0;
+
+	/**
+	 * Thread que inicia los demas threads
+	 * 
+	 * @version Nov 26, 2012 3:13:19 PM
+	 */
+	protected Starter											starter;
+
+	/**
 	 * Bandera para saber si finalizaron todos los threads
 	 * 
 	 * @version Sep 14, 2011 3:48:10 PM
 	 */
-	private boolean						allFinished	= false;
+	private boolean											allFinished					= false;
 
 	/**
 	 * Capturadores de eventos registrados
 	 * 
 	 * @version Aug 10, 2011 9:15:40 AM
 	 */
-	private ThreadsListener<TType>	listener;
+	private final ArrayList<ThreadsListener<TType>>	listeners					= new ArrayList<ThreadsListener<TType>>();
 
 	/**
 	 * Lista de threads a monitorear
 	 * 
 	 * @version Aug 2, 2011 4:37:13 PM
 	 */
-	private final ArrayList<TType>	threads		= new ArrayList<TType>();
+	private final ArrayList<TType>						threads						= new ArrayList<TType>();
 
 	/**
 	 * Monitorea un thread hasta su finalizacion
@@ -83,8 +97,10 @@ public final class ThreadsManager<TType extends Thread> {
 		protected boolean execute() {
 			// esperamos a que inicie
 			this.waitForStart();
-			// ejecutamos el proceso de thread iniciado
-			ThreadsManager.this.getListener().threadStarted(this.getThread());
+			// recorremos los listeners
+			for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
+				// ejecutamos el proceso de thread iniciado
+				listener.threadStarted(this.getThread());
 			// obtenemos el estado actual del thread
 			State oldState = this.getThread().getState();
 			// ingresamos a un bucle
@@ -99,21 +115,31 @@ public final class ThreadsManager<TType extends Thread> {
 				oldState = this.getThread().getState();
 				// verificamos si el thread fue interrumpido
 				if (this.getThread().isInterrupted())
-					// ejecutamos el proceso al interrumpir el thread
-					ThreadsManager.this.getListener().threadInterrupted(this.getThread());
+					// recorremos los listeners
+					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
+						// ejecutamos el proceso al interrumpir el thread
+						listener.threadInterrupted(this.getThread());
 				// verificamos si continua ejecutandose
 				else if (oldState.equals(State.RUNNABLE))
-					// ejecutamos el proceso al continuar el thread
-					ThreadsManager.this.getListener().threadResumed(this.getThread());
+					// recorremos los listeners
+					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
+						// ejecutamos el proceso al continuar el thread
+						listener.threadResumed(this.getThread());
 				// verificamos si es estado es en espera
 				else if (oldState.equals(State.WAITING) || oldState.equals(State.TIMED_WAITING))
-					// ejecutamos el proceso al pausar el thread
-					ThreadsManager.this.getListener().threadPaused(this.getThread());
+					// recorremos los listeners
+					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
+						// ejecutamos el proceso al pausar el thread
+						listener.threadPaused(this.getThread());
 				// verificamos si finalizo
-				else if (oldState.equals(State.TERMINATED))
-					// ejecutamos el proceso al finalizar el thread
-					ThreadsManager.this.getListener().threadFinished(this.getThread());
-				// recorremos hasta que el thread finalize
+				else if (oldState.equals(State.TERMINATED)) {
+					// eliminamos el thread de la lista
+					ThreadsManager.this.getThreads().remove(this.getThread());
+					// recorremos los listeners
+					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
+						// ejecutamos el proceso al finalizar el thread
+						listener.threadFinished(this.getThread());
+				}
 			} while (!oldState.equals(State.TERMINATED));
 			// verificamos si ya no hay mas threasd
 			if (!ThreadsManager.this.hasAlive())
@@ -151,6 +177,59 @@ public final class ThreadsManager<TType extends Thread> {
 					java.lang.Thread.sleep(100);
 				} catch (final InterruptedException ignored) {}
 		}
+	}
+
+	/**
+	 * Iniciador de los threads
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 26, 2012 3:14:54 PM
+	 */
+	private class Starter extends Thread {
+		public Starter() {
+			// enviamos el constructor
+			super(Starter.class);
+		}
+
+		@Override
+		protected boolean execute() throws InterruptedException {
+			// recorremos los threads
+			for (final TType thread: ThreadsManager.this.getThreads()) {
+				// verificamos si ya iniciamos todos
+				if (ThreadsManager.MAX_CONCURRENT_THREADS > 0 && ThreadsManager.this.getRunningThreads().size() >= ThreadsManager.MAX_CONCURRENT_THREADS)
+					// salimos del bucle
+					break;
+				// verificamos si es un nuevo thread
+				if (thread.getState().equals(Thread.State.NEW))
+					// iniciamos el thread
+					thread.start();
+			}
+			// verificamos si existen threads a iniciar
+			if (!ThreadsManager.this.hasNew()) {
+				// vaciamos el starter
+				ThreadsManager.this.starter = null;
+				// salimos
+				return false;
+			}
+			// esperamos 500ms
+			java.lang.Thread.sleep(500);
+			// retornamos true
+			return true;
+		}
+	}
+
+	/**
+	 * Setea el capturador de eventos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @version Aug 10, 2011 9:16:37 AM
+	 * @param listener Capturador de eventos
+	 */
+	public void addListener(final ThreadsListener<TType> listener) {
+		// agregamos el capturador de eventos
+		this.listeners.add(listener);
 	}
 
 	/**
@@ -212,13 +291,25 @@ public final class ThreadsManager<TType extends Thread> {
 	 * Setea el capturador de eventos
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @version Aug 10, 2011 9:16:37 AM
-	 * @param listener Capturador de eventos
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 26, 2012 3:05:24 PM
+	 * @param listener Capturador de eventos de threads
+	 * @deprecated Use addListener(ThreadsListener) instead
 	 */
-	public void setListener(final ThreadsListener<TType> listener) {
-		// seteamos el capturador de eventos
-		this.listener = listener;
+	@Deprecated
+	public void setListener(final ThreadsListener<TType> listener) {}
+
+	/**
+	 * Almacena la cantidad maxima de threads en ejecucion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 26, 2012 3:20:58 PM
+	 * @param count Cantidad maxima de threads, 0 para desactivar el limite
+	 */
+	public void setMaxConcurrentThreads(final int count) {
+		// almacenamos la cantidad
+		ThreadsManager.MAX_CONCURRENT_THREADS = count;
 	}
 
 	/**
@@ -229,17 +320,37 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 2, 2011 4:41:53 PM
 	 */
 	public synchronized void shutdownAll() {
+		// apagamos los threads sin forzar
+		this.shutdownAll(false);
+	}
+
+	/**
+	 * Finaliza la ejecucion del programa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @version Aug 2, 2011 4:41:53 PM
+	 * @param interrupt True para forzar el apagado de los threads
+	 */
+	public synchronized void shutdownAll(final boolean interrupt) {
 		// recorremos hasta que existan threads
 		while (this.getThreads().size() > 0) {
 			// lista con los threads finalizados
 			final ArrayList<TType> terminatedThreads = new ArrayList<TType>();
 			// recorremos los threads
 			for (final TType thread: this.getThreads()) {
-				// finalizamos el thread
-				thread.shutdown();
+				// verificamos si esta ejecutandose
+				if (thread.isRunning())
+					// verificamos si matamos el thread
+					if (interrupt)
+						// finalizamos el thread
+						thread.interrupt();
+					else
+						// finalizamos el thread
+						thread.shutdown();
 				try {
 					// esperamos a que el thread finalize
-					thread.join(500);
+					thread.join(100);
 				} catch (final InterruptedException ignored) {}
 				// verificamos si finalizo
 				if (thread.getState().equals(Thread.State.TERMINATED))
@@ -261,14 +372,15 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 2, 2011 6:07:43 PM
 	 */
 	public synchronized void startThreads() {
-		// recorremos los threads
-		for (final TType thread: this.getThreads())
-			// verificamos si es un nuevo thread
-			if (thread.getState().equals(Thread.State.NEW))
-				// iniciamos el thread
-				thread.start();
-		// modificamos la bandera
-		this.allFinished = false;
+		// verificamos si tenemos el iniciador
+		if (this.starter == null) {
+			// generamos el thread
+			this.starter = new Starter();
+			// iniciamos el thread
+			this.starter.start();
+			// modificamos la bandera
+			this.allFinished = false;
+		}
 	}
 
 	/**
@@ -281,28 +393,27 @@ public final class ThreadsManager<TType extends Thread> {
 	 */
 	protected synchronized void allThreadsFinished() {
 		// verificamos si la bandera esta off
-		if (!this.isAllFinished())
-			// ejecutamos el proceso de finalizacion de todos los threads
-			this.getListener().allThreadsFinished();
-		// modificamos la bandera
-		this.allFinished = true;
+		if (!this.isAllFinished()) {
+			// modificamos la bandera
+			this.allFinished = true;
+			// recorremos los listeners
+			for (ThreadsListener<TType> listener: this.getListeners())
+				// ejecutamos el proceso de finalizacion de todos los threads
+				listener.allThreadsFinished();
+		}
 	}
 
 	/**
-	 * Retorna el capturador de eventos
+	 * Retorna los capturadores de eventos
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Aug 10, 2011 9:16:11 AM
-	 * @return Lista de Listeners
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 26, 2012 3:07:51 PM
+	 * @return Lista de capturadores de eventos
 	 */
-	protected ThreadsListener<TType> getListener() {
-		// verificamos si es null
-		if (this.listener == null)
-			// creamos uno vacio
-			this.listener = new EmptyThreadsListener<TType>();
-		// retornamos el capturador de eventos
-		return this.listener;
+	protected ArrayList<ThreadsListener<TType>> getListeners() {
+		// retornamos los capturadores de eventos
+		return this.listeners;
 	}
 
 	/**
@@ -313,9 +424,28 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 2, 2011 5:58:34 PM
 	 * @return Lista de Threads
 	 */
-	private ArrayList<TType> getThreads() {
+	protected synchronized ArrayList<TType> getThreads() {
 		// retornamos la lista de los threads
 		return this.threads;
+	}
+
+	/**
+	 * Retorna si existen threads sin iniciar
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 26, 2012 3:18:43 PM
+	 * @return True si existen threads sin iniciar
+	 */
+	protected boolean hasNew() {
+		// recorremos los threads
+		for (final TType thread: this.getThreads())
+			// verificamos si esta vivo
+			if (thread.getState().equals(Thread.State.NEW))
+				// retornamos true
+				return true;
+		// retornamos false
+		return false;
 	}
 
 	/**
