@@ -101,7 +101,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * 
 	 * @version Oct 10, 2012 3:01:21 PM
 	 */
-	private static final Logger														static_log			= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL, null);
+	private static final Logger														static_log			= new Logger("PO:Static", AbstractPersistentObject.DEBUG_LEVEL);
 
 	/**
 	 * Bandera de creacion para nuevo registro
@@ -165,7 +165,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// almacenamos la tabla
 		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
 		// iniciamos el logger
-		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
+		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// modificamos la bandera de creacion
@@ -188,7 +188,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 		// almacenamos la tabla
 		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
 		// iniciamos el logger
-		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL, null);
+		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// almacenamos las PKs
