@@ -80,6 +80,8 @@ public abstract class Thread extends java.lang.Thread {
 		} catch (final InterruptedException e) {
 			// modificamos la bandera
 			this.interrupted = true;
+			// terminamos el thread
+			this.shutdown();
 		}
 	}
 
