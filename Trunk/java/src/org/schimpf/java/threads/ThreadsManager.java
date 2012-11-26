@@ -33,7 +33,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @version Nov 26, 2012 3:10:41 PM
 	 */
-	protected static int										MAX_CONCURRENT_THREADS	= 0;
+	protected int												maxConcurrentThreads	= 0;
 
 	/**
 	 * Thread que inicia los demas threads
@@ -47,21 +47,21 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @version Sep 14, 2011 3:48:10 PM
 	 */
-	private boolean											allFinished					= false;
+	private boolean											allFinished				= false;
 
 	/**
 	 * Capturadores de eventos registrados
 	 * 
 	 * @version Aug 10, 2011 9:15:40 AM
 	 */
-	private final ArrayList<ThreadsListener<TType>>	listeners					= new ArrayList<ThreadsListener<TType>>();
+	private final ArrayList<ThreadsListener<TType>>	listeners				= new ArrayList<ThreadsListener<TType>>();
 
 	/**
 	 * Lista de threads a monitorear
 	 * 
 	 * @version Aug 2, 2011 4:37:13 PM
 	 */
-	private final ArrayList<TType>						threads						= new ArrayList<TType>();
+	private final ArrayList<TType>						threads					= new ArrayList<TType>();
 
 	/**
 	 * Monitorea un thread hasta su finalizacion
@@ -197,7 +197,7 @@ public final class ThreadsManager<TType extends Thread> {
 			// recorremos los threads
 			for (final TType thread: ThreadsManager.this.getThreads()) {
 				// verificamos si ya iniciamos todos
-				if (ThreadsManager.MAX_CONCURRENT_THREADS > 0 && ThreadsManager.this.getRunningThreads().size() >= ThreadsManager.MAX_CONCURRENT_THREADS)
+				if (ThreadsManager.this.maxConcurrentThreads > 0 && ThreadsManager.this.getRunningThreads().size() >= ThreadsManager.this.maxConcurrentThreads)
 					// salimos del bucle
 					break;
 				// verificamos si es un nuevo thread
@@ -216,6 +216,12 @@ public final class ThreadsManager<TType extends Thread> {
 			java.lang.Thread.sleep(500);
 			// retornamos true
 			return true;
+		}
+
+		@Override
+		protected synchronized void halt(final boolean interrupted) {
+			// vaciamos el starter
+			ThreadsManager.this.starter = null;
 		}
 	}
 
@@ -309,7 +315,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 */
 	public void setMaxConcurrentThreads(final int count) {
 		// almacenamos la cantidad
-		ThreadsManager.MAX_CONCURRENT_THREADS = count;
+		this.maxConcurrentThreads = count;
 	}
 
 	/**
@@ -333,6 +339,10 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @param interrupt True para forzar el apagado de los threads
 	 */
 	public synchronized void shutdownAll(final boolean interrupt) {
+		// verificamos si tenemos el iniciador en ejecucion
+		if (this.starter != null)
+			// finalizamos el iniciador
+			this.starter.interrupt();
 		// recorremos hasta que existan threads
 		while (this.getThreads().size() > 0) {
 			// lista con los threads finalizados
