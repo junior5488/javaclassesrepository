@@ -194,7 +194,7 @@ public abstract class AbstractServerMultiSocketConnection<SType extends Abstract
 		// almacenamos el socket de conexion
 		this.connection = connection;
 		// instanciamos el logger
-		this.log = new Logger(this.getName(), null);
+		this.log = new Logger(this.getName());
 		// registramos el capturador de señal de apagado
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
 			@Override

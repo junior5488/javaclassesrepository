@@ -108,7 +108,7 @@ public abstract class AbstractSocket<MSocket extends MainSocket> extends Thread 
 		// enviamos el constructor
 		super(name, port.toString());
 		// instanciamos el logger
-		this.log = new Logger(this.getName(), null);
+		this.log = new Logger(this.getName());
 		// generamos el thread para capturar la señal de apagado
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread(new Runnable() {
 			@Override
