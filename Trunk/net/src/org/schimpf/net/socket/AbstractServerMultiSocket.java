@@ -92,8 +92,10 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 			if (this.getConnection() != null)
 				// cerramos la conexion
 				this.getConnection().close();
-			// cerramos el socket
-			this.serverSocket.close();
+			// verificamos si se creo
+			if (this.serverSocket != null)
+				// cerramos el socket
+				this.serverSocket.close();
 		} catch (final IOException e) {
 			// print the StackTrace
 			e.printStackTrace();
