@@ -289,6 +289,18 @@ public final class Logger {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
 	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 6:13:53 PM
+	 * @param name Nombre para el logger
+	 */
+	public Logger(final String name) {
+		// enviamos el constructor
+		this(name, (String) null);
+	}
+
+	/**
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
 	 * @version Aug 1, 2012 6:14:17 PM
 	 * @param name Nombre para el logger
 	 * @param consoleLevel Nivel de mensajes en consola
@@ -354,8 +366,22 @@ public final class Logger {
 	 * @param logFile Ruta al fichero log
 	 */
 	public Logger(final String name, final String logFile) {
-		// FIXME por ahora almacenamos null
-		this.clazz = null;
+		// generamos una ruta
+		Throwable caller = new Throwable();
+		// clase temporal
+		Class<?> tempClass = null;
+		// recorremos la ruta
+		for (StackTraceElement trace: caller.getStackTrace())
+			try {
+				// obtenemos el nombre de la clase
+				Class<?> callerClass = Class.forName(trace.getClassName());
+				// verificamos si no es la clase Logger
+				if (!callerClass.equals(this.getClass()))
+					// almacenamos la clase
+					tempClass = callerClass;
+			} catch (ClassNotFoundException ignored) {}
+		// almacenamos la clase
+		this.clazz = tempClass;
 		// almacenamos la clase
 		this.name = name;
 		// almacenamos el fichero log
