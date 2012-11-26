@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -279,8 +280,13 @@ public final class Logger {
 		this.clazz = clazz;
 		// almacenamos el nombre
 		this.name = this.getLogClass().getName().substring(this.getLogClass().getName().lastIndexOf(".") + 1);
-		// almacenamos el fichero log
-		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
+		// verificamos si es una carpeta
+		if (logFile != null && new File(logFile).exists() && new File(logFile).isDirectory())
+			// el fichero log lo tomamos desde el nombre
+			this.logFile = new File(logFile + FileSystems.getDefault().getSeparator() + this.name + ".log");
+		else
+			// almacenamos el fichero log
+			this.logFile = new File(logFile != null ? logFile : this.name + ".log");
 		// verificamos si se especifico el fichero log
 		this.enableLogFile(logFile != null);
 	}
@@ -384,8 +390,13 @@ public final class Logger {
 		this.clazz = tempClass;
 		// almacenamos la clase
 		this.name = name;
-		// almacenamos el fichero log
-		this.logFile = new File(logFile != null ? logFile : this.name + ".log");
+		// verificamos si es una carpeta
+		if (logFile != null && new File(logFile).exists() && new File(logFile).isDirectory())
+			// el fichero log lo tomamos desde el nombre
+			this.logFile = new File(logFile + FileSystems.getDefault().getSeparator() + this.name + ".log");
+		else
+			// almacenamos el fichero log
+			this.logFile = new File(logFile != null ? logFile : this.name + ".log");
 		// verificamos si se especifico el fichero log
 		this.enableLogFile(logFile != null);
 	}
