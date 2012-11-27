@@ -687,7 +687,7 @@ public final class Logger {
 			// recorremos los listeners
 			for (LoggerListener listener: Logger.listeners)
 				// enviamos el mensaje
-				listener.consoleLog(log.toString(), level, true);
+				listener.consoleLog(this.getLogClass(), log.toString(), level, true);
 		}
 		// verificamos si mostramos en el fichero
 		if (level.isEnabled(this.fileLevel) && this.logToFile) {
@@ -696,7 +696,7 @@ public final class Logger {
 			// recorremos los listeners
 			for (LoggerListener listener: Logger.listeners)
 				// enviamos el mensaje
-				listener.fileLog(log.toString(), level, true);
+				listener.fileLog(this.getLogClass(), log.toString(), level, true);
 		}
 	}
 
@@ -729,7 +729,7 @@ public final class Logger {
 			// recorremos los listeners
 			for (LoggerListener listener: Logger.listeners)
 				// enviamos el mensaje
-				listener.consoleLog(log.toString(), level, false);
+				listener.consoleLog(this.getLogClass(), log.toString(), level, false);
 		}
 		// verificamos si mostramos en el fichero
 		if (level.isEnabled(this.fileLevel) && this.logToFile) {
@@ -738,7 +738,7 @@ public final class Logger {
 			// recorremos los listeners
 			for (LoggerListener listener: Logger.listeners)
 				// enviamos el mensaje
-				listener.fileLog(log.toString(), level, true);
+				listener.fileLog(this.getLogClass(), log.toString(), level, true);
 		}
 	}
 

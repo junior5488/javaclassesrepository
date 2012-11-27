@@ -33,11 +33,12 @@ public interface LoggerListener {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
 	 * @version Nov 20, 2012 10:17:20 AM
+	 * @param clazz Clase desde la cual se lanza el log
 	 * @param message Mensaje
 	 * @param level Nivel del mensaje
 	 * @param isException True si es excepcion
 	 */
-	public void consoleLog(String message, Level level, boolean isException);
+	public void consoleLog(final Class<?> clazz, final String message, final Level level, final boolean isException);
 
 	/**
 	 * Se ejecuta cuando se recibe un log en fichero
@@ -45,9 +46,10 @@ public interface LoggerListener {
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
 	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
 	 * @version Nov 20, 2012 10:17:19 AM
+	 * @param clazz Clase desde la cual se lanza el log
 	 * @param message Mensaje
 	 * @param level Nivel del mensaje
 	 * @param isException True si es excepcion
 	 */
-	public void fileLog(String message, Level level, boolean isException);
+	public void fileLog(final Class<?> clazz, final String message, final Level level, final boolean isException);
 }
