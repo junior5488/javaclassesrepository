@@ -676,7 +676,7 @@ public final class Logger {
 			// agregamos el elemento
 			log.append("\n" + logStart + "\t" + stackTrace.getClassName() + "." + stackTrace.getMethodName() + "(" + stackTrace.getFileName() + ":" + stackTrace.getLineNumber() + ")");
 		// verificamos si mostramos en consola
-		if (level.isEnabled(this.consoleLevel)) {
+		if (level.isEnabled(this.consoleLevel))
 			// verificamos si es >= ERROR
 			if (level.isEnabled(Level.ERROR))
 				// mostrar el mensaje en consola de error
@@ -684,20 +684,14 @@ public final class Logger {
 			else
 				// mostrar el mensaje en consola de error
 				System.out.println(log);
-			// recorremos los listeners
-			for (LoggerListener listener: Logger.listeners)
-				// enviamos el mensaje
-				listener.consoleLog(this.getLogClass(), log.toString(), level, true);
-		}
 		// verificamos si mostramos en el fichero
-		if (level.isEnabled(this.fileLevel) && this.logToFile) {
+		if (level.isEnabled(this.fileLevel) && this.logToFile)
 			// escribimos la linea en el fichero
 			this.writeToFile(log.toString());
-			// recorremos los listeners
-			for (LoggerListener listener: Logger.listeners)
-				// enviamos el mensaje
-				listener.fileLog(this.getLogClass(), log.toString(), level, true);
-		}
+		// recorremos los listeners
+		for (LoggerListener listener: Logger.listeners)
+			// enviamos el mensaje
+			listener.log(this, log.toString(), level, true);
 	}
 
 	/**
@@ -718,7 +712,7 @@ public final class Logger {
 		// generamos el mensaje
 		final String log = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " " + message;
 		// verificamos si mostramos en consola
-		if (level.isEnabled(this.consoleLevel)) {
+		if (level.isEnabled(this.consoleLevel))
 			// verificamos si es >= ERROR
 			if (level.isEnabled(Level.ERROR))
 				// mostrar el mensaje en consola de error
@@ -726,20 +720,14 @@ public final class Logger {
 			else
 				// mostrar el mensaje en consola de error
 				System.out.println(log);
-			// recorremos los listeners
-			for (LoggerListener listener: Logger.listeners)
-				// enviamos el mensaje
-				listener.consoleLog(this.getLogClass(), log.toString(), level, false);
-		}
 		// verificamos si mostramos en el fichero
-		if (level.isEnabled(this.fileLevel) && this.logToFile) {
+		if (level.isEnabled(this.fileLevel) && this.logToFile)
 			// escribimos la linea en el fichero
 			this.writeToFile(log);
-			// recorremos los listeners
-			for (LoggerListener listener: Logger.listeners)
-				// enviamos el mensaje
-				listener.fileLog(this.getLogClass(), log.toString(), level, true);
-		}
+		// recorremos los listeners
+		for (LoggerListener listener: Logger.listeners)
+			// enviamos el mensaje
+			listener.log(this, log.toString(), level, false);
 	}
 
 	/**
