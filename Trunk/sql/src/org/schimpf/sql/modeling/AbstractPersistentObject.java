@@ -49,7 +49,7 @@ import java.util.Map.Entry;
  * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
  * @author <B>Schimpf.NET</B>
  * @version Jul 31, 2012 11:55:23 AM
- * @param <SQLConnector> Tipo de conexion a la DB
+ * @param <SQLType> Tipo de conexion a la DB
  * @param <MType> Tipo de sistema de base de datos
  * @param <DType> Tipo de base de datos
  * @param <SType> Tipo de esquema
@@ -57,7 +57,7 @@ import java.util.Map.Entry;
  * @param <CType> Tipo de columna
  * @param <PKType> Tipo de valor de las PK
  */
-public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, MType extends DBMSWrapper<SQLConnector, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLConnector, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLConnector, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLConnector, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLConnector, MType, DType, SType, TType, CType>, PKType> implements Serializable {
+public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType extends DBMSWrapper<SQLType, MType, DType, SType, TType, CType>, DType extends DataBaseWrapper<SQLType, MType, DType, SType, TType, CType>, SType extends SchemaWrapper<SQLType, MType, DType, SType, TType, CType>, TType extends TableWrapper<SQLType, MType, DType, SType, TType, CType>, CType extends ColumnWrapper<SQLType, MType, DType, SType, TType, CType>, PKType> implements Serializable {
 	/**
 	 * Nivel de mesajes de depuracion<BR/>
 	 * Apagado por defecto
@@ -844,7 +844,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @return Nombre de la tabla
 	 * @throws Exception Si no se pudo instanciar la tabla
 	 */
-	protected abstract TType getTableInstance(final SQLProcess connector) throws Exception;
+	protected abstract TType getTableInstance(final SQLType connector) throws Exception;
 
 	/**
 	 * Retorna el valor de una columna
@@ -1114,7 +1114,8 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 	 * @return Conector SQL
 	 * @throws Exception Si no se puede obtener el conector
 	 */
-	private SQLProcess getSQLConnector() throws Exception {
+	@SuppressWarnings("unchecked")
+	private SQLType getSQLConnector() throws Exception {
 		// verificamos si tiene valor
 		if (AbstractPersistentObject.sqlConnector == null) {
 			// generamos una excepcion
@@ -1125,7 +1126,7 @@ public abstract class AbstractPersistentObject<SQLConnector extends SQLProcess, 
 			throw e;
 		}
 		// retornamos el conector SQL
-		return AbstractPersistentObject.sqlConnector;
+		return (SQLType) AbstractPersistentObject.sqlConnector;
 	}
 
 	/**
