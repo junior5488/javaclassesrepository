@@ -165,12 +165,6 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 			return this.foreignKeyName;
 		}
 
-		@Override
-		public int hashCode() {
-			// enviamos el padre
-			return super.hashCode();
-		}
-
 		/**
 		 * Retorna la accion a tomar cuando la clave relacionada es eliminada
 		 * 
@@ -486,12 +480,6 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	public final String getTableName() {
 		// retornamos el nombre de la tabla
 		return this.tableName;
-	}
-
-	@Override
-	public int hashCode() {
-		// enviamos el padre
-		return super.hashCode();
 	}
 
 	/**
