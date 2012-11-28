@@ -56,21 +56,24 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	public synchronized final boolean commitTransaction(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
-			if (this.existsTransaction(trxName))
-				// salimos con una excepcion
-				throw new SQLException("No existe la transaccion especificada");
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe la transaccion especificada");
+				// retornamos false
+				return false;
+			}
 			// aprovamos la transaccion
 			this.getConnection(trxName).commit();
 			// cerramos la conexion
 			this.dropConnection(trxName);
+			// retornamos true
+			return true;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos false
 			return false;
 		}
-		// retornamos true
-		return true;
 	}
 
 	@Override
@@ -99,23 +102,29 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	public synchronized final boolean executeQuery(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
-			if (!this.existsTransaction(trxName))
-				// salimos con una excepcion
-				throw new SQLException("No existe la transaccion especificada");
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe la transaccion especificada");
+				// retornamos false
+				return false;
+			}
 			// verificamos si hay una consulta a ejecutar
-			if (this.getStatement(trxName) == null)
-				// salimos con una excepcion
-				throw new SQLException("No existe una consulta a ejecutar en la transaccion especificada");
+			if (this.getStatement(trxName) == null) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe una consulta a ejecutar en la transaccion especificada");
+				// retornamos false
+				return false;
+			}
 			// ejecutamos la consulta
 			this.setResultSet(trxName, this.getStatement(trxName).executeQuery());
+			// retornamos true
+			return true;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos false
 			return false;
 		}
-		// retornamos true
-		return true;
 	}
 
 	@Override
@@ -144,13 +153,19 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	public synchronized final int executeUpdate(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
-			if (!this.existsTransaction(trxName))
-				// salimos con una excepcion
-				throw new SQLException("No existe la transaccion especificada");
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe la transaccion especificada");
+				// retornamos negativo
+				return -1;
+			}
 			// verificamos si hay una consulta a ejecutar
-			if (this.getStatement(trxName) == null)
-				// salimos con una excepcion
-				throw new SQLException("No existe una consulta a ejecutar en la transaccion especificada");
+			if (this.getStatement(trxName) == null) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe una consulta a ejecutar en la transaccion especificada");
+				// retornamos negativo
+				return -1;
+			}
 			// ejecutamos el update
 			int result = this.getStatement(trxName).executeUpdate();
 			// verificamos si se actualizo
@@ -161,8 +176,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			return result;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
-			// retornamos false
+			this.getLog().error(e);
+			// retornamos negativo
 			return -1;
 		}
 	}
@@ -217,15 +232,25 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public final boolean hasNext(final String trxName) {
 		try {
+			// verificamos si existe la transaccion
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe la transaccion especificada");
+				// retornamos false
+				return false;
+			}
 			// verificamos si hay un resultset
-			if (this.getResultSet(trxName) == null)
-				// salimos con una excepcion
-				throw new SQLException("No se ejecuto ninguna consulta");
+			if (this.getResultSet(trxName) == null) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe ninguna consulta en esta transaccion");
+				// retornamos false
+				return false;
+			}
 			// retornamos si hay mas registros
 			return this.getResultSet(trxName).next();
 		} catch (final SQLException e) {
 			// mostramos el error SQL
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos false
 			return false;
 		}
@@ -259,21 +284,24 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	public synchronized final boolean rollbackTransaction(final String trxName) {
 		try {
 			// verificamos si existe la transaccion
-			if (!this.existsTransaction(trxName))
-				// salimos con una excepcion
-				throw new SQLException("No existe la transaccion especificada");
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe la transaccion especificada");
+				// retornamos false
+				return false;
+			}
 			// anulamos la transaccion
 			this.getConnection(trxName).rollback();
 			// cerramos la conexion
 			this.dropConnection(trxName);
+			// retornamos true
+			return true;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos false
 			return false;
 		}
-		// retornamos true
-		return true;
 	}
 
 	@Override
@@ -284,21 +312,21 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 
 	@Override
 	public synchronized final String startTransaction(final String prefix) {
-		// creamos el nombre de la transaccion
-		String trxName = prefix + "_" + System.currentTimeMillis();
 		try {
+			// creamos el nombre de la transaccion
+			String trxName = prefix + "_" + System.currentTimeMillis();
 			// seteamos el nivel de transaccion
 			this.getConnection(trxName).setTransactionIsolation(java.sql.Connection.TRANSACTION_READ_COMMITTED);
 			// iniciamos una transaccion
 			this.getConnection(trxName).setAutoCommit(false);
+			// retornamos el nombre de la transaccion
+			return trxName;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos null
 			return null;
 		}
-		// retornamos el nombre de la transaccion
-		return trxName;
 	}
 
 	/**
@@ -327,16 +355,19 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	private boolean loadGeneratedKeys(final String trxName) {
 		try {
 			// verificamos si hay una conexion abierta
-			if (!this.existsTransaction(trxName))
-				// salimos con una excepcion
-				throw new SQLException("No existe una conexion abierta");
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe una conexion abierta");
+				// retornamos false
+				return false;
+			}
 			// retornamos las claves generadas
 			this.setGeneratedKeys(trxName, this.getStatement(trxName).getGeneratedKeys());
 			// retornamos true
 			return true;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos null
 			return false;
 		}
