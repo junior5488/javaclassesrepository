@@ -139,6 +139,8 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 
 	@Override
 	public final void setConnectionData(final String host, final String user, final String pass, final String ddbb) {
+		// mostramos un mensaje
+		this.getLog().fine("Almacenando datos de conexion");
 		// almacenamos los datos de conexion
 		this.setHost(host);
 		this.setUser(user);
@@ -308,6 +310,8 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 */
 	private Connection newConnection() {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Generando nueva conexion a " + this.getConnectionUrl());
 			// generamos la conexion al servidor
 			return DriverManager.getConnection(this.getConnectionUrl(), this.getUser(), this.getPass());
 		} catch (final SQLException e) {
@@ -340,25 +344,39 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 15, 2011 5:16:50 PM
-	 * @return
+	 * @return True si los datos de conexion son validos
 	 */
 	private boolean validateConnectionData() {
-		// verificamos si se espeficico el servidor
-		if (this.getHost() == null)
+		// mostramos un mensaje
+		this.getLog().fine("Validando datos de conexion");
+		// verificamos si se especifico el servidor
+		if (this.getHost() == null) {
+			// mostramos un mensaje de error
+			this.getLog().warning("No se especifico el servidor de base de datos");
 			// retornamos false
 			return false;
+		}
 		// verificamos si se espeficico el puerto
-		if (this.getPort() == null)
+		if (this.getPort() == null) {
+			// mostramos un mensaje de error
+			this.getLog().warning("No se especifico el puerto de conexion a la base de datos");
 			// retornamos false
 			return false;
+		}
 		// verificamos si hay usuario y contraseña
-		if (this.getUser() == null || this.getPass() == null)
+		if (this.getUser() == null || this.getPass() == null) {
+			// mostramos un mensaje de error
+			this.getLog().warning("No se especifico el usuario y/o contraseña para la conexion");
 			// retornamos false
 			return false;
+		}
 		// verificamos si hay una base de datos
-		if (this.getDDBB() == null)
+		if (this.getDDBB() == null) {
+			// mostramos un mensaje de error
+			this.getLog().warning("No se especifico el nombre de la base de datos");
 			// retornamos false
 			return false;
+		}
 		// retornamos true
 		return true;
 	}
@@ -375,6 +393,8 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 */
 	final boolean dropConnection(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Finalizando conexion para la transaccion '" + trxName + "'");
 			// verificamos si existe la conexion
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -383,9 +403,12 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 				return false;
 			}
 			// verificamos si esta deshabilitado el autocommit
-			if (!this.getConnection(trxName).getAutoCommit())
+			if (!this.getConnection(trxName).getAutoCommit()) {
+				// mostramos una alerta
+				this.getLog().warning("Cancelando transaccion '" + trxName + "' en curso");
 				// cancelamos la transaccion en curso
 				this.getConnection(trxName).rollback();
+			}
 			// vaciamos los avisos
 			this.getConnection(trxName).clearWarnings();
 			// cerramos la conexion
