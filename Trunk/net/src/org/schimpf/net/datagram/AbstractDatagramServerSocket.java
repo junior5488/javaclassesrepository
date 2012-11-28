@@ -37,21 +37,21 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 	 * 
 	 * @version Nov 28, 2012 5:00:13 PM
 	 */
-	private final byte[]				data		= new byte[32768];
+	private final byte[]				data			= new byte[32768];
 
 	/**
 	 * Datagrama de entrada
 	 * 
 	 * @version Nov 28, 2012 5:00:26 PM
 	 */
-	private final DatagramPacket	datagram	= new DatagramPacket(this.data, this.data.length);
+	private final DatagramPacket	datagram		= new DatagramPacket(this.data, this.data.length);
 
 	/**
 	 * Bandera para continuar la ejecucion
 	 * 
 	 * @version Nov 28, 2012 4:42:05 PM
 	 */
-	private boolean					isContinue;
+	private boolean					isContinue	= true;
 
 	/**
 	 * Instancia de log
@@ -87,7 +87,7 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 			@Override
 			public void run() {
 				// realizamos el shutdown
-				AbstractDatagramServerSocket.this.shutdownRequest();
+				AbstractDatagramServerSocket.this.interrupt();
 			}
 		}));
 	}
@@ -100,6 +100,8 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 	 * @version Nov 28, 2012 5:12:57 PM
 	 */
 	public final void close() {
+		// ejecutamos el proceso para cerrar
+		this.shutdown();
 		// modificamos la bandera
 		this.isContinue = false;
 	}
@@ -150,16 +152,6 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 		// retornamos false
 		return false;
 	}
-
-	/**
-	 * Procesos a ejecutar cuando se recibe una solicitud de apagado
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Nov 28, 2012 4:45:03 PM
-	 */
-	protected abstract void shutdownRequest();
 
 	/**
 	 * Retorna el logger
