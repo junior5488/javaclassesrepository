@@ -8,6 +8,8 @@ package org.schimpf.sql.base;
 import org.schimpf.net.utils.ConnectionData;
 import org.schimpf.sql.DBConnection;
 import org.schimpf.sql.DriverLoader;
+import org.schimpf.util.Logger;
+import org.schimpf.util.Logger.Level;
 import org.schimpf.util.exceptions.MissingConnectionDataException;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -25,6 +27,13 @@ import java.util.Map.Entry;
  * @version Apr 15, 2011 4:44:10 PM
  */
 public abstract class SQLLink extends DriverLoader implements DBConnection {
+	/**
+	 * Nivel de mensajes de log
+	 * 
+	 * @version Nov 28, 2012 11:42:56 AM
+	 */
+	public static Level								LOG_LEVEL	= Level.WARN;
+
 	/**
 	 * Conexiones a la base
 	 * 
@@ -45,6 +54,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * @version Apr 15, 2011 4:46:45 PM
 	 */
 	private String										host;
+
+	/**
+	 * Logger de procesos
+	 * 
+	 * @version Nov 28, 2012 11:41:14 AM
+	 */
+	private final Logger								log;
 
 	/**
 	 * Contraseña de conexion
@@ -76,6 +92,8 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	protected SQLLink(final Class<? extends Driver> driver) {
 		// registramos el driver
 		super(driver);
+		// generamos el logger
+		this.log = new Logger(this.getClass(), SQLLink.LOG_LEVEL);
 	}
 
 	@Override
@@ -189,6 +207,21 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	protected abstract String getDriverType();
 
 	/**
+	 * Retorna el logger de procesos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Nov 28, 2012 11:43:39 AM
+	 * @return Logger de procesos
+	 */
+	protected final Logger getLog() {
+		// actualizamos el nivel de log
+		this.log.setConsoleLevel(SQLLink.LOG_LEVEL);
+		// retornamos el logger
+		return this.log;
+	}
+
+	/**
 	 * Retorna el URL para la conexion
 	 * 
 	 * @author Hermann D. Schimpf
@@ -279,10 +312,10 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			return DriverManager.getConnection(this.getConnectionUrl(), this.getUser(), this.getPass());
 		} catch (final SQLException e) {
 			// mostramos el detalle de la exception
-			this.SQLException(e);
+			this.getLog().error(e);
+			// retornamos null
+			return null;
 		}
-		// si llegamos aqui, retornamos null
-		return null;
 	}
 
 	/**
@@ -298,7 +331,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		// verificamos si es nulo
 		if (param == null)
 			// generamos la excepcion
-			throw new NullPointerException(message);
+			throw new IllegalArgumentException(message);
 	}
 
 	/**
@@ -343,9 +376,12 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	final boolean dropConnection(final String trxName) {
 		try {
 			// verificamos si existe la conexion
-			if (!this.existsTransaction(trxName))
+			if (!this.existsTransaction(trxName)) {
+				// mostramos un mensaje de error
+				this.getLog().warning("No existe la transaccion especificada");
 				// retornamos false
 				return false;
+			}
 			// verificamos si esta deshabilitado el autocommit
 			if (!this.getConnection(trxName).getAutoCommit())
 				// cancelamos la transaccion en curso
@@ -356,14 +392,14 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			this.getConnection(trxName).close();
 			// eliminamos la conexion
 			this.connections.remove(trxName);
+			// retornamos true
+			return true;
 		} catch (final SQLException e) {
 			// mostramos el detalle de la excepcion
-			this.SQLException(e);
+			this.getLog().error(e);
 			// retornamos false
 			return false;
 		}
-		// retornamos true
-		return true;
 	}
 
 	/**
@@ -411,20 +447,5 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			this.connections.put(trxName, this.newConnection());
 		// retornamos la conexion
 		return this.connections.get(trxName);
-	}
-
-	/**
-	 * Muestra en consola el detalle de la excepcion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:44:47 PM
-	 * @param e SQL Exception
-	 */
-	final void SQLException(final SQLException e) {
-		// mostramos la descripcion del error
-		System.err.println(e.getMessage() + ", SQLState " + e.getSQLState() + ", Error " + e.getErrorCode());
-		// print the StackTrace
-		e.printStackTrace();
 	}
 }
