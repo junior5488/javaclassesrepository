@@ -1,3 +1,12 @@
+libschimpf-java (1.2.0) stable; urgency=low
+
+  * ThreadsManager: Manejamos varios listeners de threads, no solo uno
+  * ThreadsManager: Agregamos un limite maxima cantidad de threads en ejecucion
+  * FIX: Thread: Al ser interrumpido llamamos al metodo shutdown()
+  * TailFile: Iniciamos el thread en una sola linea
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Wed, 28 Nov 2012 14:20:37 -0300
+
 libschimpf-java (1.1.0) stable; urgency=low
 
   * Thread: Eliminamos el metodo Thread.log(), se debe utilizar la clase Logger
