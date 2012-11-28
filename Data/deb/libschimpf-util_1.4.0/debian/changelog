@@ -1,3 +1,13 @@
+libschimpf-util (1.4.0) stable; urgency=low
+
+  * Agregamos la clase LoggerListener para capturar eventos de log
+  * Agregamos la clase ConfigManager
+  * Logger: Agregamos los listeners para capturar los eventos de log
+  * Logger: Agregamos mas constructores
+  * Logger: Agregamos la fecha en los mensajes y ordenamos el mensaje con el nivel antes que el nombre
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Wed, 28 Nov 2012 14:57:26 -0300
+
 libschimpf-util (1.3.0) stable; urgency=low
 
   * Agregamos la clase OSIdentifier

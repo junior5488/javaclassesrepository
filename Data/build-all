@@ -7,7 +7,7 @@ DIR=`pwd`
 cd "$SAVED_DIR"
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/util/build.xml
-cd "$DIR"/Data/deb/libschimpf-util_1.3.0 && fakeroot debian/rules
+cd "$DIR"/Data/deb/libschimpf-util_1.4.0 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/awt/build.xml
 cd "$DIR"/Data/deb/libschimpf-awt_1.2.0 && fakeroot debian/rules
