@@ -32,7 +32,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * 
 	 * @version Nov 28, 2012 11:42:56 AM
 	 */
-	public static Level								LOG_LEVEL	= Level.WARN;
+	public static Level								LOG_LEVEL	= Level.SEVERE;
 
 	/**
 	 * Conexiones a la base
