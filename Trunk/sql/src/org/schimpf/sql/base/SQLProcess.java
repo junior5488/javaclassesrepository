@@ -55,6 +55,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final boolean commitTransaction(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Aprovando transaccion '" + trxName + "'");
 			// verificamos si hay una conexion abierta
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -85,7 +87,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final boolean executeQuery(final PreparedStatement query) {
 		// almacenamos la sentencia SQL
-		this.setStatement(null, query);
+		this.statement.put(null, query);
 		// ejecutamos la consulta SQL
 		return this.executeQuery((String) null);
 	}
@@ -93,7 +95,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final boolean executeQuery(final PreparedStatement query, final String trxName) {
 		// almacenamos la sentencia SQL
-		this.setStatement(trxName, query);
+		this.statement.put(trxName, query);
 		// ejecutamos la consulta SQL
 		return this.executeQuery(trxName);
 	}
@@ -101,6 +103,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final boolean executeQuery(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Ejecutando consulta SQL en la transaccion '" + trxName + "'");
 			// verificamos si hay una conexion abierta
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -109,14 +113,14 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				return false;
 			}
 			// verificamos si hay una consulta a ejecutar
-			if (this.getStatement(trxName) == null) {
+			if (this.statement.get(trxName) == null) {
 				// mostramos un mensaje de error
 				this.getLog().warning("No existe una consulta a ejecutar en la transaccion especificada");
 				// retornamos false
 				return false;
 			}
 			// ejecutamos la consulta
-			this.setResultSet(trxName, this.getStatement(trxName).executeQuery());
+			this.resultSet.put(trxName, this.statement.get(trxName).executeQuery());
 			// retornamos true
 			return true;
 		} catch (final SQLException e) {
@@ -136,7 +140,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final int executeUpdate(final PreparedStatement query) {
 		// almacenamos la sentencia SQL
-		this.setStatement(null, query);
+		this.statement.put(null, query);
 		// ejecutamos la consulta
 		return this.executeUpdate((String) null);
 	}
@@ -144,7 +148,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final int executeUpdate(final PreparedStatement query, final String trxName) {
 		// almacenamos la sentencia SQL
-		this.setStatement(trxName, query);
+		this.statement.put(trxName, query);
 		// ejecutamos la consulta SQL
 		return this.executeUpdate(trxName);
 	}
@@ -152,6 +156,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final int executeUpdate(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Ejecutando consulta SQL de actualizacion en la transaccion '" + trxName + "'");
 			// verificamos si hay una conexion abierta
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -160,14 +166,14 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				return -1;
 			}
 			// verificamos si hay una consulta a ejecutar
-			if (this.getStatement(trxName) == null) {
+			if (this.statement.get(trxName) == null) {
 				// mostramos un mensaje de error
 				this.getLog().warning("No existe una consulta a ejecutar en la transaccion especificada");
 				// retornamos negativo
 				return -1;
 			}
 			// ejecutamos el update
-			int result = this.getStatement(trxName).executeUpdate();
+			int result = this.statement.get(trxName).executeUpdate();
 			// verificamos si se actualizo
 			if (result != 0)
 				// cargamos las claves generadas/actualizadas
@@ -207,6 +213,15 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	 * @return ResultSet con las claves generadas
 	 */
 	public final ResultSet getGeneratedKeys(final String trxName) {
+		// mostramos un mensaje
+		this.getLog().fine("Retornando claves generadas en la transaccion '" + trxName + "'");
+		// verificamos si hay una conexion abierta
+		if (!this.existsTransaction(trxName)) {
+			// mostramos un mensaje de error
+			this.getLog().warning("No existe la transaccion especificada");
+			// retornamos null
+			return null;
+		}
 		// retornamos las claves generadas
 		return this.generatedKeys.get(trxName);
 	}
@@ -219,6 +234,15 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 
 	@Override
 	public final ResultSet getResultSet(final String trxName) {
+		// mostramos un mensaje
+		this.getLog().fine("Retornando resultade de la consulta en la transaccion '" + trxName + "'");
+		// verificamos si hay una conexion abierta
+		if (!this.existsTransaction(trxName)) {
+			// mostramos un mensaje de error
+			this.getLog().warning("No existe la transaccion especificada");
+			// retornamos null
+			return null;
+		}
 		// retornamos el ResultSet
 		return this.resultSet.get(trxName);
 	}
@@ -232,6 +256,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public final boolean hasNext(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Verificando si la consulta en la transaccion '" + trxName + "' posee mas filas");
 			// verificamos si existe la transaccion
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -270,12 +296,16 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 
 	@Override
 	public final PreparedStatement prepareStatement(final String query, final int autoGeneratedKeys, final String trxName) throws SQLException {
+		// mostramos un mensaje
+		this.getLog().fine("Armando consulta SQL con posibilidad de obtencion de claves generadas");
 		// retornamos la consulta
 		return this.getConnection(trxName).prepareStatement(query, autoGeneratedKeys);
 	}
 
 	@Override
 	public final PreparedStatement prepareStatement(final String query, final String trxName) throws SQLException {
+		// mostramos un mensaje
+		this.getLog().fine("Armando consulta SQL");
 		// retornamos la consulta
 		return this.getConnection(trxName).prepareStatement(query);
 	}
@@ -283,6 +313,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final boolean rollbackTransaction(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Cancelando transaccion '" + trxName + "'");
 			// verificamos si existe la transaccion
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -313,6 +345,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	@Override
 	public synchronized final String startTransaction(final String prefix) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Iniciando transaccion con el prefijo '" + prefix + "'");
 			// creamos el nombre de la transaccion
 			String trxName = prefix + "_" + System.currentTimeMillis();
 			// seteamos el nivel de transaccion
@@ -330,19 +364,6 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	/**
-	 * Retorna la Consulta SQL
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 16, 2011 12:53:36 AM
-	 * @return Consulta SQL
-	 */
-	private PreparedStatement getStatement(final String trxName) {
-		// retornamos la consulta SQL
-		return this.statement.get(trxName);
-	}
-
-	/**
 	 * Obtiene las claves generadas
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -354,6 +375,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	 */
 	private boolean loadGeneratedKeys(final String trxName) {
 		try {
+			// mostramos un mensaje
+			this.getLog().fine("Cargando claves generadas en la transaccion '" + trxName + "'");
 			// verificamos si hay una conexion abierta
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -362,7 +385,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				return false;
 			}
 			// retornamos las claves generadas
-			this.setGeneratedKeys(trxName, this.getStatement(trxName).getGeneratedKeys());
+			this.generatedKeys.put(trxName, this.statement.get(trxName).getGeneratedKeys());
 			// retornamos true
 			return true;
 		} catch (final SQLException e) {
@@ -371,47 +394,6 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// retornamos null
 			return false;
 		}
-	}
-
-	/**
-	 * Almacena las claves generadas
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 13, 2012 9:35:34 PM
-	 * @param trxName Nombre de la transaccion
-	 * @param generatedKeys Claves generadas
-	 */
-	private void setGeneratedKeys(final String trxName, final ResultSet generatedKeys) {
-		// almacenamos las claves generadas
-		this.generatedKeys.put(trxName, generatedKeys);
-	}
-
-	/**
-	 * Almacena el ResultSet
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 16, 2011 1:22:16 AM
-	 * @param rs ResultSet
-	 */
-	private void setResultSet(final String trxName, final ResultSet rs) {
-		// almacenamos el ResultSet
-		this.resultSet.put(trxName, rs);
-	}
-
-	/**
-	 * Almacena la consulta SQL
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 16, 2011 12:53:36 AM
-	 * @param Consulta SQL
-	 */
-	private void setStatement(final String trxName, final PreparedStatement statement) {
-		// almacenamos la consulta SQL
-		this.statement.put(trxName, statement);
 	}
 
 	/**
