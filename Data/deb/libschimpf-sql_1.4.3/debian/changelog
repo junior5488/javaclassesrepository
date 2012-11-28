@@ -1,3 +1,14 @@
+libschimpf-sql (1.4.3) stable; urgency=low
+
+  * FIX: AbstractPersistentObject: Primero cargamos la tabla para poder generar el logger con el nombre de la misma
+  * FIX: AbstractPersistentObject: Arreglamos el metodo para obtener la instancia de la tabla con el parametro tipeado
+  * TableWrapper: Agregamos el metodo para comparar la estructura fisica entre 2 tablas
+  * ColumnWrapper: Agregamos el metodo para obtener la presicion de la columna
+  * SQLLink: Agregamos la utilizacion de la clase Logger para el manejo de los mensajes de error y depuracion
+  * SQLProcess: Agregamos mas mensajes de depuracion
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Mon, 19 Nov 2012 09:06:31 -0300
+
 libschimpf-sql (1.4.2) stable; urgency=low
 
   * AbstractPersistentObject: Agregamos la implementacion de la interfaz Serializable
