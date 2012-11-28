@@ -233,46 +233,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 */
 	private String getConnectionUrl() {
 		// retornamos el URL de conexion
-		return this.getDriverType() + "://" + this.getHost() + ":" + this.getPort() + "/" + this.getDDBB();
-	}
-
-	/**
-	 * Retorna la base de datos para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:18:05 PM
-	 * @return Nombre de la Base de Datos
-	 */
-	private String getDDBB() {
-		// retornamos el nombre de la base de datos
-		return this.ddbb;
-	}
-
-	/**
-	 * Retorna el servidor para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:18:05 PM
-	 * @return Direccion del servidor
-	 */
-	private String getHost() {
-		// retornamos la direccion del servidor
-		return this.host;
-	}
-
-	/**
-	 * Retorna la contraseña para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:18:05 PM
-	 * @return Contraseña para la conexion
-	 */
-	private String getPass() {
-		// retornamos la contraseña
-		return this.pass;
+		return this.getDriverType() + "://" + this.host + ":" + this.getPort() + "/" + this.ddbb;
 	}
 
 	/**
@@ -289,19 +250,6 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	/**
-	 * Retorna el usuario para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:18:05 PM
-	 * @return Usuario para conexion
-	 */
-	private String getUser() {
-		// retornamos el usuario para la conexion
-		return this.user;
-	}
-
-	/**
 	 * Conecta con el servidor de bases de datos
 	 * 
 	 * @author Hermann D. Schimpf
@@ -313,7 +261,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			// mostramos un mensaje
 			this.getLog().fine("Generando nueva conexion a " + this.getConnectionUrl());
 			// generamos la conexion al servidor
-			return DriverManager.getConnection(this.getConnectionUrl(), this.getUser(), this.getPass());
+			return DriverManager.getConnection(this.getConnectionUrl(), this.user, this.pass);
 		} catch (final SQLException e) {
 			// mostramos el detalle de la exception
 			this.getLog().error(e);
@@ -350,7 +298,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		// mostramos un mensaje
 		this.getLog().fine("Validando datos de conexion");
 		// verificamos si se especifico el servidor
-		if (this.getHost() == null) {
+		if (this.host == null) {
 			// mostramos un mensaje de error
 			this.getLog().warning("No se especifico el servidor de base de datos");
 			// retornamos false
@@ -364,14 +312,14 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			return false;
 		}
 		// verificamos si hay usuario y contraseña
-		if (this.getUser() == null || this.getPass() == null) {
+		if (this.user == null || this.pass == null) {
 			// mostramos un mensaje de error
 			this.getLog().warning("No se especifico el usuario y/o contraseña para la conexion");
 			// retornamos false
 			return false;
 		}
 		// verificamos si hay una base de datos
-		if (this.getDDBB() == null) {
+		if (this.ddbb == null) {
 			// mostramos un mensaje de error
 			this.getLog().warning("No se especifico el nombre de la base de datos");
 			// retornamos false
