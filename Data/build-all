@@ -16,7 +16,7 @@ ant -Dbasedir="$DIR" -f "$DIR"/Trunk/java/build.xml
 cd "$DIR"/Data/deb/libschimpf-java_1.2.0 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/net/build.xml
-cd "$DIR"/Data/deb/libschimpf-net_1.1.1 && fakeroot debian/rules
+cd "$DIR"/Data/deb/libschimpf-net_1.2.0 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sql/build.xml
 cd "$DIR"/Data/deb/libschimpf-sql_1.4.2 && fakeroot debian/rules

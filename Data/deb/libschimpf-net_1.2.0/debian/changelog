@@ -1,3 +1,12 @@
+libschimpf-net (1.2.0) stable; urgency=low
+
+  * FIX: Sockets: Solucionamos el inconveniente con los comandos internos
+  * Sockets: Tipeamos el tipo de socket y el tipo de Stage
+  * Sockets: Ocultamos los metodos internos del paquete
+  * AbstractServerMultiSocket: Agregamos el metodo para obtener las conexiones activas
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Wed, 28 Nov 2012 14:27:25 -0300
+
 libschimpf-net (1.1.1) stable; urgency=low
 
   * No utilizamos la API Sun
