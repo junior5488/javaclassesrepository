@@ -280,12 +280,6 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 		return this.table;
 	}
 
-	@Override
-	public int hashCode() {
-		// enviamos el padre
-		return super.hashCode();
-	}
-
 	/**
 	 * Retorna si la columna es auto incrementable
 	 * 
