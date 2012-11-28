@@ -119,6 +119,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				// retornamos false
 				return false;
 			}
+			// mostramos la consulta a ejecutar
+			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + " '" + this.statement.get(trxName).toString().substring(this.statement.get(trxName).toString().indexOf(":") + 2) + "'");
 			// ejecutamos la consulta
 			this.resultSet.put(trxName, this.statement.get(trxName).executeQuery());
 			// retornamos true
@@ -172,6 +174,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				// retornamos negativo
 				return -1;
 			}
+			// mostramos la consulta a ejecutar
+			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + " '" + this.statement.get(trxName).toString().substring(this.statement.get(trxName).toString().indexOf(":") + 2) + "'");
 			// ejecutamos el update
 			int result = this.statement.get(trxName).executeUpdate();
 			// verificamos si se actualizo
