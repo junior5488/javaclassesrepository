@@ -100,45 +100,45 @@ public final class ThreadsManager<TType extends Thread> {
 			// recorremos los listeners
 			for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
 				// ejecutamos el proceso de thread iniciado
-				listener.threadStarted(this.getThread());
+				listener.threadStarted(this.thread);
 			// obtenemos el estado actual del thread
-			State oldState = this.getThread().getState();
+			State oldState = this.thread.getState();
 			// ingresamos a un bucle
 			do {
 				// monitoreamos un cambio de estado
-				while (oldState.equals(this.getThread().getState()))
+				while (oldState.equals(this.thread.getState()))
 					try {
 						// esperamos 100ms
 						java.lang.Thread.sleep(100);
 					} catch (final InterruptedException e) {}
 				// obtenemos el estado actual del thread
-				oldState = this.getThread().getState();
+				oldState = this.thread.getState();
 				// verificamos si el thread fue interrumpido
-				if (this.getThread().isInterrupted())
+				if (this.thread.isInterrupted())
 					// recorremos los listeners
 					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
 						// ejecutamos el proceso al interrumpir el thread
-						listener.threadInterrupted(this.getThread());
+						listener.threadInterrupted(this.thread);
 				// verificamos si continua ejecutandose
 				else if (oldState.equals(State.RUNNABLE))
 					// recorremos los listeners
 					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
 						// ejecutamos el proceso al continuar el thread
-						listener.threadResumed(this.getThread());
+						listener.threadResumed(this.thread);
 				// verificamos si es estado es en espera
 				else if (oldState.equals(State.WAITING) || oldState.equals(State.TIMED_WAITING))
 					// recorremos los listeners
 					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
 						// ejecutamos el proceso al pausar el thread
-						listener.threadPaused(this.getThread());
+						listener.threadPaused(this.thread);
 				// verificamos si finalizo
 				else if (oldState.equals(State.TERMINATED)) {
 					// eliminamos el thread de la lista
-					ThreadsManager.this.getThreads().remove(this.getThread());
+					ThreadsManager.this.getThreads().remove(this.thread);
 					// recorremos los listeners
 					for (ThreadsListener<TType> listener: ThreadsManager.this.getListeners())
 						// ejecutamos el proceso al finalizar el thread
-						listener.threadFinished(this.getThread());
+						listener.threadFinished(this.thread);
 				}
 			} while (!oldState.equals(State.TERMINATED));
 			// verificamos si ya no hay mas threasd
@@ -150,19 +150,6 @@ public final class ThreadsManager<TType extends Thread> {
 		}
 
 		/**
-		 * Retorna el thread a monitorear
-		 * 
-		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-		 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-		 * @version Aug 10, 2011 9:37:15 AM
-		 * @return Thread a monitorear
-		 */
-		private TType getThread() {
-			// retornamos el thread
-			return this.thread;
-		}
-
-		/**
 		 * Espera a que el thread inicie
 		 * 
 		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -171,7 +158,7 @@ public final class ThreadsManager<TType extends Thread> {
 		 */
 		private void waitForStart() {
 			// recorremos mientras el thread es nuevo
-			while (this.getThread().getState().equals(Thread.State.NEW) && !this.getThread().isAlive())
+			while (this.thread.getState().equals(Thread.State.NEW) && !this.thread.isAlive())
 				try {
 					// esperamos que el thread inicie
 					java.lang.Thread.sleep(100);
@@ -403,7 +390,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 */
 	protected synchronized void allThreadsFinished() {
 		// verificamos si la bandera esta off
-		if (!this.isAllFinished()) {
+		if (!this.allFinished) {
 			// modificamos la bandera
 			this.allFinished = true;
 			// recorremos los listeners
@@ -456,19 +443,5 @@ public final class ThreadsManager<TType extends Thread> {
 				return true;
 		// retornamos false
 		return false;
-	}
-
-	/**
-	 * Retorna la bandera de finalizacion completa
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Sep 14, 2011 3:29:49 PM
-	 * @return Bandera de finalizacion
-	 */
-	private boolean isAllFinished() {
-		// retornamos la bandera
-		return this.allFinished;
 	}
 }
