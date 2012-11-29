@@ -18,6 +18,7 @@
 package org.schimpf.java.threads;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Administrador de Threads
@@ -335,7 +336,9 @@ public final class ThreadsManager<TType extends Thread> {
 			// lista con los threads finalizados
 			final ArrayList<TType> terminatedThreads = new ArrayList<TType>();
 			// recorremos los threads
-			for (final TType thread: this.getThreads()) {
+			for (final Iterator<TType> threadsIterator = this.getThreads().iterator(); threadsIterator.hasNext();) {
+				// obtenemos el thread
+				TType thread = threadsIterator.next();
 				// verificamos si esta ejecutandose
 				if (thread.isRunning())
 					// verificamos si matamos el thread
