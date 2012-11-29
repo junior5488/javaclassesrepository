@@ -87,7 +87,7 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 			@Override
 			public void run() {
 				// realizamos el shutdown
-				AbstractDatagramServerSocket.this.interrupt();
+				AbstractDatagramServerSocket.this.close();
 			}
 		}));
 	}
@@ -100,8 +100,10 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 	 * @version Nov 28, 2012 5:12:57 PM
 	 */
 	public final void close() {
-		// ejecutamos el proceso para cerrar
-		this.shutdown();
+		// matamos el proceso
+		this.interrupt();
+		// cerramos el socket
+		this.socket.close();
 		// modificamos la bandera
 		this.isContinue = false;
 	}
@@ -143,10 +145,7 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 				this.socket.receive(this.datagram);
 				// procesamos el datagrama
 				this.datagramReceived(this.datagram);
-			} catch (IOException e) {
-				// mostramos el mensaje de error
-				this.getLogger().error(e);
-			}
+			} catch (IOException ignored) {}
 		// cerramos el socket
 		this.socket.close();
 		// retornamos false
