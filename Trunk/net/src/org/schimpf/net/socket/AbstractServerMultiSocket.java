@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Socket de conexion servidor
@@ -192,9 +193,12 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	@Override
 	protected final void shutdownRequest() {
 		// recorremos las conexiones existentes
-		for (final CType connection: this.getOpenConnections())
+		for (final Iterator<CType> connections = this.getOpenConnections().iterator(); this.getOpenConnections().iterator().hasNext();) {
 			// finalizamos la conexion
-			connection.shutdownRequest();
+			connections.next().shutdownRequest();
+			// eliminamos la conexion
+			connections.remove();
+		}
 	}
 
 	/**
