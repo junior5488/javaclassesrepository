@@ -77,6 +77,8 @@ public abstract class Thread extends java.lang.Thread {
 				// esperamos 100 (cien) milisegundos
 				java.lang.Thread.sleep(100);
 			}
+			// finalizamos la ejecucion normal
+			this.halt(false);
 		} catch (final InterruptedException e) {
 			// modificamos la bandera
 			this.interrupted = true;
