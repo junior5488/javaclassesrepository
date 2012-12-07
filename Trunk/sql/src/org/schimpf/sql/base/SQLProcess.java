@@ -54,6 +54,12 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 
 	@Override
 	public synchronized final boolean commitTransaction(final String trxName) {
+		// aprovamos la transaccion
+		return this.commitTransaction(trxName, false);
+	}
+
+	@Override
+	public synchronized final boolean commitTransaction(final String trxName, final boolean closeConnection) {
 		try {
 			// mostramos un mensaje
 			this.getLog().fine("Aprovando transaccion '" + trxName + "'");
@@ -66,8 +72,10 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			}
 			// aprovamos la transaccion
 			this.getConnection(trxName).commit();
-			// cerramos la conexion
-			this.dropConnection(trxName);
+			// verificamos si cerramos la conexion
+			if (closeConnection)
+				// cerramos la conexion
+				this.dropConnection(trxName);
 			// retornamos true
 			return true;
 		} catch (final SQLException e) {

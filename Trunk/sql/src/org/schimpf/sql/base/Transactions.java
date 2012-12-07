@@ -40,6 +40,19 @@ public interface Transactions {
 	public boolean commitTransaction(final String trxName);
 
 	/**
+	 * Finaliza la transaccion
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
+	 * @author <B>Schimpf.NET</B>
+	 * @version Aug 1, 2012 3:08:12 PM
+	 * @param trxName Nombre de la transaccion
+	 * @param closeConnection True para finalizar la conexion
+	 * @return True si se pudo finalizar la transaccion
+	 */
+	public boolean commitTransaction(final String trxName, final boolean closeConnection);
+
+	/**
 	 * Cancela la transaccion en curso
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
