@@ -52,6 +52,12 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 		this.sqlConnector = connector;
 	}
 
+	@Override
+	protected final void finalize() throws Throwable {
+		// cerramos la conexion
+		this.getSQLConnector().close();
+	}
+
 	/**
 	 * Retorna los metadatos de la base
 	 * 
