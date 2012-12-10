@@ -50,7 +50,7 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 		// creamos una lista para las columnas
 		final ArrayList<PGColumn> columns = new ArrayList<PGColumn>();
 		// ejecutamos el SQL para obtener la lista de las columnas
-		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT attname AS column_name FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax')"));
+		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT attname AS column_name FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax') AND attisdropped = False"));
 		// posicion de la columna
 		Integer colPos = 1;
 		// recorremos las columnas
