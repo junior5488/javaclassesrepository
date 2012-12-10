@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -97,6 +98,26 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
+	public final boolean close() {
+		// obtenemos las conexiones
+		Iterator<Entry<String, Connection>> connections = this.connections.entrySet().iterator();
+		// creamos una lista de conexiones
+		ArrayList<String> connNames = new ArrayList<String>();
+		// recorremos todas las conexiones
+		while (connections.hasNext())
+			// agregamos el nombre de la conexion a la lista
+			connNames.add(connections.next().getKey());
+		// recorremos las conexiones
+		for (String conn: connNames)
+			// eliminamos la conexion
+			if (!this.dropConnection(conn))
+				// retornamos false
+				return false;
+		// retornamos true
+		return true;
+	}
+
+	@Override
 	public final boolean connect() throws MissingConnectionDataException {
 		// verificamos si estan todos los datos de conexion
 		if (!this.validateConnectionData())
@@ -110,18 +131,32 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		return true;
 	}
 
-	@Override
+	/**
+	 * Cierra la conexion a la base de datos
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Dec 10, 2012 3:10:21 PM
+	 * @return True si se pudo desconectar
+	 * @deprecated Use close() instead
+	 */
+	@Deprecated
 	public final boolean disconnect() {
-		// obtenemos las conexiones
-		Iterator<Entry<String, Connection>> connections = this.connections.entrySet().iterator();
-		// recorremos todas las conexiones
-		while (connections.hasNext())
-			// eliminamos la conexion
-			if (!this.dropConnection(connections.next().getKey()))
-				// retornamos false
-				return false;
-		// retornamos true
-		return true;
+		// cerramos la conexion
+		return this.close();
+	}
+
+	/**
+	 * Retorna si el link esta conectado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Dec 10, 2012 2:38:54 PM
+	 * @return True si hay conexion a la base de datos
+	 */
+	public final boolean isConnected() {
+		// retornamos si existen conexiones
+		return this.connections.size() > 0;
 	}
 
 	@Override
