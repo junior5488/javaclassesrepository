@@ -666,23 +666,6 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	}
 
 	/**
-	 * Elimina el PO de la base de datos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 13, 2012 10:15:04 PM
-	 * @param trxName Nombre de la transaccion
-	 * @return True si se pudo eliminar
-	 */
-	public final boolean delete(final String trxName) {
-		// almacenamos el nombre de la transaccion
-		this.trxName = trxName;
-		// eliminamos el PO
-		return this.delete();
-	}
-
-	/**
 	 * Retorna el nombre de la transaccion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -755,23 +738,6 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 		}
 	}
 
-	/**
-	 * Guarda el objeto persistente
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>SCHIMPF</B> - <FONT style="font-style:italic;">Sistemas de Informaci&oacute;n y Gesti&oacute;n</FONT>
-	 * @author <B>Schimpf.NET</B>
-	 * @version Oct 13, 2012 10:13:30 PM
-	 * @param trxName Nombre de la transaccion
-	 * @return True si se guardo sin problemas
-	 */
-	public final boolean save(final String trxName) {
-		// almacenamos el nombre de la transaccion
-		this.trxName = trxName;
-		// guardamos el PO
-		return this.save();
-	}
-
 	@Override
 	public String toString() {
 		// retornamos la definicion del objeto
@@ -831,6 +797,12 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	protected boolean beforeSave() {
 		// por defecto sin validaciones
 		return true;
+	}
+
+	@Override
+	protected final void finalize() throws Throwable {
+		// cerramos la conexion de la transaccion
+		this.getSQLConnector().rollbackTransaction(this.getTrxName());
 	}
 
 	/**
