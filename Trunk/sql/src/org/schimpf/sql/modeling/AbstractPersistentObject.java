@@ -1139,7 +1139,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 			// obtenemos el campo
 			final Entry<CType, Object> value = columns.next();
 			// verificamos si la columna cambio de valor
-			if (!this.valuesOld.get(value.getKey()).equals(this.valuesNew.get(value.getKey())))
+			if (this.valuesOld.get(value.getKey()) != null && !this.valuesOld.get(value.getKey()).equals(this.valuesNew.get(value.getKey())))
 				// retornamos false
 				return false;
 		}
