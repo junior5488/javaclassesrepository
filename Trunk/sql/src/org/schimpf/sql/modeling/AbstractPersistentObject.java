@@ -1225,8 +1225,10 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 		for (final CType column: this.getTable().getPrimaryKeys())
 			// almacenamos la PK con valor null
 			this.getPrimaryKeys().put(column, null);
-		// mostramos un log
-		this.log.debug("PKs columns are: " + this.getPrimaryKeys());
+		// verificamos si esta habilitado
+		if (AbstractPersistentObject.DEBUG_LEVEL == Level.DEBUG || AbstractPersistentObject.DEBUG_LEVEL == Level.ALL)
+			// mostramos un log
+			this.log.debug("PKs columns are: " + this.getPrimaryKeys());
 	}
 
 	/**
