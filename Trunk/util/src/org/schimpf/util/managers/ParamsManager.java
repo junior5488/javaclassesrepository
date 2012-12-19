@@ -36,7 +36,7 @@ public abstract class ParamsManager {
 	 * 
 	 * @version Apr 26, 2012 5:20:39 PM
 	 */
-	private static final HashMap<String, Object>	params	= new HashMap<String, Object>();
+	private static final HashMap<String, Object>	params	= new HashMap<>();
 
 	/**
 	 * Carga la lista de parametros pasados al programa

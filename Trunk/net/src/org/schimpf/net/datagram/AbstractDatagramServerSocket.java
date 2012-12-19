@@ -145,7 +145,7 @@ public abstract class AbstractDatagramServerSocket extends Thread {
 				this.socket.receive(this.datagram);
 				// procesamos el datagrama
 				this.datagramReceived(this.datagram);
-			} catch (IOException ignored) {}
+			} catch (final IOException ignored) {}
 		// cerramos el socket
 		this.socket.close();
 		// retornamos false

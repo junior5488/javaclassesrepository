@@ -48,7 +48,7 @@ public final class MySQLDataBase extends DataBaseWrapper<MySQLProcess, MySQLDBMS
 	@Override
 	protected ArrayList<MySQLSchema> retrieveSchemas(final String dataBaseName) throws SQLException {
 		// armamos una lista
-		final ArrayList<MySQLSchema> schemas = new ArrayList<MySQLSchema>();
+		final ArrayList<MySQLSchema> schemas = new ArrayList<>();
 		// agregamos el esquema a la lista
 		schemas.add(new MySQLSchema(this, this.getDataBaseName()));
 		// retornamos las bases de datos

@@ -40,7 +40,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	 * 
 	 * @version Oct 13, 2012 7:47:34 PM
 	 */
-	private final HashMap<String, Connection>	connections	= new HashMap<String, Connection>();
+	private final HashMap<String, Connection>	connections	= new HashMap<>();
 
 	/**
 	 * Nombre de la base de datos
@@ -100,15 +100,15 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	@Override
 	public final boolean close() {
 		// obtenemos las conexiones
-		Iterator<Entry<String, Connection>> connections = this.connections.entrySet().iterator();
+		final Iterator<Entry<String, Connection>> connections = this.connections.entrySet().iterator();
 		// creamos una lista de conexiones
-		ArrayList<String> connNames = new ArrayList<String>();
+		final ArrayList<String> connNames = new ArrayList<>();
 		// recorremos todas las conexiones
 		while (connections.hasNext())
 			// agregamos el nombre de la conexion a la lista
 			connNames.add(connections.next().getKey());
 		// recorremos las conexiones
-		for (String conn: connNames)
+		for (final String conn: connNames)
 			// eliminamos la conexion
 			if (!this.dropConnection(conn))
 				// retornamos false
@@ -165,6 +165,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		this.setConnectionData(data.getHostname().getHostName(), data.getPort(), data.getUsername(), data.getPassword(), ddbb);
 	}
 
+	@Override
 	public void setConnectionData(final String host, final Integer port, final String user, final String pass, final String ddbb) {
 		// almacenamos los datos de conexion
 		this.setConnectionData(host, user, pass, ddbb);

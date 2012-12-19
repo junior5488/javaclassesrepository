@@ -41,7 +41,7 @@ public final class Logger {
 	 * 
 	 * @version Nov 20, 2012 10:05:05 AM
 	 */
-	private static final ArrayList<LoggerListener>	listeners		= new ArrayList<LoggerListener>();
+	private static final ArrayList<LoggerListener>	listeners		= new ArrayList<>();
 
 	/**
 	 * Clase desde la que se inicia el logger
@@ -373,19 +373,19 @@ public final class Logger {
 	 */
 	public Logger(final String name, final String logFile) {
 		// generamos una ruta
-		Throwable caller = new Throwable();
+		final Throwable caller = new Throwable();
 		// clase temporal
 		Class<?> tempClass = null;
 		// recorremos la ruta
-		for (StackTraceElement trace: caller.getStackTrace())
+		for (final StackTraceElement trace: caller.getStackTrace())
 			try {
 				// obtenemos el nombre de la clase
-				Class<?> callerClass = Class.forName(trace.getClassName());
+				final Class<?> callerClass = Class.forName(trace.getClassName());
 				// verificamos si no es la clase Logger
 				if (!callerClass.equals(this.getClass()))
 					// almacenamos la clase
 					tempClass = callerClass;
-			} catch (ClassNotFoundException ignored) {}
+			} catch (final ClassNotFoundException ignored) {}
 		// almacenamos la clase
 		this.clazz = tempClass;
 		// almacenamos la clase
@@ -666,13 +666,13 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el inicio del mensaje
-		String logStart = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " ";
+		final String logStart = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " ";
 		// iniciamos el mensaje
 		final StringBuffer log = new StringBuffer(logStart);
 		// agregamos el mensaje de la excepcion
 		log.append(exception.getMessage() != null ? exception.getMessage() : exception.getClass().getName() + ":");
 		// recorremos los pasos
-		for (StackTraceElement stackTrace: exception.getStackTrace())
+		for (final StackTraceElement stackTrace: exception.getStackTrace())
 			// agregamos el elemento
 			log.append("\n" + logStart + "\t" + stackTrace.getClassName() + "." + stackTrace.getMethodName() + "(" + stackTrace.getFileName() + ":" + stackTrace.getLineNumber() + ")");
 		// verificamos si mostramos en consola
@@ -689,7 +689,7 @@ public final class Logger {
 			// escribimos la linea en el fichero
 			this.writeToFile(log.toString());
 		// recorremos los listeners
-		for (LoggerListener listener: Logger.listeners)
+		for (final LoggerListener listener: Logger.listeners)
 			// enviamos el mensaje
 			listener.log(this, log.toString(), level, true);
 	}
@@ -725,7 +725,7 @@ public final class Logger {
 			// escribimos la linea en el fichero
 			this.writeToFile(log);
 		// recorremos los listeners
-		for (LoggerListener listener: Logger.listeners)
+		for (final LoggerListener listener: Logger.listeners)
 			// enviamos el mensaje
 			listener.log(this, log.toString(), level, false);
 	}

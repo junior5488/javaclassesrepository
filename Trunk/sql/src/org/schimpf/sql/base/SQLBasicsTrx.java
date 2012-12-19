@@ -31,7 +31,6 @@ import java.sql.SQLException;
  * @version Oct 13, 2012 9:33:23 PM
  */
 public interface SQLBasicsTrx {
-
 	/**
 	 * Ejecuta una consulta SQL en una transaccion
 	 * 

@@ -58,7 +58,7 @@ public abstract class ConfigManager {
 			try {
 				// cargamos las configuraciones
 				this.configs.load(new FileInputStream(this.configFile));
-			} catch (Exception ignored) {}
+			} catch (final Exception ignored) {}
 	}
 
 	/**

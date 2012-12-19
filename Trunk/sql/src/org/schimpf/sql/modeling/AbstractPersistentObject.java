@@ -71,16 +71,16 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	 * 
 	 * @version Oct 14, 2012 12:40:45 AM
 	 */
-	@SuppressWarnings("unchecked")
-	private static final HashMap<Class<?>, TableWrapper>						cachedTables		= new HashMap<Class<?>, TableWrapper>();
+	@SuppressWarnings("rawtypes")
+	private static final HashMap<Class<?>, TableWrapper>						cachedTables		= new HashMap<>();
 
 	/**
 	 * Lista de PO's referenciados
 	 * 
 	 * @version Oct 10, 2012 6:35:44 PM
 	 */
-	@SuppressWarnings("unchecked")
-	private static final MultiKeyMap<Object, AbstractPersistentObject>	referencedPOs		= new MultiKeyMap<Object, AbstractPersistentObject>();
+	@SuppressWarnings("rawtypes")
+	private static final MultiKeyMap<Object, AbstractPersistentObject>	referencedPOs		= new MultiKeyMap<>();
 
 	/**
 	 * Version de la clase
@@ -129,7 +129,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	 * 
 	 * @version Jul 31, 2012 11:56:57 AM
 	 */
-	private final HashMap<CType, PKType>											primaryKeys			= new HashMap<CType, PKType>();
+	private final HashMap<CType, PKType>											primaryKeys			= new HashMap<>();
 
 	/**
 	 * Nombre de la transaccion del PO
@@ -143,14 +143,14 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	 * 
 	 * @version Jul 31, 2012 12:00:21 PM
 	 */
-	private final HashMap<CType, Object>											valuesNew			= new HashMap<CType, Object>();
+	private final HashMap<CType, Object>											valuesNew			= new HashMap<>();
 
 	/**
 	 * Columnas y sus valores originales
 	 * 
 	 * @version Jul 31, 2012 3:34:39 PM
 	 */
-	private final HashMap<CType, Object>											valuesOld			= new HashMap<CType, Object>();
+	private final HashMap<CType, Object>											valuesOld			= new HashMap<>();
 
 	/**
 	 * Constructor del PO
@@ -184,6 +184,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	 * @param identifier Identificador del registro
 	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
+	@SafeVarargs
 	protected AbstractPersistentObject(final PKType... identifier) throws Exception {
 		// almacenamos la tabla
 		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
@@ -227,6 +228,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	 * @param identifier Identificador del registro
 	 * @throws Exception Si no se pudo conectar a la base de datos
 	 */
+	@SafeVarargs
 	protected AbstractPersistentObject(final String trxName, final PKType... identifier) throws Exception {
 		// ejecutamos el constructor
 		this(identifier);
@@ -322,7 +324,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 		// mostramos un log
 		AbstractPersistentObject.getSLogger().info("Obtaining Persistent Objects from DB");
 		// armamos una lista para los PO's
-		final ArrayList<RType> list = new ArrayList<RType>();
+		final ArrayList<RType> list = new ArrayList<>();
 		// verificamos si tenemos el conector iniciado
 		if (AbstractPersistentObject.sqlConnector == null)
 			// retornamos la lista vacia
@@ -332,7 +334,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 			final TType table = AbstractPersistentObject.getTableOf(clazz);
 			try {
 				// creamos una lista de las PKs
-				final ArrayList<String> pks = new ArrayList<String>();
+				final ArrayList<String> pks = new ArrayList<>();
 				// columnas para el select
 				final StringBuffer selectPKs = new StringBuffer();
 				// recorremos las PKs
@@ -413,7 +415,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 		try {
 			try {
 				// creamos el identificador
-				final ArrayList<PKType> identifierLocalPO = new ArrayList<PKType>();
+				final ArrayList<PKType> identifierLocalPO = new ArrayList<>();
 				// recorremos las PKs
 				for (final CType pkColumn: localPO.getTable().getPrimaryKeys())
 					// seteamos el ID de la columna
@@ -1022,7 +1024,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 		// recorremos las PKs
 		for (final CType pkColumn: this.getPrimaryKeys().keySet())
 			// agregamos la PK al filtro
-			pksFilter.append((pksFilter.toString().length() > 0 ? (toString ? "; " : " AND ") : "") + pkColumn.getColumnName() + (toString ? ":" : " = ") + this.castValue(this.getPrimaryKeys().get(this.getColumn(pkColumn.getColumnName()))));
+			pksFilter.append((pksFilter.toString().length() > 0 ? toString ? "; " : " AND " : "") + pkColumn.getColumnName() + (toString ? ":" : " = ") + this.castValue(this.getPrimaryKeys().get(this.getColumn(pkColumn.getColumnName()))));
 		// retornamos el filtro con las PKs
 		return pksFilter.toString();
 	}
@@ -1051,9 +1053,10 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 	 * @return HashMap con las claves primarias
 	 * @throws SQLException Si no se pueden obtener las columnas PK
 	 */
+	@SuppressWarnings("unchecked")
 	private HashMap<String, PKType> getPrimaryKeys(final PKType... PrimaryKeys) throws SQLException {
 		// creamos el hashpmap
-		final HashMap<String, PKType> pks = new HashMap<String, PKType>();
+		final HashMap<String, PKType> pks = new HashMap<>();
 		// verificamos si tiene valor
 		if (PrimaryKeys == null)
 			// salimos con un error

@@ -22,8 +22,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Implementacion de HashMap con claves multiples
@@ -48,7 +48,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * 
 	 * @version May 8, 2012 7:34:24 AM
 	 */
-	private final HashMap<ArrayList<KType>, VType>	values				= new HashMap<ArrayList<KType>, VType>();
+	private final HashMap<ArrayList<KType>, VType>	values				= new HashMap<>();
 
 	/**
 	 * Vacia el mapa de claves-valor
@@ -73,6 +73,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param key Clave a veificar
 	 * @return True si existe la clave
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean containsKey(final KType... key) {
 		// retornamos si existe la clave
 		return this.getValue(key) != null;
@@ -117,6 +118,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param key Clave
 	 * @return Valor asociado a la clave
 	 */
+	@SuppressWarnings("unchecked")
 	public VType get(final KType... key) {
 		// retornamos el valor asociado a la clave
 		return this.getValue(key);
@@ -161,6 +163,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param value Valor a asociar con la clave
 	 * @return Valor anterior si la clave ya contenia asociacion o null si es una clave nueva
 	 */
+	@SuppressWarnings("unchecked")
 	public VType put(final VType value, final KType... keys) {
 		// obtenemos el valor de la clave
 		final VType oldValue = this.getValue(keys);
@@ -180,6 +183,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param keys Claves
 	 * @return Valor de la clave asociada o null si no existe el mapa
 	 */
+	@SuppressWarnings("unchecked")
 	public VType remove(final KType... keys) {
 		// eliminamos la clave
 		return this.getValues().remove(this.getKey(keys));
@@ -223,9 +227,10 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param keys Array de Claves
 	 * @return Lista de Claves
 	 */
+	@SuppressWarnings("unchecked")
 	private ArrayList<KType> getKey(final KType... keys) {
 		// armamos una lista
-		final ArrayList<KType> result = new ArrayList<KType>();
+		final ArrayList<KType> result = new ArrayList<>();
 		// recorremos las claves
 		for (final KType k: keys)
 			// agregamos la clave a la lista
@@ -259,6 +264,7 @@ public final class MultiKeyMap<KType, VType> implements Serializable {
 	 * @param keys Claves
 	 * @return Valor de la clave
 	 */
+	@SuppressWarnings("unchecked")
 	private VType getValue(final KType... keys) {
 		// retornamos el valor de la clave
 		return this.getValue(this.getKey(keys));

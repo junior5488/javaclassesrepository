@@ -42,7 +42,7 @@ public abstract class DBMSWrapper<SQLConnector extends SQLProcess, MType extends
 	 * 
 	 * @version May 1, 2012 9:26:57 PM
 	 */
-	private final TreeMap<String, DType>	databases	= new TreeMap<String, DType>();
+	private final TreeMap<String, DType>	databases	= new TreeMap<>();
 
 	/**
 	 * Nombre del sistema de bases de datos

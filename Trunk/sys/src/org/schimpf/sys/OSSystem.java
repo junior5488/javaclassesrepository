@@ -95,15 +95,15 @@ public final class OSSystem {
 		OSSystem.systemID += RootCommand.runSudoCommand(OSSystem.rootPasswd, "dmidecode -s system-uuid");
 		try {
 			// obtenemos las tarjetas de red
-			Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+			final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
 			// recorremos las tarjetas de red
 			while (ifaces.hasMoreElements()) {
 				// obtenemos la interfaz
-				NetworkInterface iface = ifaces.nextElement();
+				final NetworkInterface iface = ifaces.nextElement();
 				// agregamos el nombre de la interfaz
 				OSSystem.systemID += iface.getName();
 				// obtenemos el mac
-				byte[] mac = iface.getHardwareAddress();
+				final byte[] mac = iface.getHardwareAddress();
 				// verificamos si hay mac (puede ser lo)
 				if (mac != null)
 					// recorremos el mac
@@ -111,7 +111,7 @@ public final class OSSystem {
 						// agregamos el componente del mac
 						OSSystem.systemID += String.format("%02X%s", mac[i], i < mac.length - 1 ? ":" : "");
 			}
-		} catch (SocketException ignored) {}
+		} catch (final SocketException ignored) {}
 		// ciframos los datos
 		OSSystem.systemID = Base64Crypter.getInstance(System.getProperty("os.name")).encrypt(OSSystem.systemID).toUpperCase().trim();
 		// eliminamos caracteres no utilizados

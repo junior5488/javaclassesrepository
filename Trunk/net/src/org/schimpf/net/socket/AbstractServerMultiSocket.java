@@ -48,7 +48,7 @@ public abstract class AbstractServerMultiSocket<SType extends AbstractServerMult
 	 * 
 	 * @version Jul 19, 2012 1:23:07 PM
 	 */
-	private final ArrayList<CType>	openConnections	= new ArrayList<CType>();
+	private final ArrayList<CType>	openConnections	= new ArrayList<>();
 
 	/**
 	 * Socket principal de conexion

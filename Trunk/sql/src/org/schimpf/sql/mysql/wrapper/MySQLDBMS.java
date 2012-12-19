@@ -49,9 +49,9 @@ public final class MySQLDBMS extends DBMSWrapper<MySQLProcess, MySQLDBMS, MySQLD
 	@Override
 	protected ArrayList<MySQLDataBase> retrieveDataBases(final String dbmsName) throws SQLException {
 		// armamos una lista
-		final ArrayList<MySQLDataBase> databases = new ArrayList<MySQLDataBase>();
+		final ArrayList<MySQLDataBase> databases = new ArrayList<>();
 		// obtenemos el ResultSet con las bases de datos
-		ResultSet dbs = this.getMetadata().getCatalogs();
+		final ResultSet dbs = this.getMetadata().getCatalogs();
 		// recorremos las bases de datos
 		while (dbs.next())
 			// verificamos que no sea tabla interna de mysql

@@ -99,7 +99,7 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 	 */
 	protected final <AType> ArrayList<AType> toArrayList(final Map<String, AType> hashMap) {
 		// creamos un arrayList
-		final ArrayList<AType> arrayList = new ArrayList<AType>();
+		final ArrayList<AType> arrayList = new ArrayList<>();
 		// recorremos los valores
 		for (final AType value: hashMap.values())
 			// agregamos el valor al arrayList

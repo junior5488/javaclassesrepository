@@ -25,21 +25,21 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	 * 
 	 * @version Oct 13, 2012 9:36:12 PM
 	 */
-	private final HashMap<String, ResultSet>				generatedKeys	= new HashMap<String, ResultSet>();
+	private final HashMap<String, ResultSet>				generatedKeys	= new HashMap<>();
 
 	/**
 	 * ResultSet resultante de la consulta
 	 * 
 	 * @version Apr 16, 2011 1:21:59 AM
 	 */
-	private final HashMap<String, ResultSet>				resultSet		= new HashMap<String, ResultSet>();
+	private final HashMap<String, ResultSet>				resultSet		= new HashMap<>();
 
 	/**
 	 * Consulta SQL para ejecutar
 	 * 
 	 * @version Apr 16, 2011 12:53:03 AM
 	 */
-	private final HashMap<String, PreparedStatement>	statement		= new HashMap<String, PreparedStatement>();
+	private final HashMap<String, PreparedStatement>	statement		= new HashMap<>();
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -185,7 +185,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// mostramos la consulta a ejecutar
 			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + " '" + this.statement.get(trxName).toString().substring(this.statement.get(trxName).toString().indexOf(":") + 2) + "'");
 			// ejecutamos el update
-			int result = this.statement.get(trxName).executeUpdate();
+			final int result = this.statement.get(trxName).executeUpdate();
 			// verificamos si se actualizo
 			if (result != 0)
 				// cargamos las claves generadas/actualizadas
@@ -360,7 +360,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// mostramos un mensaje
 			this.getLog().fine("Iniciando transaccion con el prefijo '" + prefix + "'");
 			// creamos el nombre de la transaccion
-			String trxName = prefix + "_" + System.currentTimeMillis();
+			final String trxName = prefix + "_" + System.currentTimeMillis();
 			// seteamos el nivel de transaccion
 			this.getConnection(trxName).setTransactionIsolation(java.sql.Connection.TRANSACTION_READ_COMMITTED);
 			// iniciamos una transaccion

@@ -49,9 +49,9 @@ public final class MySQLTable extends TableWrapper<MySQLProcess, MySQLDBMS, MySQ
 	@Override
 	protected ArrayList<MySQLColumn> retrieveColumns(final String tableName) throws SQLException {
 		// armamos una lista
-		final ArrayList<MySQLColumn> columns = new ArrayList<MySQLColumn>();
+		final ArrayList<MySQLColumn> columns = new ArrayList<>();
 		// obtenemos las columnas
-		ResultSet cols = this.getMetadata().getColumns(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), null);
+		final ResultSet cols = this.getMetadata().getColumns(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), null);
 		// posicion de la columna
 		Integer colPos = 1;
 		// recorremos las columnas

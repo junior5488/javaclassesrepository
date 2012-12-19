@@ -117,7 +117,7 @@ public abstract class AbstractClientSocket<SType> extends AbstractSingleSocket<S
 		boolean continuar = true;
 		// verificamos la etapa
 		switch (stage) {
-			// si estamos en la etapa inicial
+		// si estamos en la etapa inicial
 			case INIT:
 				// verificamos si obtuvimos helo
 				if (((Commands) data).equals(Commands.HELO))

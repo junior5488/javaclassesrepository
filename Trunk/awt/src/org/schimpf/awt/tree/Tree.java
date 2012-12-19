@@ -187,7 +187,7 @@ public final class Tree extends JPanel {
 	 */
 	public ArrayList<TreeNode> getNodes() {
 		// genramos una lista
-		final ArrayList<TreeNode> servers = new ArrayList<TreeNode>();
+		final ArrayList<TreeNode> servers = new ArrayList<>();
 		// recorremos los nodos
 		for (int index = 0; index < this.getMainNode().getChildCount(); index++)
 			// agregamos el servidor a la lista
@@ -218,17 +218,17 @@ public final class Tree extends JPanel {
 	 * @version May 7, 2012 12:41:35 PM
 	 */
 	protected void executeListenerEvents() {
-	// verificamos si tenemos el capturador de eventos
-	// if (this.getListener() == null)
-	// salimos
-	// return;
-	// verificamos si la lista esta vacia
-	// if (this.getMainNode().getChildCount() == 0)
-	// ejecutamos el evento de lista vacia
-	// this.getListener().onEmptyList();
-	// else
-	// ejecutamos el evento de lista con elementos
-	// this.getListener().onListHasElements();
+		// verificamos si tenemos el capturador de eventos
+		// if (this.getListener() == null)
+		// salimos
+		// return;
+		// verificamos si la lista esta vacia
+		// if (this.getMainNode().getChildCount() == 0)
+		// ejecutamos el evento de lista vacia
+		// this.getListener().onEmptyList();
+		// else
+		// ejecutamos el evento de lista con elementos
+		// this.getListener().onListHasElements();
 	}
 
 	/**

@@ -48,7 +48,7 @@ public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGDBMS, PGD
 	@Override
 	protected ArrayList<PGTable> retrieveTables(final String schemaName) throws SQLException {
 		// armamos la lista de las tablas
-		final ArrayList<PGTable> tables = new ArrayList<PGTable>();
+		final ArrayList<PGTable> tables = new ArrayList<>();
 		// ejecutamos el SQL para obtener las tablas
 		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') AND table_type = 'BASE TABLE' AND table_schema ILIKE '" + schemaName + "' ORDER BY table_name"));
 		// recorremos las tablas

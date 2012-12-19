@@ -56,7 +56,7 @@ public abstract class SchemaWrapper<SQLConnector extends SQLProcess, MType exten
 	 * 
 	 * @version Apr 26, 2012 8:17:53 PM
 	 */
-	private final TreeMap<String, TType>	tables	= new TreeMap<String, TType>();
+	private final TreeMap<String, TType>	tables	= new TreeMap<>();
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>

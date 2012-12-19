@@ -34,7 +34,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 10:32:13 AM
 	 */
-	private final SortableList<Type>	listEnd		= new SortableList<Type>();
+	private final SortableList<Type>	listEnd		= new SortableList<>();
 
 	/**
 	 * Parte inicial de la lista de valores
@@ -43,7 +43,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Feb 10, 2011 10:32:13 AM
 	 */
-	private final SortableList<Type>	listStart	= new SortableList<Type>();
+	private final SortableList<Type>	listStart	= new SortableList<>();
 
 	/**
 	 * Elemento central que divide la lista
@@ -77,7 +77,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 */
 	public ArrayList<SortableList<Type>> getPartitionedList() {
 		// generamos la lista
-		final ArrayList<SortableList<Type>> result = new ArrayList<SortableList<Type>>();
+		final ArrayList<SortableList<Type>> result = new ArrayList<>();
 		// agregamos la lista inicial
 		result.add(this.getListStart());
 		// agregamos la lista final
@@ -94,8 +94,6 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 * @version Feb 10, 2011 10:37:14 AM
 	 */
 	public void partition() {
-		// indice de la lista
-		int index = 0;
 		// recorremos los elemetos
 		for (final Type element: this.getList()) {
 			// obtenemos la diferencia
@@ -115,8 +113,6 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 			else
 				// almacenamos el elemento al final
 				this.addListEnd(element);
-			// aumentamos la posicion
-			index++;
 		}
 	}
 
@@ -155,7 +151,7 @@ public final class ListPartitioner<Type extends Comparable<? super Type>> {
 	 */
 	private Type findPivot() {
 		// listado de posiciones y prioridades
-		final HashMap<Integer, Integer> prioridades = new HashMap<Integer, Integer>();
+		final HashMap<Integer, Integer> prioridades = new HashMap<>();
 		// almacenamos el elemento central por defecto
 		Type pivot = this.getList().get(this.getList().size() / 2);
 		// diferencia entre elementos

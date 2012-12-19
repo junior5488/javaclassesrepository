@@ -218,7 +218,7 @@ public class JAnimatedImagePanel extends JImagePanel {
 					final float pixelsToMoveX = pixelsToMove / (distanceX + distanceY) * distanceX;
 					final float pixelsToMoveY = pixelsToMove / (distanceX + distanceY) * distanceY;
 					// movemos la imagen
-					JAnimatedImagePanel.super.positionate((JAnimatedImagePanel.this.getCurrentX() + pixelsToMoveX * directionX), (JAnimatedImagePanel.this.getCurrentY() + pixelsToMoveY * directionY));
+					JAnimatedImagePanel.super.positionate(JAnimatedImagePanel.this.getCurrentX() + pixelsToMoveX * directionX, JAnimatedImagePanel.this.getCurrentY() + pixelsToMoveY * directionY);
 					try {
 						// esperamos
 						Thread.sleep(1000 / JAnimatedImagePanel.this.FPS);

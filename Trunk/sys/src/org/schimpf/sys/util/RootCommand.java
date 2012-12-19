@@ -44,25 +44,25 @@ public final class RootCommand {
 	 */
 	public static String runSudoCommand(final String passwd, final String command) {
 		// resultado
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 		try {
 			// iniciamos el ssh
-			JSch ssh = new JSch();
-			// 
+			final JSch ssh = new JSch();
+			//
 			ssh.setKnownHosts("/home/" + System.getProperty("user.name") + "/.ssh/known_hosts");
 			// iniciamos la sesion
-			Session session = ssh.getSession(System.getProperty("user.name"), "localhost", 22);
+			final Session session = ssh.getSession(System.getProperty("user.name"), "localhost", 22);
 			// seteamos la contraseña
 			session.setPassword(passwd);
 			// conectamos la session
 			session.connect();
 			// iniciamos un canal
-			Channel channel = session.openChannel("exec");
+			final Channel channel = session.openChannel("exec");
 			// ejecutamos el comando
 			((ChannelExec) channel).setCommand("sudo -S -p '' " + command);
 			// obtenemos los streams
-			InputStream in = channel.getInputStream();
-			OutputStream out = channel.getOutputStream();
+			final InputStream in = channel.getInputStream();
+			final OutputStream out = channel.getOutputStream();
 			((ChannelExec) channel).setErrStream(System.err);
 			// conectamos
 			channel.connect();
@@ -70,10 +70,10 @@ public final class RootCommand {
 			out.write((passwd + "\n").getBytes());
 			out.flush();
 			// leemos el resultado
-			byte[] tmp = new byte[1024];
+			final byte[] tmp = new byte[1024];
 			while (true) {
 				while (in.available() > 0) {
-					int i = in.read(tmp, 0, 1024);
+					final int i = in.read(tmp, 0, 1024);
 					if (i < 0)
 						break;
 					// almacenamos el nro de serie
@@ -83,12 +83,12 @@ public final class RootCommand {
 					break;
 				try {
 					Thread.sleep(50);
-				} catch (Exception ee) {}
+				} catch (final Exception ee) {}
 			}
 			// desconectamos
 			channel.disconnect();
 			session.disconnect();
-		} catch (Exception ignored) {}
+		} catch (final Exception ignored) {}
 		// retornamos el resultado
 		return result.toString().trim();
 	}

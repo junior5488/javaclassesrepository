@@ -40,7 +40,7 @@ public class Base64Crypter {
 	 * 
 	 * @version Nov 8, 2011 10:59:44 PM
 	 */
-	private static final HashMap<SecretKey, Base64Crypter>	instances	= new HashMap<SecretKey, Base64Crypter>();
+	private static final HashMap<SecretKey, Base64Crypter>	instances	= new HashMap<>();
 
 	/**
 	 * Desencriptador

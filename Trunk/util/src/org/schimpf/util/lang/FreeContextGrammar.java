@@ -45,7 +45,7 @@ public final class FreeContextGrammar<Symbol> {
 	 * 
 	 * @version May 24, 2012 3:26:50 PM
 	 */
-	private final HashMap<Symbol, ArrayList<Symbol[]>>										productions			= new HashMap<Symbol, ArrayList<Symbol[]>>();
+	private final HashMap<Symbol, ArrayList<Symbol[]>>										productions			= new HashMap<>();
 
 	/**
 	 * Simbolo inicial del Lenguaje
@@ -66,7 +66,7 @@ public final class FreeContextGrammar<Symbol> {
 	 * 
 	 * @version May 24, 2012 6:33:36 PM
 	 */
-	private final HashMap<Symbol, HashMap<Integer, HashMap<Symbol[], Symbol[]>>>	testedProductions	= new HashMap<Symbol, HashMap<Integer, HashMap<Symbol[], Symbol[]>>>();
+	private final HashMap<Symbol, HashMap<Integer, HashMap<Symbol[], Symbol[]>>>	testedProductions	= new HashMap<>();
 
 	/**
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>

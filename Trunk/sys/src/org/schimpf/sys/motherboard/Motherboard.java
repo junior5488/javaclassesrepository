@@ -123,9 +123,9 @@ public final class Motherboard {
 	private static void loadWindows() {
 		try {
 			// creamos un fichero temporal
-			File file = File.createTempFile("realhowto", ".vbs");
+			final File file = File.createTempFile("realhowto", ".vbs");
 			file.deleteOnExit();
-			FileWriter fw = new FileWriter(file);
+			final FileWriter fw = new FileWriter(file);
 			// seteamos el contenido del fichero (script VisualBasic)
 			fw.write("Set objWMIService = GetObject(\"winmgmts:\\\\.\\root\\cimv2\")\n"
 					+ "Set colItems = objWMIService.ExecQuery _ \n"
@@ -137,14 +137,14 @@ public final class Motherboard {
 			// cerramos el fichero
 			fw.close();
 			// ejecutamos el script
-			Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
+			final Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
 			// leemos el resultado
-			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			final BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line;
 			while ((line = input.readLine()) != null)
 				// almacenamos el nro de serie
 				Motherboard.serialNo = (Motherboard.serialNo == null ? "" : Motherboard.serialNo) + line.trim();
 			input.close();
-		} catch (Exception ignored) {}
+		} catch (final Exception ignored) {}
 	}
 }

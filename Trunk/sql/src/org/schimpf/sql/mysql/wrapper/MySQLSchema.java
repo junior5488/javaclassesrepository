@@ -49,9 +49,9 @@ public final class MySQLSchema extends SchemaWrapper<MySQLProcess, MySQLDBMS, My
 	@Override
 	protected ArrayList<MySQLTable> retrieveTables(final String schemaName) throws SQLException {
 		// armamos una lista
-		final ArrayList<MySQLTable> tables = new ArrayList<MySQLTable>();
+		final ArrayList<MySQLTable> tables = new ArrayList<>();
 		// obtenemos una lista de las tablas
-		ResultSet tbls = this.getMetadata().getTables(this.getDataBase().getDataBaseName(), null, null, null);
+		final ResultSet tbls = this.getMetadata().getTables(this.getDataBase().getDataBaseName(), null, null, null);
 		// recorremos la lista
 		while (tbls.next())
 			// agregamos la tabla a la lista

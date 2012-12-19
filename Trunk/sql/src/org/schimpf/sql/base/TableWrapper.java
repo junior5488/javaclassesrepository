@@ -45,21 +45,21 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * 
 	 * @version Apr 26, 2012 7:20:49 PM
 	 */
-	private final HashMap<String, CType>			columns		= new HashMap<String, CType>();
+	private final HashMap<String, CType>			columns		= new HashMap<>();
 
 	/**
 	 * Columnas Foraneas de la tabla
 	 * 
 	 * @version Oct 4, 2012 9:45:43 AM
 	 */
-	private final ArrayList<ForeignKey<CType>>	fkColumns	= new ArrayList<ForeignKey<CType>>();
+	private final ArrayList<ForeignKey<CType>>	fkColumns	= new ArrayList<>();
 
 	/**
 	 * Columnas Clave Primaria de la tabla
 	 * 
 	 * @version May 2, 2012 11:09:49 AM
 	 */
-	private final ArrayList<CType>					pkColumns	= new ArrayList<CType>();
+	private final ArrayList<CType>					pkColumns	= new ArrayList<>();
 
 	/**
 	 * Esquema al que pertenece la tabla
@@ -80,7 +80,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * 
 	 * @version Oct 4, 2012 10:21:06 AM
 	 */
-	private final ArrayList<CType>					uqColumns	= new ArrayList<CType>();
+	private final ArrayList<CType>					uqColumns	= new ArrayList<>();
 
 	/**
 	 * Clase para obtener los datos de claves foraneas de tablas
@@ -90,7 +90,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * @version Oct 4, 2012 9:48:26 AM
 	 * @param <FKCType> Tipo de columnas
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static final class ForeignKey<FKCType extends ColumnWrapper> {
 		/**
 		 * Columnas relacionadas de la clave foranea
@@ -225,19 +225,19 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 					// retornamos false
 					return false;
 				// obtenemos las columnas relacionadas
-				Iterator<Entry<FKCType, FKCType>> fkColumns = this.getColumns().entrySet().iterator();
+				final Iterator<Entry<FKCType, FKCType>> fkColumns = this.getColumns().entrySet().iterator();
 				// recorremos las columnas
 				while (fkColumns.hasNext()) {
 					// obtenemos la tupla de columnas
-					Entry<FKCType, FKCType> fks = fkColumns.next();
+					final Entry<FKCType, FKCType> fks = fkColumns.next();
 					// generamos una bandera
 					boolean fkEqual = false;
 					// obtenemos las columnas relacionadas de la otra tabla
-					Iterator<Entry<FKCType, FKCType>> lastFKColumns = foreignKey.getColumns().entrySet().iterator();
+					final Iterator<Entry<FKCType, FKCType>> lastFKColumns = foreignKey.getColumns().entrySet().iterator();
 					// recorremoas las columnas de la otra tabla
 					while (lastFKColumns.hasNext()) {
 						// obtenemos la tupla de columnas
-						Entry<FKCType, FKCType> lastKFs = lastFKColumns.next();
+						final Entry<FKCType, FKCType> lastKFs = lastFKColumns.next();
 						// verificamos si es la tupla correcta
 						if (fks.getKey().getColumnName().equals(lastKFs.getKey().getColumnName()) && fks.getValue().getColumnName().equals(lastKFs.getValue().getColumnName())) {
 							// modificamos la bandera
@@ -251,7 +251,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 						// retornamos false
 						return false;
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				// retornamos false
 				return false;
 			}
@@ -262,15 +262,15 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		@Override
 		public String toString() {
 			// armamos la definicion de la FK
-			StringBuffer fk = new StringBuffer("FOREIGN KEY " + this.getForeignKeyName());
-			StringBuffer localColumns = new StringBuffer();
-			StringBuffer foreignColumns = new StringBuffer();
+			final StringBuffer fk = new StringBuffer("FOREIGN KEY " + this.getForeignKeyName());
+			final StringBuffer localColumns = new StringBuffer();
+			final StringBuffer foreignColumns = new StringBuffer();
 			// obtenemos las columnas
-			Iterator<Entry<FKCType, FKCType>> couples = this.getColumns().entrySet().iterator();
+			final Iterator<Entry<FKCType, FKCType>> couples = this.getColumns().entrySet().iterator();
 			// recorremos las columnas
 			while (couples.hasNext()) {
 				// obtenemos la relacion
-				Entry<FKCType, FKCType> couple = couples.next();
+				final Entry<FKCType, FKCType> couple = couples.next();
 				// agregamos la columna origen
 				localColumns.append((localColumns.toString().length() == 0 ? "" : ", ") + couple.getKey().getColumnName());
 				// agregamos la columna destino
@@ -387,14 +387,14 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 	 * @return Lista de claves foraneas de la tabla
 	 * @throws SQLException Si se produce un error al obtener las claves foraneas
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public synchronized final ArrayList<ForeignKey<CType>> getForeignKeys() throws SQLException {
 		// verificamos si tenemos la lista
 		if (this.fkColumns.size() == 0) {
 			// obtenemos las columnas PKs
-			ResultSet foreignKeys = this.getSQLConnector().getMetadata().getImportedKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
+			final ResultSet foreignKeys = this.getSQLConnector().getMetadata().getImportedKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
 			// armamos una lista
-			HashMap<String, HashMap<String, Object>> fks = new HashMap<String, HashMap<String, Object>>();
+			final HashMap<String, HashMap<String, Object>> fks = new HashMap<>();
 			// recorremos las columnas
 			while (foreignKeys.next()) {
 				// verificamos si la FK ya existe
@@ -411,11 +411,11 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 				((HashMap<CType, CType>) fks.get(foreignKeys.getString(12)).get("COLUMNS")).put(this.getColumn(foreignKeys.getString(8)), this.getSchema().getTable(foreignKeys.getString(3)).getColumn(foreignKeys.getString(4)));
 			}
 			// obtenemos las FKs armadas
-			Iterator<Entry<String, HashMap<String, Object>>> armedFKs = fks.entrySet().iterator();
+			final Iterator<Entry<String, HashMap<String, Object>>> armedFKs = fks.entrySet().iterator();
 			// recorremos las FKs armadas
 			while (armedFKs.hasNext()) {
 				// obtenemos la FK
-				Entry<String, HashMap<String, Object>> fk = armedFKs.next();
+				final Entry<String, HashMap<String, Object>> fk = armedFKs.next();
 				// agregamos la clave foranea
 				this.fkColumns.add(new ForeignKey(fk.getKey(), (HashMap<CType, CType>) fk.getValue().get("COLUMNS"), (Short) fk.getValue().get("UPDATE"), (Short) fk.getValue().get("DELETE")));
 			}
@@ -438,9 +438,9 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		// verificamos si tenemos la lista
 		if (this.pkColumns.size() == 0) {
 			// obtenemos las columnas PKs
-			ResultSet primaryKeys = this.getSQLConnector().getMetadata().getPrimaryKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
+			final ResultSet primaryKeys = this.getSQLConnector().getMetadata().getPrimaryKeys(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName());
 			// creamos una lista temporal
-			HashMap<Short, String> unsortedPKs = new HashMap<Short, String>();
+			final HashMap<Short, String> unsortedPKs = new HashMap<>();
 			// recorremos las columnas
 			while (primaryKeys.next())
 				// agregamos la columna PK con su posicion
@@ -510,18 +510,18 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 				// retornamos false
 				return false;
 			// recorremos las columnas
-			for (CType column: this.getColumns())
+			for (final CType column: this.getColumns())
 				// verificamos si existe una columna con el mismo nombre en la otra tabla y comparamos las columnas
 				if (table.getColumn(column.getColumnName()) == null || !column.physicalEquals(table.getColumn(column.getColumnName())))
 					// retornamos false
 					return false;
 			// recorremos las columnas FK
-			for (ForeignKey<CType> column: this.getForeignKeys())
+			for (final ForeignKey<CType> column: this.getForeignKeys())
 				// verificamos si son iguales
 				if (!column.physicalEquals(table.getForeignKeys().get(this.getForeignKeys().indexOf(column))))
 					// retornamos false
 					return false;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// retornamos false
 			return false;
 		}
@@ -561,7 +561,7 @@ public abstract class TableWrapper<SQLConnector extends SQLProcess, MType extend
 		// verificamos si tenemos la lista
 		if (this.uqColumns.size() == 0) {
 			// obtenemos las claves
-			ResultSet uqs = this.getSQLConnector().getMetadata().getIndexInfo(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), true, false);
+			final ResultSet uqs = this.getSQLConnector().getMetadata().getIndexInfo(this.getSchema().getDataBase().getDataBaseName(), null, this.getTableName(), true, false);
 			// recorremos las columnas
 			while (uqs.next())
 				// verificamos si es una PK

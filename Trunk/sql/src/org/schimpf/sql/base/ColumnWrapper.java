@@ -401,7 +401,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 					// retornamos false
 					return false;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// retornamos false
 			return false;
 		}
@@ -436,13 +436,13 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 			try {
 				// almacenamos la clase
 				this.dataClass = Class.forName(this.getSQLConnector().getResultSet().getMetaData().getColumnClassName(this.getColumnPosition()));
-			} catch (ClassNotFoundException ignored) {}
+			} catch (final ClassNotFoundException ignored) {}
 			// almacenamos si es clave primaria
 			this.isPrimaryKey = this.getTable().getPrimaryKeys().contains(this);
 			// almacenamos si es unique
 			this.isUnique = this.getTable().getUniqueColumns().contains(this);
 			// obtenemos mas datos
-			ResultSet moreData = this.getMetadata().getColumns(this.getTable().getSchema().getDataBase().getDataBaseName(), null, this.getTable().getTableName(), this.getColumnName());
+			final ResultSet moreData = this.getMetadata().getColumns(this.getTable().getSchema().getDataBase().getDataBaseName(), null, this.getTable().getTableName(), this.getColumnName());
 			// verificamos si tenemos datos
 			if (moreData.next()) {
 				// almacenamos el tamaño del campo

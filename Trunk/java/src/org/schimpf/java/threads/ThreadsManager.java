@@ -33,7 +33,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @version Aug 10, 2011 9:15:40 AM
 	 */
-	protected final ArrayList<ThreadsListener<TType>>	listeners				= new ArrayList<ThreadsListener<TType>>();
+	protected final ArrayList<ThreadsListener<TType>>	listeners				= new ArrayList<>();
 
 	/**
 	 * Cantidad maxima de threads en ejecucion
@@ -54,7 +54,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * 
 	 * @version Aug 2, 2011 4:37:13 PM
 	 */
-	protected final ArrayList<TType>							threads					= new ArrayList<TType>();
+	protected final ArrayList<TType>							threads					= new ArrayList<>();
 
 	/**
 	 * Bandera para saber si finalizaron todos los threads
@@ -98,7 +98,7 @@ public final class ThreadsManager<TType extends Thread> {
 			// esperamos a que inicie
 			this.waitForStart();
 			// recorremos los listeners
-			for (ThreadsListener<TType> listener: ThreadsManager.this.listeners)
+			for (final ThreadsListener<TType> listener: ThreadsManager.this.listeners)
 				// ejecutamos el proceso de thread iniciado
 				listener.threadStarted(this.thread);
 			// obtenemos el estado actual del thread
@@ -116,19 +116,19 @@ public final class ThreadsManager<TType extends Thread> {
 				// verificamos si el thread fue interrumpido
 				if (this.thread.isInterrupted())
 					// recorremos los listeners
-					for (ThreadsListener<TType> listener: ThreadsManager.this.listeners)
+					for (final ThreadsListener<TType> listener: ThreadsManager.this.listeners)
 						// ejecutamos el proceso al interrumpir el thread
 						listener.threadInterrupted(this.thread);
 				// verificamos si continua ejecutandose
 				else if (oldState.equals(State.RUNNABLE))
 					// recorremos los listeners
-					for (ThreadsListener<TType> listener: ThreadsManager.this.listeners)
+					for (final ThreadsListener<TType> listener: ThreadsManager.this.listeners)
 						// ejecutamos el proceso al continuar el thread
 						listener.threadResumed(this.thread);
 				// verificamos si es estado es en espera
 				else if (oldState.equals(State.WAITING) || oldState.equals(State.TIMED_WAITING))
 					// recorremos los listeners
-					for (ThreadsListener<TType> listener: ThreadsManager.this.listeners)
+					for (final ThreadsListener<TType> listener: ThreadsManager.this.listeners)
 						// ejecutamos el proceso al pausar el thread
 						listener.threadPaused(this.thread);
 				// verificamos si finalizo
@@ -138,7 +138,7 @@ public final class ThreadsManager<TType extends Thread> {
 						ThreadsManager.this.threads.remove(this.thread);
 					}
 					// recorremos los listeners
-					for (ThreadsListener<TType> listener: ThreadsManager.this.listeners)
+					for (final ThreadsListener<TType> listener: ThreadsManager.this.listeners)
 						// ejecutamos el proceso al finalizar el thread
 						listener.threadFinished(this.thread);
 				}
@@ -237,6 +237,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 2, 2011 6:02:07 PM
 	 * @param thread Thread a agregar
 	 */
+	@SuppressWarnings("unused")
 	public void addThread(final TType thread) {
 		synchronized (this.threads) {
 			// agregamos un thread a la lista
@@ -256,7 +257,7 @@ public final class ThreadsManager<TType extends Thread> {
 	 */
 	public ArrayList<TType> getRunningThreads() {
 		// generamos la lista de los threads
-		ArrayList<TType> runningThreads = new ArrayList<TType>();
+		final ArrayList<TType> runningThreads = new ArrayList<>();
 		synchronized (this.threads) {
 			// recorremos los threads
 			for (final TType thread: this.threads)
@@ -344,9 +345,9 @@ public final class ThreadsManager<TType extends Thread> {
 			// recorremos hasta que existan threads
 			while (this.threads.size() > 0) {
 				// lista con los threads finalizados
-				final ArrayList<TType> terminatedThreads = new ArrayList<TType>();
+				final ArrayList<TType> terminatedThreads = new ArrayList<>();
 				// recorremos los threads
-				for (TType thread: this.threads) {
+				for (final TType thread: this.threads) {
 					// verificamos si esta ejecutandose
 					if (thread.isRunning())
 						// verificamos si matamos el thread
@@ -407,7 +408,7 @@ public final class ThreadsManager<TType extends Thread> {
 			this.allFinished = true;
 			synchronized (this.listeners) {
 				// recorremos los listeners
-				for (ThreadsListener<TType> listener: this.listeners)
+				for (final ThreadsListener<TType> listener: this.listeners)
 					// ejecutamos el proceso de finalizacion de todos los threads
 					listener.allThreadsFinished();
 			}

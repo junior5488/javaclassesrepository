@@ -36,7 +36,7 @@ public final class AbruptCrypter extends Base64Crypter {
 	 * 
 	 * @version Nov 8, 2011 10:59:44 PM
 	 */
-	private static final HashMap<SecretKey, AbruptCrypter>	instances	= new HashMap<SecretKey, AbruptCrypter>();
+	private static final HashMap<SecretKey, AbruptCrypter>	instances	= new HashMap<>();
 
 	/**
 	 * Tamano de la contrasena de la instancia
@@ -202,7 +202,7 @@ public final class AbruptCrypter extends Base64Crypter {
 				// verficamos si es par
 				if (i % 2 == 0)
 					// obtenemos la posicion derecha
-					newDes.append(des.charAt((des.length() - i / 2 - 1)));
+					newDes.append(des.charAt(des.length() - i / 2 - 1));
 				else
 					// agregamos la posicion izquierda
 					newDes.append(des.charAt(i / 2));
