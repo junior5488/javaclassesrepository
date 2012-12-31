@@ -27,7 +27,7 @@ import java.util.Map.Entry;
  * @author SCHIMPF - Sistemas de Informacion y Gestion
  * @version Apr 15, 2011 4:44:10 PM
  */
-public abstract class SQLLink extends DriverLoader implements DBConnection {
+public abstract class SQLLink extends DriverLoader implements DBConnection, AutoCloseable {
 	/**
 	 * Nivel de mensajes de log
 	 * 
@@ -98,7 +98,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 	}
 
 	@Override
-	public final boolean close() {
+	public final void close() throws Exception {
 		// obtenemos las conexiones
 		final Iterator<Entry<String, Connection>> connections = this.connections.entrySet().iterator();
 		// creamos una lista de conexiones
@@ -111,10 +111,8 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 		for (final String conn: connNames)
 			// eliminamos la conexion
 			if (!this.dropConnection(conn))
-				// retornamos false
-				return false;
-		// retornamos true
-		return true;
+				// salimos con una excepcion
+				throw new Exception("Connexion drop failed");
 	}
 
 	@Override
@@ -129,21 +127,6 @@ public abstract class SQLLink extends DriverLoader implements DBConnection {
 			return false;
 		// si llegamos aqui retornamos true
 		return true;
-	}
-
-	/**
-	 * Cierra la conexion a la base de datos
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
-	 * @version Dec 10, 2012 3:10:21 PM
-	 * @return True si se pudo desconectar
-	 * @deprecated Use close() instead
-	 */
-	@Deprecated
-	public final boolean disconnect() {
-		// cerramos la conexion
-		return this.close();
 	}
 
 	/**
