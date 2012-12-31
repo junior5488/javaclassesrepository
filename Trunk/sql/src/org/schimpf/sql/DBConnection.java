@@ -17,16 +17,6 @@ import org.schimpf.util.exceptions.MissingConnectionDataException;
  */
 public interface DBConnection {
 	/**
-	 * Desconecta el servidor de Bases de Datos
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:35:29 PM
-	 * @return True si se desconecto del servidor
-	 */
-	public boolean close();
-
-	/**
 	 * Conecta al servidor de Bases de Datos
 	 * 
 	 * @author Hermann D. Schimpf
