@@ -1,12 +1,12 @@
 This package was debianized by Hermann D. Schimpf <hschimpf@hds-solutions.net>
-Mon, 02 Apr 2012 15:41:02 -0300
+Tue, 22 Jan 2012 10:20:08 -0300
 
 It was downloaded from: http://downloads.hds-solutions.net/
 
 Upstream Author: Hermann D. Schimpf <hschimpf@hds-solutions.net>
 
 Copyright:
-		Copyright (C) 2011-2012 by Hermann D. Schimpf <hschimpf@hds-solutions.net>
+		Copyright (C) 2011-2013 by Hermann D. Schimpf <hschimpf@hds-solutions.net>
 
 License:
 
@@ -26,5 +26,5 @@ License:
 		Public License can be found in '/usr/share/common-licenses/GPL-3'.
 
 Packaging:
-		Copyright (C) 2011-2012 by Hermann D. Schimpf <hschimpf@hds-solutions.net>
+		Copyright (C) 2011-2013 by Hermann D. Schimpf <hschimpf@hds-solutions.net>
 		released under GPLv3
