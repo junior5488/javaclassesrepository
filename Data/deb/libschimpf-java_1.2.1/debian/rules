@@ -15,7 +15,7 @@ build-stamp:
 	touch build-stamp
 
 libraries:
-	cp ../../builds/current/libschimpf-java-current.jar debian/input/libschimpf-java.jar
+	cp ../../builds/current/libschimpf-java_current.jar debian/input/libschimpf-java.jar
 
 binary:
 	dh_testdir

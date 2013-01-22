@@ -17,7 +17,7 @@
 		<!-- Librerias para la compilacion -->
 		<path id="compile.classpath">
 			<fileset dir="Data/builds/current">
-				<include name="libschimpf-util-current.jar"/>
+				<include name="libschimpf-util_current.jar"/>
 			</fileset>
 			<fileset dir="/usr/share/java/">
 				<include name="jsch.jar"/>
