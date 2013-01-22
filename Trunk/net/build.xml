@@ -65,7 +65,7 @@
 		</jar>
 
 		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.version}/${jar.name}"/>
-		<symlink action="delete" link="${basedir}/Data/builds/current/${jar.start}-current.jar"/>
+		<symlink action="delete" link="${basedir}/Data/builds/current/${jar.start}_current.jar"/>
 		<symlink resource="${basedir}/Data/builds/${jar.version}/${jar.name}" link="${basedir}/Data/builds/current/${jar.start}_current.jar"/>
 
 		<delete dir="${dir.tmp}"/>
