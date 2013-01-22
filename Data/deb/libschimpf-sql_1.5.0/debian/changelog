@@ -1,3 +1,20 @@
+libschimpf-sql (1.5.0) stable; urgency=low
+
+  * FIX: PGTable: No importamos las columnas eliminadas
+  * FIX: SQLLink: Solucionado el ConcurrentModification al cerrar las conexiones
+  * FIX: AbstractPersistentObject: Validacion de valores modificados
+  * FIX: SQLProcess: SQL en el log
+  * Actualizaciones a JDK1.7
+  * Agregamos la opcion para continuar con la transaccion luego de aprobar la misma
+  * BaseWrapper: Cerramos la conexion al finalizar
+  * Modificamos el metodo disconnect(), ahora se debe utilizar close()
+  * AbstractPersistentObject: Eliminamos los metodos para sobreescribir la transaccion del PO
+  * AbstractPersistentObject: Evitamos un paso del log que genera llamadas al metodo toString() de las columnas PK, de esta manera se agiliza el proceso
+  * Implementamos la interfaz AutoCloseable
+  * Eliminamos el metodo close()
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Tue, 22 Jan 2013 10:15:02 -0300
+
 libschimpf-sql (1.4.3) stable; urgency=low
 
   * FIX: AbstractPersistentObject: Primero cargamos la tabla para poder generar el logger con el nombre de la misma
