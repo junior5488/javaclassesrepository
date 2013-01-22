@@ -3,7 +3,7 @@ Section: libs
 Priority: extra
 Maintainer: Hermann D. Schimpf <hschimpf@hds-solutions.net>
 Standards-Version: 3.8.0
-Build-Depends: debhelper (>= 5), oracle-java7-installer
+Build-Depends: debhelper (>= 5), java7-jdk
 Homepage: http://hds-solutions.net/
 
 Package: libschimpf-java

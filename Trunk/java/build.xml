@@ -9,9 +9,9 @@
 		<!-- Valores de informacion del programa -->
 		<buildnumber file="Trunk/java/build.number"/>
 		<property name="jar.start" value="libschimpf-java"/>
-		<property name="jar.version" value="1.2.0"/>
+		<property name="jar.version" value="1.2.1"/>
 		<property name="jar.author" value="Hermann D. Schimpf"/>
-		<property name="jar.name" value="${jar.start}-${jar.version}.jar"/>
+		<property name="jar.name" value="${jar.start}_${jar.version}.jar"/>
 		<property name="jar.file" value="${dir.tmp}/${jar.name}"/>
 		<property name="compile.debug" value="true"/>
    </target>
@@ -53,7 +53,7 @@
 
 		<copy file="${dir.tmp}/${jar.name}" tofile="${dir.jar}/${jar.version}/${jar.name}"/>
 		<symlink action="delete" link="${basedir}/Data/builds/current/${jar.start}-current.jar"/>
-		<symlink resource="${basedir}/Data/builds/${jar.version}/${jar.name}" link="${basedir}/Data/builds/current/${jar.start}-current.jar"/>
+		<symlink resource="${basedir}/Data/builds/${jar.version}/${jar.name}" link="${basedir}/Data/builds/current/${jar.start}_current.jar"/>
 
 		<delete dir="${dir.tmp}"/>
 		<delete file="Data/tmp/MANIFEST.MF"/>

@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+DEBVERS := $(shell dpkg-parsechangelog | sed -n -e 's/^Version: //p')
+VERSION := $(shell echo '$(DEBVERS)' | sed -e 's/^[[:digit:]]*://' -e 's/[~-].*//')
+
 build: clean build-stamp libraries binary post-clean
 
 clean:
@@ -32,7 +35,7 @@ post-clean:
 	dh_clean
 	rm -f build-stamp
 	rm -Rf debian/input/*
-	chown hschimpf:root ../libschimpf-java_1.2.0_all.deb
-	mv ../libschimpf-java_1.2.0_all.deb ../../builds/1.2.0/libschimpf-java_1.2.0_all.deb
+	chown hschimpf:root ../libschimpf-java_$(VERSION)_all.deb
+	mv ../libschimpf-java_$(VERSION)_all.deb ../../builds/$(VERSION)/libschimpf-java_$(VERSION)_all.deb
 	rm -f ../../builds/current/libschimpf-java_current_all.deb
-	ln -s "`dirname ../../builds/1.2.0/libschimpf-java_1.2.0_all.deb`"/libschimpf-java_1.2.0_all.deb ../../builds/current/libschimpf-java_current_all.deb
+	ln -s "`dirname ../../builds/$(VERSION)/libschimpf-java_$(VERSION)_all.deb`"/libschimpf-java_$(VERSION)_all.deb ../../builds/current/libschimpf-java_current_all.deb

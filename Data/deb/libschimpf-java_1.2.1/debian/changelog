@@ -1,3 +1,13 @@
+libschimpf-java (1.2.1) stable; urgency=low
+
+  * FIX: ThreadsManager: Solucionado el problema de concurrent modification
+  * Actualizaciones a JDK1.7
+  * ThreadsManager: Accedemos directamente a la variable, eliminamos los getters locales
+  * ThreadsManager: Utilizamos iterator
+  * Thread: Al finalizar el proceso llamamos a halt()
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Tue, 22 Jan 2012 10:02:17 -0300
+
 libschimpf-java (1.2.0) stable; urgency=low
 
   * ThreadsManager: Manejamos varios listeners de threads, no solo uno
