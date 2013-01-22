@@ -1,3 +1,9 @@
+libschimpf-util (1.4.1) stable; urgency=low
+
+  * Actualizaciones a JDK1.7
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Tue, 22 Jan 2013 09:45:02 -0300
+
 libschimpf-util (1.4.0) stable; urgency=low
 
   * Agregamos la clase LoggerListener para capturar eventos de log
