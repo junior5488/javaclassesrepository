@@ -20,6 +20,8 @@ package org.schimpf.sql.pgsql.wrapper;
 
 import org.schimpf.sql.base.SchemaWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -49,12 +51,16 @@ public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGDBMS, PGD
 	protected ArrayList<PGTable> retrieveTables(final String schemaName) throws SQLException {
 		// armamos la lista de las tablas
 		final ArrayList<PGTable> tables = new ArrayList<>();
+		// armamos la consulta
+		final PreparedStatement pstmt = this.getSQLConnector().prepareStatement("SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') AND table_type = 'BASE TABLE' AND table_schema ILIKE '" + schemaName + "' ORDER BY table_name");
 		// ejecutamos el SQL para obtener las tablas
-		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') AND table_type = 'BASE TABLE' AND table_schema ILIKE '" + schemaName + "' ORDER BY table_name"));
+		this.getSQLConnector().executeQuery(pstmt);
+		// obtenemos el resultset
+		final ResultSet rs = this.getSQLConnector().getResultSet();
 		// recorremos las tablas
-		while (this.getSQLConnector().getResultSet().next())
+		while (rs.next())
 			// agregamos una tabla
-			tables.add(new PGTable(this, this.getSQLConnector().getResultSet().getString("table_name")));
+			tables.add(new PGTable(this, rs.getString(1)));
 		// retornamos las tablas
 		return tables;
 	}
