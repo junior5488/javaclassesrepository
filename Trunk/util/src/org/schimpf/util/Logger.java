@@ -18,6 +18,7 @@
  */
 package org.schimpf.util;
 
+import org.apache.commons.lang.StringUtils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -666,7 +667,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el inicio del mensaje
-		final String logStart = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " ";
+		final String logStart = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + StringUtils.center(level.name(), 6) + "] " + this.name + " ";
 		// iniciamos el mensaje
 		final StringBuffer log = new StringBuffer(logStart);
 		// agregamos el mensaje de la excepcion
@@ -710,7 +711,7 @@ public final class Logger {
 			// salimos
 			return;
 		// generamos el mensaje
-		final String log = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + level.name() + "] " + this.name + " " + message;
+		final String log = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + " [" + StringUtils.center(level.name(), 6) + "] " + this.name + " " + message;
 		// verificamos si mostramos en consola
 		if (level.isEnabled(this.consoleLevel))
 			// verificamos si es >= ERROR
