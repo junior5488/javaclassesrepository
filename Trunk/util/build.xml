@@ -18,6 +18,7 @@
 		<path id="compile.classpath">
 			<fileset dir="/usr/share/java/">
 				<include name="commons-codec.jar"/>
+				<include name="commons-lang.jar"/>
 			</fileset>
 		</path>
    </target>
