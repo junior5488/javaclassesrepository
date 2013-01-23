@@ -8,7 +8,7 @@ Homepage: http://code.google.com/p/javaclassesrepository/wiki/index?tm=6&wl=en#P
 
 Package: libschimpf-util
 Architecture: all
-Depends: java7-runtime, libcommons-codec-java
+Depends: java7-runtime, libcommons-lang-java, libcommons-codec-java
 Provides: libschimpf-multikeymap-java, libschimpf-sortablelist-java, libschimpf-abrupt-crypter-java, libschimpf-base64-crypter-java, libschimpf-exceptions-java, libschimpf-params-manager-java, libschimpf-config-manager-java, libschimpf-logger-java, libschimpf-osidentifier-java
 Description: Schimpf Util Library
  Paquete Java de librerias Util
