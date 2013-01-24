@@ -362,7 +362,7 @@ public final class ThreadsManager<TType extends Thread> {
 						thread.join(100);
 					} catch (final InterruptedException ignored) {}
 					// verificamos si finalizo
-					if (thread.getState().equals(Thread.State.TERMINATED))
+					if (thread.getState().equals(Thread.State.NEW) || thread.getState().equals(Thread.State.TERMINATED))
 						// agregamos el thread para eliminar
 						terminatedThreads.add(thread);
 				}
