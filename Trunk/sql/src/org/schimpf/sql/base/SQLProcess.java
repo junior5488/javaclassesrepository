@@ -135,7 +135,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			return true;
 		} catch (final SQLException e) {
 			// mostramos un mensaje de error
-			this.getLog().error("Query execution failed on " + this.getConnectionUrl());
+			this.getLog().error("Query execution failed on " + this);
 			// mostramos el detalle de la excepcion
 			this.getLog().error(e);
 			// verificamos si sucedio por otra causa
@@ -199,8 +199,14 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// retornamos el resultado
 			return result;
 		} catch (final SQLException e) {
+			// mostramos un mensaje de error
+			this.getLog().error("Query execution failed on " + this);
 			// mostramos el detalle de la excepcion
 			this.getLog().error(e);
+			// verificamos si sucedio por otra causa
+			if (e.getCause() != null)
+				// mostramos la causa
+				this.getLog().error(e.getCause());
 			// retornamos negativo
 			return -1;
 		}
