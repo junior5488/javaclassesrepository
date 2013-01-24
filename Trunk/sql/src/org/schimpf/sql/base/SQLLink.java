@@ -206,16 +206,16 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	}
 
 	/**
-	 * Retorna el URL para la conexion
+	 * Retorna el servidor al cual estamos conectados
 	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:23:51 PM
-	 * @return URL de conexion
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Jan 24, 2013 7:05:19 PM
+	 * @return Conexion abierta
 	 */
-	protected String getConnectionUrl() {
-		// retornamos el URL de conexion
-		return this.getDriverType() + "://" + this.host + ":" + this.getPort() + "/" + this.ddbb;
+	public final String toString() {
+		// retornamos el servidor a donde estamos conectados
+		return "Database " + this.ddbb + " on server " + this.host + ":" + this.getPort();
 	}
 
 	/**
@@ -253,6 +253,19 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		this.log.setConsoleLevel(SQLLink.LOG_LEVEL);
 		// retornamos el logger
 		return this.log;
+	}
+
+	/**
+	 * Retorna el URL para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:23:51 PM
+	 * @return URL de conexion
+	 */
+	private String getConnectionUrl() {
+		// retornamos el URL de conexion
+		return this.getDriverType() + "://" + this.host + ":" + this.getPort() + "/" + this.ddbb;
 	}
 
 	/**
