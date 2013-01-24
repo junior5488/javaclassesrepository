@@ -707,7 +707,7 @@ public final class Logger {
 		// iniciamos el mensaje
 		final StringBuffer log = new StringBuffer(logStart);
 		// agregamos el mensaje de la excepcion
-		log.append(exception.getClass().getName() + (exception.getMessage() != null ? " " + exception.getMessage() : "") + ":");
+		log.append(exception.getClass().getName() + (exception.getMessage() != null ? ": " + exception.getMessage() : ""));
 		// recorremos los pasos
 		for (final StackTraceElement stackTrace: exception.getStackTrace())
 			// agregamos el elemento
