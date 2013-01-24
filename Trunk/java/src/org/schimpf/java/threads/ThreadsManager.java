@@ -382,8 +382,14 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 2, 2011 6:07:43 PM
 	 */
 	public synchronized void startThreads() {
+		// cantidad de threads
+		int count;
+		synchronized (this.threads) {
+			// obtenemos la cantidad de threads
+			count = this.threads.size();
+		}
 		// verificamos si tenemos el iniciador
-		if (this.starter == null) {
+		if (this.starter == null && count > 0) {
 			// generamos el thread
 			this.starter = new Starter();
 			// iniciamos el thread
