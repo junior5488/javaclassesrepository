@@ -186,7 +186,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Class<?> getDataClass() throws SQLException {
 		// verificamos si tenemos valor
-		if (this.dataClass == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos la clase de la columna
@@ -205,7 +205,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Integer getDataLength() throws SQLException {
 		// verificamos si tenemos valor
-		if (this.dataLength == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos el tamaño
@@ -223,7 +223,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Integer getDataPrecision() throws SQLException {
 		// verificamos si tenemos valor
-		if (this.dataPrecision == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos el tamaño
@@ -261,7 +261,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final String getDefaultValue() throws SQLException {
 		// verificamos si no tenemos valor
-		if (this.defaultValue == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos el valor por defecto
@@ -293,7 +293,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Boolean isAutoIncrement() throws SQLException {
 		// verificamos si no tenemos valor
-		if (this.isAutoIncrement == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos si es nulo
@@ -312,7 +312,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Boolean isNullable() throws SQLException {
 		// verificamos si no tenemos valor
-		if (this.isNullable == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos si es nulo
@@ -331,7 +331,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Boolean isPrimaryKey() throws SQLException {
 		// verificamos si no tenemos valor
-		if (this.isPrimaryKey == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos si es clave primaria
@@ -350,7 +350,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 */
 	public final Boolean isUnique() throws SQLException {
 		// verificamos si no tenemos valor
-		if (this.isUnique == null)
+		if (this.dataType == null)
 			// cargamos los datos
 			this.loadMetaData();
 		// retornamos el tamaño de la columna
@@ -365,47 +365,43 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @version Nov 19, 2012 6:50:14 PM
 	 * @param column Columna a comparar
 	 * @return True si la columna especificada es igual a la columna actual
+	 * @throws SQLException Si se produjo un error al validar la columna
 	 */
-	public boolean physicalEquals(final CType column) {
-		try {
-			// verificamos si la columna es nula
-			if (column == null)
-				// retornamos false
-				return false;
-			// verificamos si la columna esta en la misma posicion
-			if (!this.getColumnPosition().equals(column.getColumnPosition()))
-				// retornamos false
-				return false;
-			// verificamos si las columna son de la misma clase
-			if (!this.getDataClass().equals(column.getDataClass()))
-				// retornamos false
-				return false;
-			// verificamos si las columna son del mismo tamaño
-			if (!this.getDataLength().equals(column.getDataLength()))
-				// retornamos false
-				return false;
-			// verificamos si las columna son del mismo tamaño
-			if (this.getDataPrecision() != null && !this.getDataPrecision().equals(column.getDataPrecision()))
-				// retornamos false
-				return false;
-			// verificamos si las columna son del mismo tipo
-			if (!this.getDataType().equals(column.getDataType()))
-				// retornamos false
-				return false;
-			// verificamos si alguna de las columas tiene valor por defecto
-			if (this.getDefaultValue() != null || column.getDefaultValue() != null) {
-				// verificamos si alguna columna tiene valor por defecto y la otra no
-				if (this.getDefaultValue() != null && column.getDefaultValue() == null || this.getDefaultValue() == null && column.getDefaultValue() != null)
-					// retornamos false
-					return false;
-				// verificamos si las columna 2 tienen el valor por defecto y son diferentes
-				if (this.getDefaultValue() != null && column.getDefaultValue() != null && !this.getDefaultValue().equals(column.getDefaultValue()))
-					// retornamos false
-					return false;
-			}
-		} catch (final Exception e) {
+	public boolean physicalEquals(final CType column) throws SQLException {
+		// verificamos si la columna es nula
+		if (column == null)
 			// retornamos false
 			return false;
+		// verificamos si la columna esta en la misma posicion
+		if (!this.getColumnPosition().equals(column.getColumnPosition()))
+			// retornamos false
+			return false;
+		// verificamos si las columna son de la misma clase
+		if (!this.getDataClass().equals(column.getDataClass()))
+			// retornamos false
+			return false;
+		// verificamos si las columna son del mismo tamaño
+		if (!this.getDataLength().equals(column.getDataLength()))
+			// retornamos false
+			return false;
+		// verificamos si las columna son del mismo tamaño
+		if (this.getDataPrecision() != null && !this.getDataPrecision().equals(column.getDataPrecision()))
+			// retornamos false
+			return false;
+		// verificamos si las columna son del mismo tipo
+		if (!this.getDataType().equals(column.getDataType()))
+			// retornamos false
+			return false;
+		// verificamos si alguna de las columas tiene valor por defecto
+		if (this.getDefaultValue() != null || column.getDefaultValue() != null) {
+			// verificamos si alguna columna tiene valor por defecto y la otra no
+			if (this.getDefaultValue() != null && column.getDefaultValue() == null || this.getDefaultValue() == null && column.getDefaultValue() != null)
+				// retornamos false
+				return false;
+			// verificamos si las columna 2 tienen el valor por defecto y son diferentes
+			if (this.getDefaultValue() != null && column.getDefaultValue() != null && !this.getDefaultValue().equals(column.getDefaultValue()))
+				// retornamos false
+				return false;
 		}
 		// retornamos true
 		return true;
