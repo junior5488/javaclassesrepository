@@ -206,6 +206,19 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	}
 
 	/**
+	 * Retorna el URL para la conexion
+	 * 
+	 * @author Hermann D. Schimpf
+	 * @author SCHIMPF - Sistemas de Informacion y Gestion
+	 * @version Apr 15, 2011 5:23:51 PM
+	 * @return URL de conexion
+	 */
+	protected String getConnectionUrl() {
+		// retornamos el URL de conexion
+		return this.getDriverType() + "://" + this.host + ":" + this.getPort() + "/" + this.ddbb;
+	}
+
+	/**
 	 * Retorna el puerto por defecto de la conexion
 	 * 
 	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
@@ -240,19 +253,6 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		this.log.setConsoleLevel(SQLLink.LOG_LEVEL);
 		// retornamos el logger
 		return this.log;
-	}
-
-	/**
-	 * Retorna el URL para la conexion
-	 * 
-	 * @author Hermann D. Schimpf
-	 * @author SCHIMPF - Sistemas de Informacion y Gestion
-	 * @version Apr 15, 2011 5:23:51 PM
-	 * @return URL de conexion
-	 */
-	private String getConnectionUrl() {
-		// retornamos el URL de conexion
-		return this.getDriverType() + "://" + this.host + ":" + this.getPort() + "/" + this.ddbb;
 	}
 
 	/**
