@@ -803,8 +803,10 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 
 	@Override
 	protected final void finalize() throws Throwable {
-		// cerramos la conexion de la transaccion
-		this.getSQLConnector().rollbackTransaction(this.getTrxName());
+		// verificamos si se trabajo en transaccion
+		if (this.getTrxName() != null)
+			// cerramos la conexion de la transaccion
+			this.getSQLConnector().rollbackTransaction(this.getTrxName());
 	}
 
 	/**
