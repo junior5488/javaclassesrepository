@@ -295,6 +295,8 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 			// generamos la conexion al servidor
 			return DriverManager.getConnection(this.getConnectionUrl(), this.user, this.pass);
 		} catch (final SQLException e) {
+			// mostramos un error
+			this.getLog().error("Connection to " + this + " failed");
 			// mostramos el detalle de la exception
 			this.getLog().error(e);
 			// retornamos null
