@@ -139,7 +139,28 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	 */
 	public final boolean isConnected() {
 		// retornamos si existen conexiones
-		return this.connections.size() > 0;
+		return this.isConnected(null);
+	}
+
+	/**
+	 * Retorna si el link en la transaccion esta conectado
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Jan 25, 2013 11:11:03 AM
+	 * @param trxName Nombre de la transaccion
+	 * @return True si la conexion esta conectada
+	 */
+	public final boolean isConnected(final String trxName) {
+		try {
+			// retornamos si la conexion en la transaccion sigue activa
+			return this.connections.get(trxName) != null && !this.connections.get(trxName).isClosed();
+		} catch (final SQLException e) {
+			// mostramos la excepcion
+			this.getLog().error(e);
+		}
+		// retornamos false
+		return false;
 	}
 
 	@Override
