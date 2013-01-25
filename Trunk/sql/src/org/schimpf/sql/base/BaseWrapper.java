@@ -18,6 +18,7 @@
  */
 package org.schimpf.sql.base;
 
+import org.schimpf.util.exceptions.MissingConnectionDataException;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,12 +53,6 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 		this.sqlConnector = connector;
 	}
 
-	@Override
-	protected final void finalize() throws Throwable {
-		// cerramos la conexion
-		this.getSQLConnector().close();
-	}
-
 	/**
 	 * Retorna los metadatos de la base
 	 * 
@@ -82,8 +77,14 @@ public abstract class BaseWrapper<SQLConnector extends SQLProcess> {
 	 * @return Procesador SQL
 	 */
 	protected final SQLConnector getSQLConnector() {
-		// retornamos la conexion a la DB
-		return this.sqlConnector;
+		// verificamos si esta conectado
+		try {
+			if (this.sqlConnector.isConnected() || !this.sqlConnector.isConnected() && this.sqlConnector.connect())
+				// retornamos la conexion a la DB
+				return this.sqlConnector;
+		} catch (final MissingConnectionDataException ignored) {}
+		// retornamos null
+		return null;
 	}
 
 	/**
