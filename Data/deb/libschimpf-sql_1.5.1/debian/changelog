@@ -1,3 +1,17 @@
+libschimpf-sql (1.5.1) stable; urgency=low
+
+  * FIX: *Wrapper: Cargamos el resultset en una variable local
+  * FIX: BaseWrapper: No cerramos la conexion a la base de datos
+  * *Wrapper: No capturamos la excepcion, la enviamos asi podemos verificar cuando dio error
+  * *Wrapper: Utilizamos transacciones para cargar los datos, asi evitamos que la misma conexion se este utilizando en mas de un hilo
+  * SQLLink: Utilizamos el metodo toString() para obtener la descripcion de la conexion
+  * SQLLink: Verificamos la conexion abierta por transaccion
+  * SQLProcess: Verificamos si estamos en transaccion para cancelar la misma
+  * SQLProcess: Mostramos la causa de la excepcion en las ejecuciones de las consultas
+  * AbstractPersistentObject: Solo cancelamos la transaccion si estamos en una
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Tue, 22 Jan 2013 10:15:02 -0300
+
 libschimpf-sql (1.5.0) stable; urgency=low
 
   * FIX: PGTable: No importamos las columnas eliminadas
