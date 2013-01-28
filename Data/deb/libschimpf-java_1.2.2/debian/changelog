@@ -1,3 +1,9 @@
+libschimpf-java (1.2.2) stable; urgency=low
+
+  * FIX: ThreadsManager: Eliminamos los threads no iniciados
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Mon, 28 Jan 2013 20:00:28 -0300
+
 libschimpf-java (1.2.1) stable; urgency=low
 
   * FIX: ThreadsManager: Solucionado el problema de concurrent modification
