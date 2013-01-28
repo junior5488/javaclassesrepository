@@ -20,7 +20,6 @@ package org.schimpf.sql.pgsql.wrapper;
 
 import org.schimpf.sql.base.DBMSWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,16 +50,18 @@ public final class PGDBMS extends DBMSWrapper<PostgreSQLProcess, PGDBMS, PGDataB
 	protected ArrayList<PGDataBase> retrieveDataBases(final String dbmsName) throws SQLException {
 		// armamos una lista para las bases de datos
 		final ArrayList<PGDataBase> dbs = new ArrayList<>();
-		// armamos la consulta
-		final PreparedStatement pstmt = this.getSQLConnector().prepareStatement("SELECT datname FROM pg_database WHERE datname NOT ILIKE 'template%' ORDER BY datname");
+		// iniciamos una transaccion
+		final String trx = this.getSQLConnector().startTransaction();
 		// obtenemos las bases de datos
-		this.getSQLConnector().executeQuery(pstmt);
+		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT datname FROM pg_database WHERE datname NOT ILIKE 'template%' ORDER BY datname", trx), trx);
 		// obtenemos el resultset
-		final ResultSet rs = this.getSQLConnector().getResultSet();
+		final ResultSet rs = this.getSQLConnector().getResultSet(trx);
 		// recorremos las bases de datos
 		while (rs.next())
 			// agregamos la base de datos
 			dbs.add(new PGDataBase(this, rs.getString(1)));
+		// cancelamos la transaccion
+		this.getSQLConnector().rollbackTransaction(trx);
 		// retornamos las bases de datos
 		return dbs;
 	}

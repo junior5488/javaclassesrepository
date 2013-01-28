@@ -18,7 +18,6 @@
  */
 package org.schimpf.sql.base;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -427,12 +426,12 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 	 * @throws SQLException Si se produjo un error al cargar los metadatos
 	 */
 	private synchronized void loadMetaData() throws SQLException {
-		// armamos la consulta
-		final PreparedStatement pstmt = this.getSQLConnector().prepareStatement("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " LIMIT 1");
+		// iniciamos una transaccion
+		final String trx = this.getSQLConnector().startTransaction();
 		// recorremos los metadatos
-		if (this.getSQLConnector().executeQuery(pstmt)) {
+		if (this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT * FROM " + this.getTable().getSchema().getSchemaName() + "." + this.getTable().getTableName() + " LIMIT 1", trx), trx)) {
 			// obtenemos el resultset
-			final ResultSetMetaData rs = this.getSQLConnector().getResultSet().getMetaData();
+			final ResultSetMetaData rs = this.getSQLConnector().getResultSet(trx).getMetaData();
 			// almacenamos el tipo de dato
 			this.dataType = rs.getColumnTypeName(this.getColumnPosition());
 			try {

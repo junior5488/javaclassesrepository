@@ -20,7 +20,6 @@ package org.schimpf.sql.pgsql.wrapper;
 
 import org.schimpf.sql.base.TableWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,18 +50,20 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 	protected ArrayList<PGColumn> retrieveColumns(final String tableName) throws SQLException {
 		// creamos una lista para las columnas
 		final ArrayList<PGColumn> columns = new ArrayList<>();
-		// armamos la consulta
-		final PreparedStatement pstmt = this.getSQLConnector().prepareStatement("SELECT attname FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax') AND attisdropped = False");
+		// iniciamos una transaccion
+		final String trx = this.getSQLConnector().startTransaction();
 		// ejecutamos el SQL para obtener la lista de las columnas
-		this.getSQLConnector().executeQuery(pstmt);
+		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT attname FROM pg_attribute, pg_type WHERE typname ILIKE '" + tableName + "' AND attrelid = typrelid AND attname NOT IN ('cmin','cmax', 'ctid', 'oid', 'tableoid', 'xmin', 'xmax') AND attisdropped = False", trx), trx);
 		// obtenemos el resultset
-		final ResultSet rs = this.getSQLConnector().getResultSet();
+		final ResultSet rs = this.getSQLConnector().getResultSet(trx);
 		// posicion de la columna
 		Integer colPos = 1;
 		// recorremos las columnas
 		while (rs.next())
 			// aregamos la columna a la lista
 			columns.add(new PGColumn(this, rs.getString(1), colPos++));
+		// cancelamos la transaccion
+		this.getSQLConnector().rollbackTransaction(trx);
 		// retornamos la lista de las columnas
 		return columns;
 	}

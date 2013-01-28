@@ -20,7 +20,6 @@ package org.schimpf.sql.pgsql.wrapper;
 
 import org.schimpf.sql.base.DataBaseWrapper;
 import org.schimpf.sql.pgsql.PostgreSQLProcess;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,16 +50,18 @@ public final class PGDataBase extends DataBaseWrapper<PostgreSQLProcess, PGDBMS,
 	protected ArrayList<PGSchema> retrieveSchemas(final String dataBaseName) throws SQLException {
 		// armamos la lista para los esquemas
 		final ArrayList<PGSchema> schemas = new ArrayList<>();
-		// armamos la consulta
-		final PreparedStatement pstmt = this.getSQLConnector().prepareStatement("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT ILIKE 'pg_%' AND schema_name <> 'information_schema' AND catalog_name ILIKE '" + dataBaseName + "' ORDER BY schema_name");
+		// iniciamos una transaccion
+		final String trx = this.getSQLConnector().startTransaction();
 		// ejecutamos el SQL para obtener los esquemas
-		this.getSQLConnector().executeQuery(pstmt);
+		this.getSQLConnector().executeQuery(this.getSQLConnector().prepareStatement("SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT ILIKE 'pg_%' AND schema_name <> 'information_schema' AND catalog_name ILIKE '" + dataBaseName + "' ORDER BY schema_name", trx), trx);
 		// obtenemos el resultset
-		final ResultSet rs = this.getSQLConnector().getResultSet();
+		final ResultSet rs = this.getSQLConnector().getResultSet(trx);
 		// recorremos los esquemas
 		while (rs.next())
 			// agregamos el esquema
 			schemas.add(new PGSchema(this, rs.getString(1)));
+		// cancelamos la transaccion
+		this.getSQLConnector().rollbackTransaction(trx);
 		// retornamos los esquemas
 		return schemas;
 	}
