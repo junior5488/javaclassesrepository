@@ -1,3 +1,10 @@
+libschimpf-util (1.4.3) stable; urgency=low
+
+  * Logger: Utilizamos Throwable en vez de Exception
+  * Logger: Centramos el nivel de mensajes
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Mon, 28 Jan 2013 20:09:59 -0300
+
 libschimpf-util (1.4.2) stable; urgency=low
 
   * Dependencia del paquete libcommons-lang-java
