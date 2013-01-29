@@ -462,5 +462,7 @@ public abstract class ColumnWrapper<SQLConnector extends SQLProcess, MType exten
 					throw new SQLException("Column ordinal position error! Loaded: " + this.getColumnPosition() + ", Found on: " + moreData.getInt(17));
 			}
 		}
+		// cancelamos la transaccion
+		this.getSQLConnector().rollbackTransaction(trx);
 	}
 }
