@@ -59,7 +59,7 @@ public class PGTable extends TableWrapper<PostgreSQLProcess, PGDBMS, PGDataBase,
 		// posicion de la columna
 		Integer colPos = 1;
 		// recorremos las columnas
-		while (rs.next())
+		while (rs != null && rs.next())
 			// aregamos la columna a la lista
 			columns.add(new PGColumn(this, rs.getString(1), colPos++));
 		// cancelamos la transaccion

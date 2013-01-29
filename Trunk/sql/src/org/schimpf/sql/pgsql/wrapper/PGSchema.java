@@ -57,7 +57,7 @@ public final class PGSchema extends SchemaWrapper<PostgreSQLProcess, PGDBMS, PGD
 		// obtenemos el resultset
 		final ResultSet rs = this.getSQLConnector().getResultSet(trx);
 		// recorremos las tablas
-		while (rs.next())
+		while (rs != null && rs.next())
 			// agregamos una tabla
 			tables.add(new PGTable(this, rs.getString(1)));
 		// cancelamos la transaccion

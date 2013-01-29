@@ -57,7 +57,7 @@ public final class PGDataBase extends DataBaseWrapper<PostgreSQLProcess, PGDBMS,
 		// obtenemos el resultset
 		final ResultSet rs = this.getSQLConnector().getResultSet(trx);
 		// recorremos los esquemas
-		while (rs.next())
+		while (rs != null && rs.next())
 			// agregamos el esquema
 			schemas.add(new PGSchema(this, rs.getString(1)));
 		// cancelamos la transaccion
