@@ -42,6 +42,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	private final HashMap<String, PreparedStatement>	statement		= new HashMap<>();
 
 	/**
+	 * Timeout para la ejecucion de las consultas
+	 * 
+	 * @version Jan 29, 2013 8:49:13 AM
+	 */
+	private int														timeout			= 300;
+
+	/**
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 16, 2011 1:53:38 AM
@@ -129,6 +136,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			}
 			// mostramos la consulta a ejecutar
 			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + " '" + this.statement.get(trxName).toString().substring(this.statement.get(trxName).toString().indexOf(":") + 1) + "'");
+			// seteamos el timeout para la ejecucion
+			this.statement.get(trxName).setQueryTimeout(this.getTimeout());
 			// ejecutamos la consulta
 			this.resultSet.put(trxName, this.statement.get(trxName).executeQuery());
 			// retornamos true
@@ -362,6 +371,19 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 		}
 	}
 
+	/**
+	 * Almacena el tiempo de timeout para la ejecucion de consultas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Jan 29, 2013 8:50:07 AM
+	 * @param timeout Tiempo de espera maximo
+	 */
+	public void setQueryTimeout(final int timeout) {
+		// almacenamos el timeout
+		this.timeout = timeout;
+	}
+
 	@Override
 	public synchronized final String startTransaction() {
 		// retornamos el inicio de transaccion
@@ -387,6 +409,19 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// retornamos null
 			return null;
 		}
+	}
+
+	/**
+	 * Retorna el timeout para la ejecucion de las consultas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Jan 29, 2013 8:48:19 AM
+	 * @return Timeout para la ejecucion de consultas
+	 */
+	private int getTimeout() {
+		// retornamos el timeout
+		return this.timeout;
 	}
 
 	/**
