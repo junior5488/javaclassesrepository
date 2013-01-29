@@ -86,7 +86,7 @@ public final class ThreadsManager<TType extends Thread> {
 		 */
 		protected SingleThreadMonitor(final TType thread) {
 			// enviamos el constructor
-			super(thread.getClass());
+			super(thread.getClass(), thread.getName() + " Monitor");
 			// almacenamos el thread a monitorear
 			this.thread = thread;
 			// empezamos a monitorear
@@ -178,7 +178,7 @@ public final class ThreadsManager<TType extends Thread> {
 	private class Starter extends Thread {
 		public Starter() {
 			// enviamos el constructor
-			super(Starter.class);
+			super(Starter.class, "Threads Starter");
 		}
 
 		@Override
