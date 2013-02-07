@@ -19,6 +19,7 @@
 			<fileset dir="Data/builds/current">
 				<include name="libschimpf-net_current.jar"/>
 				<include name="libschimpf-util_current.jar"/>
+				<include name="libschimpf-java_current.jar"/>
 			</fileset>
 			<fileset dir="/usr/share/java/">
 				<include name="mysql.jar"/>
