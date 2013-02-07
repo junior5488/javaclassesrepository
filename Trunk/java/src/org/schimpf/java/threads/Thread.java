@@ -97,6 +97,12 @@ public abstract class Thread extends java.lang.Thread {
 	public final void shutdown() {
 		// modificamos la bandera
 		this.running = false;
+		// verificamos si esta en ejecucion
+		if (!this.getState().equals(Thread.State.TERMINATED) && !this.getState().equals(Thread.State.NEW))
+			synchronized (this) {
+				// levantamos el thread
+				this.notify();
+			}
 		// finalizamos el proceso
 		this.halt(this.isInterrupted());
 	}
