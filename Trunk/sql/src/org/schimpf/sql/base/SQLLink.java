@@ -5,6 +5,7 @@
  */
 package org.schimpf.sql.base;
 
+import org.schimpf.java.threads.Thread;
 import org.schimpf.net.utils.ConnectionData;
 import org.schimpf.sql.DBConnection;
 import org.schimpf.sql.DriverLoader;
@@ -14,6 +15,8 @@ import org.schimpf.util.exceptions.MissingConnectionDataException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +37,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	 * @version Nov 28, 2012 11:42:56 AM
 	 */
 	public static Level								LOG_LEVEL	= Level.SEVERE;
+
+	/**
+	 * Ejecutor de consultas
+	 * 
+	 * @version Feb 5, 2013 9:57:18 AM
+	 */
+	protected final HashMap<String, Executor>	executors	= new HashMap<>();
 
 	/**
 	 * Conexiones a la base
@@ -78,11 +88,164 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	private Integer									port;
 
 	/**
+	 * Timeout para la ejecucion de las consultas
+	 * 
+	 * @version Jan 29, 2013 8:49:13 AM
+	 */
+	private int											timeout		= 600;
+
+	/**
 	 * Usuario para la conexion
 	 * 
 	 * @version Apr 15, 2011 4:46:47 PM
 	 */
 	private String										user;
+
+	/**
+	 * Ejecutor de consultas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Feb 4, 2013 7:58:34 PM
+	 */
+	protected final class Executor extends Thread {
+		/**
+		 * Resultado de la ejecucion
+		 * 
+		 * @version Feb 4, 2013 7:58:25 PM
+		 */
+		public Object					result;
+
+		/**
+		 * Tipo de consulta a ejecutar</BR>
+		 * True para consultas que retornan resultados (UPDATE, INSERT)
+		 * 
+		 * @version Feb 4, 2013 7:59:23 PM
+		 */
+		private boolean				isUpdate;
+
+		/**
+		 * Consulta a ejecutar
+		 * 
+		 * @version Feb 4, 2013 7:59:08 PM
+		 */
+		private PreparedStatement	pstmt;
+
+		/**
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Feb 4, 2013 8:01:16 PM
+		 * @param trxName Nombre de la transaccion
+		 */
+		protected Executor(final String trxName) {
+			// enviamos el constructor
+			super(Executor.class, "Query Executor [" + trxName + "]");
+		}
+
+		/**
+		 * Inicia la ejecucion de una consulta
+		 * 
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Feb 5, 2013 10:20:23 AM
+		 * @param pstmt Consulta SQL a ejecutar
+		 * @return True si se la consulta se ejecuto
+		 * @throws SQLException Si se produjo un error al ejecutar la consulta
+		 */
+		public ResultSet executeQuery(final PreparedStatement pstmt) throws SQLException {
+			// almacenamos la consulta
+			this.pstmt = pstmt;
+			// seteamos el tipo de consulta
+			this.isUpdate = false;
+			synchronized (this) {
+				// levantamos el thread
+				this.notify();
+				try {
+					// esperamos el timeout
+					this.wait(SQLLink.this.getQueryTimeout() * 1000);
+				} catch (final InterruptedException e) {}
+				// verificamos si hay resultado
+				if (this.result == null || this.result instanceof SQLException) {
+					// cancelamos la ejecucion
+					this.interrupt();
+					// salimos con una excepcion
+					throw this.result != null ? (SQLException) this.result : new SQLException("Query execution timeout after " + SQLLink.this.getQueryTimeout() + "s");
+				}
+				// retornamos el resultSet
+				return (ResultSet) this.result;
+			}
+		}
+
+		/**
+		 * Inicia la ejecucion de una consulta
+		 * 
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Feb 5, 2013 10:20:23 AM
+		 * @param pstmt Consulta SQL a ejecutar
+		 * @return Resultado de la consulta, -2 si no termino la ejecucion
+		 * @throws SQLException Si se produce un error al ejecutar la consulta
+		 */
+		public int executeUpdate(final PreparedStatement pstmt) throws SQLException {
+			// almacenamos la consulta
+			this.pstmt = pstmt;
+			// seteamos el tipo de consulta
+			this.isUpdate = true;
+			synchronized (this) {
+				// levantamos el thread
+				this.notify();
+				try {
+					// esperamos el timeout
+					this.wait(SQLLink.this.getQueryTimeout() * 1000);
+				} catch (final InterruptedException e) {}
+				// verificamos si hay resultado
+				if (this.result == null || this.result instanceof SQLException) {
+					// cancelamos la ejecucion
+					this.interrupt();
+					// salimos con una excepcion
+					throw this.result != null ? (SQLException) this.result : new SQLException("Query execution timeout after " + SQLLink.this.getQueryTimeout() + "s");
+				}
+				// retornamos el resultado
+				return (int) this.result;
+			}
+		}
+
+		@Override
+		protected boolean execute() throws InterruptedException {
+			try {
+				// verificamos si hay consulta a ejecutar
+				if (this.pstmt != null) {
+					// vaciamos el resultado
+					this.result = null;
+					try {
+						// verificamos si es update
+						if (this.isUpdate)
+							// ejecutamos la actualizacion
+							this.result = this.pstmt.executeUpdate();
+						else
+							// ejecutamos la consulta
+							this.result = this.pstmt.executeQuery();
+					} catch (final SQLException e) {
+						// almacenamos el error
+						this.result = e;
+					}
+					synchronized (this) {
+						// notificamos la finalizacion
+						this.notify();
+					}
+					// vaciamos el statement y el tipo
+					this.pstmt = null;
+					this.isUpdate = false;
+				}
+				synchronized (this) {
+					// esperamos a la proxima consulta
+					this.wait();
+				}
+			} catch (final InterruptedException ignored) {}
+			// retornamos si estamos en ejecucion
+			return this.isRunning();
+		}
+	}
 
 	/**
 	 * @author Hermann D. Schimpf
@@ -218,6 +381,19 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		this.port = port;
 	}
 
+	/**
+	 * Almacena el tiempo de timeout para la ejecucion de consultas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Jan 29, 2013 8:50:07 AM
+	 * @param timeout Tiempo de espera maximo
+	 */
+	public final void setQueryTimeout(final int timeout) {
+		// almacenamos el timeout
+		this.timeout = timeout;
+	}
+
 	@Override
 	public final void setUser(final String user) {
 		// verificamos si es null
@@ -274,6 +450,19 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		this.log.setConsoleLevel(SQLLink.LOG_LEVEL);
 		// retornamos el logger
 		return this.log;
+	}
+
+	/**
+	 * Retorna el timeout para la ejecucion de las consultas
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Jan 29, 2013 8:48:19 AM
+	 * @return Timeout para la ejecucion de consultas
+	 */
+	protected final int getQueryTimeout() {
+		// retornamos el timeout
+		return this.timeout;
 	}
 
 	/**
@@ -416,6 +605,12 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 			this.getConnection(trxName).clearWarnings();
 			// cerramos la conexion
 			this.getConnection(trxName).close();
+			synchronized (this.executors.get(trxName)) {
+				// finalizamos el ejecutor de consultas
+				this.executors.get(trxName).shutdown();
+			}
+			// eliminamos el ejecutor de consultas
+			this.executors.remove(trxName);
 			// eliminamos la conexion
 			this.connections.remove(trxName);
 			// retornamos true
@@ -468,9 +663,14 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	 */
 	final Connection getConnection(final String trxName) {
 		// verificamos si existe la conexion
-		if (!this.existsTransaction(trxName))
+		if (!this.existsTransaction(trxName)) {
 			// creamos la conexion
 			this.connections.put(trxName, this.newConnection());
+			// generamos el ejecutor de consultas
+			this.executors.put(trxName, new Executor(trxName));
+			// iniciamos el ejecutor de consultas
+			this.executors.get(trxName).start();
+		}
 		// retornamos la conexion
 		return this.connections.get(trxName);
 	}
