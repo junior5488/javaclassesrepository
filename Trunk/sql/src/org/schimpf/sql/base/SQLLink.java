@@ -136,10 +136,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
 		 * @version Feb 4, 2013 8:01:16 PM
 		 * @param trxName Nombre de la transaccion
+		 * @param host Servidor de base de datos
+		 * @param port Puerto de conexion
+		 * @param ddbb Base de datos
 		 */
-		protected Executor(final String trxName) {
+		protected Executor(final String trxName, final String host, final Integer port, final String ddbb) {
 			// enviamos el constructor
-			super(Executor.class, "Query Executor [" + trxName + "]");
+			super(Executor.class, "Query Executor on " + host + ":" + port + " in database " + ddbb + (trxName != null ? " [" + trxName + "]" : ""));
 		}
 
 		/**
@@ -667,7 +670,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 			// creamos la conexion
 			this.connections.put(trxName, this.newConnection());
 			// generamos el ejecutor de consultas
-			this.executors.put(trxName, new Executor(trxName));
+			this.executors.put(trxName, new Executor(trxName, this.host, this.port, this.ddbb));
 			// iniciamos el ejecutor de consultas
 			this.executors.get(trxName).start();
 		}
