@@ -42,13 +42,6 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	private final HashMap<String, PreparedStatement>	statement		= new HashMap<>();
 
 	/**
-	 * Timeout para la ejecucion de las consultas
-	 * 
-	 * @version Jan 29, 2013 8:49:13 AM
-	 */
-	private int														timeout			= 300;
-
-	/**
 	 * @author Hermann D. Schimpf
 	 * @author SCHIMPF - Sistemas de Informacion y Gestion
 	 * @version Apr 16, 2011 1:53:38 AM
@@ -136,10 +129,8 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			}
 			// mostramos la consulta a ejecutar
 			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + " '" + this.statement.get(trxName).toString().substring(this.statement.get(trxName).toString().indexOf(":") + 1) + "'");
-			// seteamos el timeout para la ejecucion
-			this.statement.get(trxName).setQueryTimeout(this.getTimeout());
 			// ejecutamos la consulta
-			this.resultSet.put(trxName, this.statement.get(trxName).executeQuery());
+			this.resultSet.put(trxName, this.executors.get(trxName).executeQuery(this.statement.get(trxName)));
 			// retornamos true
 			return true;
 		} catch (final SQLException e) {
@@ -200,9 +191,9 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// mostramos la consulta a ejecutar
 			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + " '" + this.statement.get(trxName).toString().substring(this.statement.get(trxName).toString().indexOf(":") + 1) + "'");
 			// ejecutamos el update
-			final int result = this.statement.get(trxName).executeUpdate();
+			final int result = this.executors.get(trxName).executeUpdate(this.statement.get(trxName));
 			// verificamos si se actualizo
-			if (result != 0)
+			if (result != 0 && result > 0)
 				// cargamos las claves generadas/actualizadas
 				this.loadGeneratedKeys(trxName);
 			// retornamos el resultado
@@ -230,7 +221,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	 * @version Oct 13, 2012 9:49:02 PM
 	 * @return ResultSet con las claves generadas
 	 */
-	public final ResultSet getGeneratedKeys() {
+	public synchronized final ResultSet getGeneratedKeys() {
 		// retornamos las claves generadas
 		return this.getGeneratedKeys(null);
 	}
@@ -245,7 +236,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	 * @param trxName Nombre de la transaccion
 	 * @return ResultSet con las claves generadas
 	 */
-	public final ResultSet getGeneratedKeys(final String trxName) {
+	public synchronized final ResultSet getGeneratedKeys(final String trxName) {
 		// mostramos un mensaje
 		this.getLog().fine("Retornando claves generadas en la transaccion '" + trxName + "'");
 		// verificamos si hay una conexion abierta
@@ -260,13 +251,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final ResultSet getResultSet() {
+	public synchronized final ResultSet getResultSet() {
 		// retornamos el resultset sin transaccion
 		return this.getResultSet(null);
 	}
 
 	@Override
-	public final ResultSet getResultSet(final String trxName) {
+	public synchronized final ResultSet getResultSet(final String trxName) {
 		// mostramos un mensaje
 		this.getLog().fine("Retornando resultade de la consulta en la transaccion '" + trxName + "'");
 		// verificamos si hay una conexion abierta
@@ -281,13 +272,13 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 	}
 
 	@Override
-	public final boolean hasNext() {
+	public synchronized final boolean hasNext() {
 		// retornamos si existe
 		return this.hasNext(null);
 	}
 
 	@Override
-	public final boolean hasNext(final String trxName) {
+	public synchronized final boolean hasNext(final String trxName) {
 		try {
 			// mostramos un mensaje
 			this.getLog().fine("Verificando si la consulta en la transaccion '" + trxName + "' posee mas filas");
@@ -371,19 +362,6 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 		}
 	}
 
-	/**
-	 * Almacena el tiempo de timeout para la ejecucion de consultas
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
-	 * @version Jan 29, 2013 8:50:07 AM
-	 * @param timeout Tiempo de espera maximo
-	 */
-	public void setQueryTimeout(final int timeout) {
-		// almacenamos el timeout
-		this.timeout = timeout;
-	}
-
 	@Override
 	public synchronized final String startTransaction() {
 		// retornamos el inicio de transaccion
@@ -409,19 +387,6 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 			// retornamos null
 			return null;
 		}
-	}
-
-	/**
-	 * Retorna el timeout para la ejecucion de las consultas
-	 * 
-	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
-	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
-	 * @version Jan 29, 2013 8:48:19 AM
-	 * @return Timeout para la ejecucion de consultas
-	 */
-	private int getTimeout() {
-		// retornamos el timeout
-		return this.timeout;
 	}
 
 	/**
