@@ -29,6 +29,13 @@ import java.util.ArrayList;
  */
 public final class ThreadsManager<TType extends Thread> {
 	/**
+	 * Thread para forzar la finalizacion de los threads
+	 * 
+	 * @version Feb 4, 2013 1:25:31 PM
+	 */
+	protected Forcer												forcer;
+
+	/**
 	 * Capturadores de eventos registrados
 	 * 
 	 * @version Aug 10, 2011 9:15:40 AM
@@ -62,6 +69,51 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Sep 14, 2011 3:48:10 PM
 	 */
 	private boolean												allFinished				= false;
+
+	/**
+	 * Finalizador de los threads
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Feb 4, 2013 1:28:16 PM
+	 */
+	private final class Forcer extends Thread {
+		/**
+		 * Timeout de espera para forzar los threads
+		 * 
+		 * @version Feb 5, 2013 9:48:21 AM
+		 */
+		private final int	timeout;
+
+		/**
+		 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+		 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+		 * @version Feb 5, 2013 9:48:23 AM
+		 * @param timeout Timeout de espera
+		 */
+		public Forcer(final int timeout) {
+			// enviamos el constructor
+			super(Forcer.class, "Shutdown Forcer");
+			// almacenamos el timeout
+			this.timeout = timeout;
+		}
+
+		@Override
+		protected boolean execute() throws InterruptedException {
+			// esperamos el tiempo
+			java.lang.Thread.sleep(this.timeout * 1000);
+			// finalizamos todos los threads
+			ThreadsManager.this.shutdownAll(true);
+			// retornamos false
+			return false;
+		}
+
+		@Override
+		protected synchronized void halt(final boolean interrupted) {
+			// eliminamos la instancia
+			ThreadsManager.this.forcer = null;
+		}
+	}
 
 	/**
 	 * Monitorea un thread hasta su finalizacion
@@ -187,7 +239,7 @@ public final class ThreadsManager<TType extends Thread> {
 				// recorremos los threads
 				for (final TType thread: ThreadsManager.this.threads) {
 					// verificamos si ya iniciamos todos
-					if (ThreadsManager.this.maxConcurrentThreads > 0 && ThreadsManager.this.getRunningThreads().size() >= ThreadsManager.this.maxConcurrentThreads)
+					if (!this.isRunning() || ThreadsManager.this.maxConcurrentThreads > 0 && ThreadsManager.this.getRunningThreads().size() >= ThreadsManager.this.maxConcurrentThreads)
 						// salimos del bucle
 						break;
 					// verificamos si es un nuevo thread
@@ -197,12 +249,9 @@ public final class ThreadsManager<TType extends Thread> {
 				}
 			}
 			// verificamos si existen threads a iniciar
-			if (!ThreadsManager.this.hasNew()) {
-				// vaciamos el starter
-				ThreadsManager.this.starter = null;
+			if (!this.isRunning() || !ThreadsManager.this.hasNew())
 				// salimos
 				return false;
-			}
 			// esperamos 500ms
 			java.lang.Thread.sleep(500);
 			// retornamos true
@@ -342,36 +391,35 @@ public final class ThreadsManager<TType extends Thread> {
 			// finalizamos el iniciador
 			this.starter.interrupt();
 		synchronized (this.threads) {
-			// recorremos hasta que existan threads
-			while (this.threads.size() > 0) {
-				// lista con los threads finalizados
-				final ArrayList<TType> terminatedThreads = new ArrayList<>();
-				// recorremos los threads
-				for (final TType thread: this.threads) {
-					// verificamos si esta ejecutandose
-					if (thread.isRunning())
-						// verificamos si matamos el thread
-						if (interrupt)
-							// finalizamos el thread
-							thread.interrupt();
-						else
-							// finalizamos el thread
-							thread.shutdown();
-					try {
-						// esperamos a que el thread finalize
-						thread.join(100);
-					} catch (final InterruptedException ignored) {}
-					// verificamos si finalizo
-					if (thread.getState().equals(Thread.State.NEW) || thread.getState().equals(Thread.State.TERMINATED))
-						// agregamos el thread para eliminar
-						terminatedThreads.add(thread);
-				}
-				// recorremos los threads a eliminar
-				for (final TType thread: terminatedThreads)
-					// eliminamos el thread
-					this.threads.remove(thread);
-			}
+			// recorremos los threads
+			for (final TType thread: this.threads)
+				// verificamos si esta ejecutandose
+				if (thread.isRunning())
+					// verificamos si matamos el thread
+					if (interrupt)
+						// finalizamos el thread
+						thread.interrupt();
+					else
+						// finalizamos el thread
+						thread.shutdown();
 		}
+	}
+
+	/**
+	 * Finaliza la ejecucion del programa
+	 * 
+	 * @author <FONT style='color:#55A; font-size:12px; font-weight:bold;'>Hermann D. Schimpf</FONT>
+	 * @author <B>HDS Solutions</B> - <FONT style="font-style:italic;">Soluci&oacute;nes Inform&aacute;ticas</FONT>
+	 * @version Feb 4, 2013 1:28:34 PM
+	 * @param timeout Tiempo de espera en segundos para forzar la finalizacion de los threads
+	 */
+	public void shutdownAll(final int timeout) {
+		// finalizamos los threads
+		this.shutdownAll();
+		// creamos un thread para espera
+		this.forcer = new Forcer(timeout);
+		// iniciamos el thread para espera
+		this.forcer.start();
 	}
 
 	/**
