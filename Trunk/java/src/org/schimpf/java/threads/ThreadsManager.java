@@ -160,8 +160,8 @@ public final class ThreadsManager<TType extends Thread> {
 				// monitoreamos un cambio de estado
 				while (oldState.equals(this.thread.getState()))
 					try {
-						// esperamos 100ms
-						java.lang.Thread.sleep(100);
+						// esperamos 10ms
+						java.lang.Thread.sleep(10);
 					} catch (final InterruptedException e) {}
 				// obtenemos el estado actual del thread
 				oldState = this.thread.getState();
@@ -215,7 +215,7 @@ public final class ThreadsManager<TType extends Thread> {
 			while (this.thread.getState().equals(Thread.State.NEW) && !this.thread.isAlive())
 				try {
 					// esperamos que el thread inicie
-					java.lang.Thread.sleep(100);
+					java.lang.Thread.sleep(10);
 				} catch (final InterruptedException ignored) {}
 		}
 	}
@@ -234,6 +234,7 @@ public final class ThreadsManager<TType extends Thread> {
 		}
 
 		@Override
+		@SuppressWarnings("unused")
 		protected boolean execute() throws InterruptedException {
 			synchronized (ThreadsManager.this.threads) {
 				// recorremos los threads
@@ -243,9 +244,12 @@ public final class ThreadsManager<TType extends Thread> {
 						// salimos del bucle
 						break;
 					// verificamos si es un nuevo thread
-					if (thread.getState().equals(Thread.State.NEW))
+					if (thread.getState().equals(Thread.State.NEW)) {
 						// iniciamos el thread
 						thread.start();
+						// agregamos el monitor del thread
+						new SingleThreadMonitor(thread);
+					}
 				}
 			}
 			// verificamos si existen threads a iniciar
@@ -286,14 +290,11 @@ public final class ThreadsManager<TType extends Thread> {
 	 * @version Aug 2, 2011 6:02:07 PM
 	 * @param thread Thread a agregar
 	 */
-	@SuppressWarnings("unused")
 	public void addThread(final TType thread) {
 		synchronized (this.threads) {
 			// agregamos un thread a la lista
 			this.threads.add(thread);
 		}
-		// agregamos el monitor del thread
-		new SingleThreadMonitor(thread);
 	}
 
 	/**
