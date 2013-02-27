@@ -156,14 +156,26 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		 * @throws SQLException Si se produjo un error al ejecutar la consulta
 		 */
 		public ResultSet executeQuery(final PreparedStatement pstmt) throws SQLException {
+			// mostramos un mensaje
+			SQLLink.this.getLog().finest("New query reached");
+			// esperamos la finalizacion
+			while (!this.getState().equals(State.WAITING))
+				try {
+					// esperamos 10ms
+					java.lang.Thread.sleep(10);
+				} catch (final InterruptedException ignored) {}
 			// almacenamos la consulta
 			this.pstmt = pstmt;
 			// seteamos el tipo de consulta
 			this.isUpdate = false;
 			synchronized (this) {
+				// mostramos un mensaje
+				SQLLink.this.getLog().finest("Waking up Query Executor");
 				// levantamos el thread
 				this.notify();
 				try {
+					// mostramos un mensaje
+					SQLLink.this.getLog().finest("Waiting for Query Executor end");
 					// esperamos el timeout
 					this.wait(SQLLink.this.getQueryTimeout() * 1000);
 				} catch (final InterruptedException e) {}
@@ -171,9 +183,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 				if (this.result == null || this.result instanceof SQLException) {
 					// cancelamos la ejecucion
 					this.interrupt();
+					// mostramos un mensaje
+					SQLLink.this.getLog().finest("Query Executor finished by timeout");
 					// salimos con una excepcion
 					throw this.result != null ? (SQLException) this.result : new SQLException("Query execution timeout after " + SQLLink.this.getQueryTimeout() + "s");
 				}
+				// mostramos un mensaje
+				SQLLink.this.getLog().finest("Query Executor finished");
 				// retornamos el resultSet
 				return (ResultSet) this.result;
 			}
@@ -190,14 +206,26 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 		 * @throws SQLException Si se produce un error al ejecutar la consulta
 		 */
 		public int executeUpdate(final PreparedStatement pstmt) throws SQLException {
+			// mostramos un mensaje
+			SQLLink.this.getLog().finest("New update query reached");
+			// esperamos la finalizacion
+			while (!this.getState().equals(State.WAITING))
+				try {
+					// esperamos 10ms
+					java.lang.Thread.sleep(10);
+				} catch (final InterruptedException ignored) {}
 			// almacenamos la consulta
 			this.pstmt = pstmt;
 			// seteamos el tipo de consulta
 			this.isUpdate = true;
 			synchronized (this) {
+				// mostramos un mensaje
+				SQLLink.this.getLog().finest("Waking up Query Executor");
 				// levantamos el thread
 				this.notify();
 				try {
+					// mostramos un mensaje
+					SQLLink.this.getLog().finest("Waiting for Query Executor end");
 					// esperamos el timeout
 					this.wait(SQLLink.this.getQueryTimeout() * 1000);
 				} catch (final InterruptedException e) {}
@@ -205,9 +233,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 				if (this.result == null || this.result instanceof SQLException) {
 					// cancelamos la ejecucion
 					this.interrupt();
+					// mostramos un mensaje
+					SQLLink.this.getLog().finest("Query Executor finished by timeout");
 					// salimos con una excepcion
 					throw this.result != null ? (SQLException) this.result : new SQLException("Query execution timeout after " + SQLLink.this.getQueryTimeout() + "s");
 				}
+				// mostramos un mensaje
+				SQLLink.this.getLog().finest("Query Executor finished");
 				// retornamos el resultado
 				return (int) this.result;
 			}
@@ -218,9 +250,13 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 			try {
 				// verificamos si hay consulta a ejecutar
 				if (this.pstmt != null) {
+					// mostramos un mensaje
+					SQLLink.this.getLog().finest("[Query Executor] New query reached");
 					// vaciamos el resultado
 					this.result = null;
 					try {
+						// mostramos un mensaje
+						SQLLink.this.getLog().finest("[Query Executor] Executing " + (this.isUpdate ? "update " : "") + "query");
 						// verificamos si es update
 						if (this.isUpdate)
 							// ejecutamos la actualizacion
@@ -228,11 +264,17 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 						else
 							// ejecutamos la consulta
 							this.result = this.pstmt.executeQuery();
+						// mostramos un mensaje
+						SQLLink.this.getLog().finest("[Query Executor] Execution of query finished");
 					} catch (final SQLException e) {
+						// mostramos un mensaje
+						SQLLink.this.getLog().finest("[Query Executor] Execution of query failed with SQLException " + e.getMessage());
 						// almacenamos el error
 						this.result = e;
 					}
 					synchronized (this) {
+						// mostramos un mensaje
+						SQLLink.this.getLog().finest("[Query Executor] Sending end execution notification");
 						// notificamos la finalizacion
 						this.notify();
 					}
@@ -241,10 +283,15 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 					this.isUpdate = false;
 				}
 				synchronized (this) {
+					// mostramos un mensaje
+					SQLLink.this.getLog().finest("[Query Executor] waiting for new query");
 					// esperamos a la proxima consulta
 					this.wait();
 				}
-			} catch (final InterruptedException ignored) {}
+			} catch (final InterruptedException ignored) {
+				// mostramos un mensaje
+				SQLLink.this.getLog().finest("[Query Executor] Execution of query failed by timeout");
+			}
 			// retornamos si estamos en ejecucion
 			return this.isRunning();
 		}
@@ -589,7 +636,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 	final boolean dropConnection(final String trxName) {
 		try {
 			// mostramos un mensaje
-			this.getLog().fine("Finalizando conexion para la transaccion '" + trxName + "'");
+			this.getLog().fine((trxName != null ? "[" + trxName + "] " : "") + "Finalizando conexion");
 			// verificamos si existe la conexion
 			if (!this.existsTransaction(trxName)) {
 				// mostramos un mensaje de error
@@ -600,7 +647,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 			// verificamos si esta deshabilitado el autocommit
 			if (!this.getConnection(trxName).getAutoCommit()) {
 				// mostramos una alerta
-				this.getLog().warning("Cancelando transaccion '" + trxName + "' en curso");
+				this.getLog().warning((trxName != null ? "[" + trxName + "] " : "") + "Cancelando transaccion en curso");
 				// cancelamos la transaccion en curso
 				this.getConnection(trxName).rollback();
 			}
