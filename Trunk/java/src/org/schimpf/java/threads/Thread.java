@@ -74,8 +74,6 @@ public abstract class Thread extends java.lang.Thread {
 				}
 				// iniciamos el proceso del thread
 				continueRunning = this.execute();
-				// esperamos 25 milisegundos
-				java.lang.Thread.sleep(25);
 			}
 			// finalizamos la ejecucion normal
 			this.halt(false);
