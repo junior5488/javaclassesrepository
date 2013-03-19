@@ -546,7 +546,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 					return referencedPO;
 				}
 			}
-		} catch (final SQLException e) {
+		} catch (final Exception e) {
 			// mostramos el error
 			AbstractPersistentObject.getSLogger().error(e);
 		}
