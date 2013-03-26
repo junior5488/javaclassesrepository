@@ -189,7 +189,7 @@ public abstract class AbstractPersistentObject<SQLType extends SQLProcess, MType
 		// almacenamos la tabla
 		this.poPhysicalTable = this.getTableInstance(this.getSQLConnector());
 		// iniciamos el logger
-		this.log = new Logger("PO:" + this.getTable(), AbstractPersistentObject.DEBUG_LEVEL);
+		this.log = new Logger("PO:" + this.getTable() + identifier.toString().substring(identifier.toString().indexOf("@")), AbstractPersistentObject.DEBUG_LEVEL);
 		// cargamos las columnas PK
 		this.loadPKsColumns();
 		// almacenamos las PKs
