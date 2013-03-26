@@ -128,7 +128,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				return false;
 			}
 			// mostramos la consulta a ejecutar
-			this.getLog().finer((trxName != null ? "[" + trxName + "] " : "") + "SQL" + (trxName == null ? "" : " [" + trxName + "]") + ": " + this.statement.get(trxName));
+			this.getLog().finer((trxName != null ? "[" + trxName + "] " : "") + "SQL: " + this.statement.get(trxName));
 			// ejecutamos la consulta
 			this.resultSet.put(trxName, this.executors.get(trxName).executeQuery(this.statement.get(trxName)));
 			// mostramos un mensaje
@@ -191,7 +191,7 @@ public abstract class SQLProcess extends SQLLink implements SQLBasics, SQLBasics
 				return -1;
 			}
 			// mostramos la consulta a ejecutar
-			this.getLog().finer("SQL" + (trxName == null ? "" : " [" + trxName + "]") + ": " + this.statement.get(trxName));
+			this.getLog().finer((trxName != null ? " [" + trxName + "] " : "") + "SQL: " + this.statement.get(trxName));
 			// ejecutamos el update
 			final int result = this.executors.get(trxName).executeUpdate(this.statement.get(trxName));
 			// mostramos un mensaje
