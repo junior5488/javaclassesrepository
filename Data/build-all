@@ -26,5 +26,5 @@ cd "$DIR"/Data/deb/libschimpf-sys_1.0.1 && fakeroot debian/rules
 
 cd "$DIR"/Data/deb/libschimpf-all_1.0.1 && fakeroot debian/rules
 
-chown -R hschimpf:root "$DIR"/Data/builds
+chown -R hschimpf:hschimpf "$DIR"/Data/builds
 chmod -R a-wx,u+wx,a+r "$DIR"/Data/builds
