@@ -1,3 +1,20 @@
+libschimpf-sql (1.6.0) stable; urgency=low
+
+  * FIX: ColumnWrapper: Cancelamos la transaccion luego de utilizarla
+  * FIX: SQLLink: Esperamos a que finalize el thread de ejecucion de consultas para enviarle una nueva consulta
+  * FIX: SQLProcess: Doble impresion del nombre de la transaccion en el log
+  * PGWrapper*: Verificamos si el resultset existe
+  * SQLLink: Implementamos la ejecucion de consultas con timeout para cancelar la mismas pasado el tiempo de espera
+  * SQLLink: Mostramos la ruta del servidor donde estamos conectados
+  * SQLLink: Agregamos mas mensajes de depuracion
+  * SQLProcess: Agregamos el timeout para la ejecucion de las consultas
+  * SQLProcess: Ejecutamos las consultas dentro del ejecutor de consultas con timeout
+  * SQLProcess: Mensajes de depuracion acomodados con el nombre de la transaccion en el que se ejecutan
+  * AbstractPersistentObject: Capturamos todo tipo de excepciones
+  * AbstractPersistentObject: Agregamos un identificador unico para cada PO
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Thu, 25 Apr 2013 13:03:25 -0300
+
 libschimpf-sql (1.5.1) stable; urgency=low
 
   * FIX: *Wrapper: Cargamos el resultset en una variable local

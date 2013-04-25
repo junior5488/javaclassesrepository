@@ -13,13 +13,13 @@ ant -Dbasedir="$DIR" -f "$DIR"/Trunk/awt/build.xml
 cd "$DIR"/Data/deb/libschimpf-awt_1.2.1 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/java/build.xml
-cd "$DIR"/Data/deb/libschimpf-java_1.2.2 && fakeroot debian/rules
+cd "$DIR"/Data/deb/libschimpf-java_1.2.3 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/net/build.xml
 cd "$DIR"/Data/deb/libschimpf-net_1.3.0 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sql/build.xml
-cd "$DIR"/Data/deb/libschimpf-sql_1.5.1 && fakeroot debian/rules
+cd "$DIR"/Data/deb/libschimpf-sql_1.6.0 && fakeroot debian/rules
 
 ant -Dbasedir="$DIR" -f "$DIR"/Trunk/sys/build.xml
 cd "$DIR"/Data/deb/libschimpf-sys_1.0.1 && fakeroot debian/rules

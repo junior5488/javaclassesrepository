@@ -1,3 +1,12 @@
+libschimpf-java (1.2.3) stable; urgency=low
+
+  * Thread: Levantamos la ejecucion del thread al finalizar el mismo
+  * Thread: Eliminamos la espera entre ejecuciones, la maneja la implementacion que extienda de la clase
+  * ThreadsManager: Seteamos el nombre de los threads internos
+  * ThreadsManager: Agregamos el metodo shutdownAll(int timeout) para finalizar los threads y pasado el timeout forzar la finalizacion de los mismos
+
+ -- Hermann D. Schimpf <hschimpf@hds-solutions.net>  Thu, 25 Apr 2013 12:59:57 -0300
+
 libschimpf-java (1.2.2) stable; urgency=low
 
   * FIX: ThreadsManager: Eliminamos los threads no iniciados
