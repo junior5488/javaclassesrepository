@@ -284,7 +284,7 @@ public abstract class SQLLink extends DriverLoader implements DBConnection, Auto
 				}
 				synchronized (this) {
 					// mostramos un mensaje
-					SQLLink.this.getLog().finest("[Query Executor] waiting for new query");
+					SQLLink.this.getLog().finest("[Query Executor] Waiting for new query");
 					// esperamos a la proxima consulta
 					this.wait();
 				}
