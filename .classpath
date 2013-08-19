@@ -14,7 +14,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Email Library"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Java MSN Messenger Library"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL Driver"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PostgreSQL Driver"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PostgreSQL (JDBC4)"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SSH Library"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SSH Library (JSch)"/>
 	<classpathentry kind="output" path=".bin"/>
